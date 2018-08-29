@@ -1,0 +1,101 @@
+<div data-role="page">
+  <style>
+  .input:focus {
+    border-bottom-color: #fbc02d
+  }
+
+  .ui-selectmenu .ui-selectmenu-list li .ui-btn.ui-btn-active {
+    color: #fbc02d
+  }
+  </style>
+  <div class="navbar yellow darken-2">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div class="title">Giải hệ phương trình tuyến tính</div>
+    </div>
+  </div>
+  <div class="ui-content" id="body">
+    <label>Chọn số ẩn</label>
+    <select data-native-menu="false" id="select" data-icon="false">
+      <option value="2">2</option>
+      <option value="3">3</option>
+      <option value="4">4</option>
+      <option value="5">5</option>
+    </select>
+    <label>Nhập hệ phương trình tuyến tính</label>
+    <div class="card overflow-nowrap">
+      <div id="input"></div>
+    </div>
+    <button class="button katex yellow darken-2">=</button>
+    <div class="card overflow-nowrap">
+      <div id="output">
+        <span class="katex-display katex">0</span>
+      </div>
+    </div>
+  </div>
+  <script>
+  let so_lg_an = '';
+  let option = select.value;
+  for (let i = 0; i < option; i++) {
+    for (let j = 0; j <= option; j++)
+      so_lg_an += `<input type="text" data-role="none" class="input" id="a${i}${j}"> &nbsp;`;
+    if (i < option - 1)
+      so_lg_an += '<br>';
+  }
+  input.innerHTML = so_lg_an;
+
+  select.onchange = function() {
+    option = this.value;
+    so_lg_an = '';
+    for (let i = 0; i < option; i++) {
+      for (let j = 0; j <= option; j++)
+        so_lg_an += `<input type="text" data-role="none" class="input" id="a${i}${j}"> &nbsp;`;
+      if (i < option - 1)
+        so_lg_an += '<br>';
+    }
+    input.innerHTML = so_lg_an;
+  }
+
+  $('.button').click(function() {
+    option = select.value;
+    let mat_A = 'matrix(';
+    let mat_B = 'matrix(';
+    for (let i = 0; i < option; i++) {
+      for (let j = 0; j < option; j++) {
+        if (j == 0)
+          mat_A += '[';
+        mat_A += document.getElementById(`a${i}${j}`).value;
+        if (j < option - 1)
+          mat_A += ',';
+        if (j == option - 1)
+          mat_A += ']';
+      }
+      if (i < option - 1)
+        mat_A += ',';
+    }
+    mat_A += ')';
+    for (let i = 0; i < option; i++) {
+      mat_B += `[${document.getElementById(`a${i}${option}`).value}]`;
+      if (i < option - 1)
+        mat_B += ',';
+    }
+    mat_B += ')';
+    let result = nerdamer(`invert(${mat_A})*${mat_B}`).toTeX()
+      .replace(/bmatrix/g, 'cases')
+      .replace('cases}', 'cases} x_1 = ');
+    let arr = result.split('\\cr');
+    result = arr[0];
+
+    for (let i = 1; i < option; i++) {
+      result += `\\cr x_${i + 1}=${arr[i]}`;
+    }
+
+    output.innerHTML = katex.renderToString(result.replace(/,$|\\cdot(?= \\| [a-z])/g, ''), {
+      displayMode: true
+    });
+
+  });
+  </script>
+</div>

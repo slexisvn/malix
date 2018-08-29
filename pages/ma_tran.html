@@ -1,0 +1,324 @@
+<div data-role="page">
+  <style>
+  .input:focus {
+    border-bottom-color: #512da8
+  }
+
+  .ui-selectmenu .ui-selectmenu-list li .ui-btn.ui-btn-active {
+    color: #512da8
+  }
+  </style>
+  <div class="navbar deep-purple darken-2">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div class="title">Ma trận</div>
+    </div>
+  </div>
+  <div class="ui-content">
+    <select data-native-menu="false" data-icon="false" id="select">
+      <option value="matA_area">Nhập ma trận A</option>
+      <option value="matB_area">Nhập ma trận B</option>
+      <option value="matC_area">Nhập ma trận C</option>
+      <option value="main_area">Tính toán</option>
+    </select>
+    <div id="matA_area" class="content">
+      <div class="row">
+        <div class="col-50">
+          <label>Số dòng</label>
+          <select data-native-menu="false" data-icon="false" id="select1">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="col-50">
+          <label>Số cột</label>
+          <select data-native-menu="false" data-icon="false" id="select2">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <div class="card overflow-nowrap">
+        <div id="input1"></div>
+      </div>
+    </div>
+    <div id="matB_area" class="content" style="display:none">
+      <div class="row">
+        <div class="col-50">
+          <label>Số dòng</label>
+          <select data-native-menu="false" data-icon="false" id="select3">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="col-50">
+          <label>Số cột</label>
+          <select data-native-menu="false" data-icon="false" id="select4">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <div class="card overflow-nowrap">
+        <div id="input2"></div>
+      </div>
+    </div>
+    <div id="matC_area" class="content" style="display:none">
+      <div class="row">
+        <div class="col-50">
+          <label>Số dòng</label>
+          <select data-native-menu="false" data-icon="false" id="select5">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="col-50">
+          <label>Số cột</label>
+          <select data-native-menu="false" data-icon="false" id="select6">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <div class="card overflow-nowrap">
+        <div id="input3"></div>
+      </div>
+    </div>
+    <div id="main_area" class="content" style="display:none">
+      <div class="card">
+        <label>Nhập biểu thức</label>
+        <input type="text" data-clear-btn="true" placeholder="matA*invert(matB)" id="input" />
+      </div>
+      <button class="button katex deep-purple darken-2">=</button>
+      <div class="card overflow-nowrap">
+        <div id="output">
+          <span class="katex-display katex">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  var core = nerdamer.getCore();
+  var _ = core.PARSER;
+  var Matrix = core.Matrix;
+  var Symbol = core.Symbol;
+  var math = core.Utils.importFunctions();
+
+  function hilbert(n) {
+    let m = new Matrix();
+    for (let i = 0; i < n; i++) {
+      m.elements.push([]);
+      for (let j = 0; j < n; j++) {
+        m.set(i, j, new Symbol(1 / (i + j + 1)));
+      }
+    }
+    return m;
+  }
+
+  function adjunct(m) {
+    return _.multiply(math.determinant(m), math.invert(m));
+  }
+
+  nerdamer.register([{
+    name: 'hilbert',
+    numargs: 1,
+    visible: true,
+    build() { return hilbert; }
+  }, {
+    name: 'adjunct',
+    numargs: 1,
+    visible: true,
+    build() { return adjunct; }
+  }]);
+
+  $('#select').on('change', function() {
+    $('.content').hide();
+    $(`#${$(this).val()}`).show();
+  });
+
+  $('#input').textcomplete([{
+    match: /(^|\b)(\w{1,})$/,
+    search(term, callback) {
+      let words = ['determinant', 'invert', 'imatrix', 'transpose', 'matA', 'matB', 'matC', 'hilbert', 'adjunct'];
+      callback($.map(words, word => word.indexOf(term) === 0 ? word : null));
+    },
+    replace(word) {
+      if (word === 'matA' || word === 'matB' || word === 'matC') {
+        return word;
+      } else {
+        return `${word}()`;
+      }
+    }
+  }]);
+
+  input.onfocus = function() {
+    if (this.value.includes('()')) {
+      this.selectionStart = this.selectionEnd = this.value.indexOf('()') + 1;
+    }
+  }
+
+  let mat_A = '';
+  for (let i = 0; i < select1.value; i++) {
+    for (let j = 0; j < select2.value; j++)
+      mat_A += `<input type="text" data-role="none" class="input" id="a${i}${j}"> &nbsp;`;
+    if (i < select1.value - 1)
+      mat_A += '<br>';
+  }
+  input1.innerHTML = mat_A;
+
+  select1.onchange = () => {
+    mat_A = '';
+    for (let i = 0; i < select1.value; i++) {
+      for (let j = 0; j < select2.value; j++)
+        mat_A += `<input type="text" data-role="none" class="input" id="a${i}${j}"> &nbsp;`;
+      if (i < select1.value - 1)
+        mat_A += '<br>';
+    }
+    input1.innerHTML = mat_A;
+  }
+  select2.onchange = () => {
+    mat_A = '';
+    for (let i = 0; i < select1.value; i++) {
+      for (let j = 0; j < select2.value; j++)
+        mat_A += `<input type="text" data-role="none" class="input" id="a${i}${j}"> &nbsp;`;
+      if (i < select1.value - 1)
+        mat_A += '<br>';
+    }
+    input1.innerHTML = mat_A;
+  }
+  let mat_B = '';
+  for (let i = 0; i < select3.value; i++) {
+    for (let j = 0; j < select4.value; j++)
+      mat_B += `<input type="text" data-role="none" class="input" id="b${i}${j}"> &nbsp;`;
+    if (i < select3.value - 1)
+      mat_B += '<br>';
+  }
+  input2.innerHTML = mat_B;
+  select3.onchange = () => {
+    mat_B = '';
+    for (let i = 0; i < select3.value; i++) {
+      for (let j = 0; j < select4.value; j++)
+        mat_B += `<input type="text" data-role="none" class="input" id="b${i}${j}"> &nbsp;`;
+      if (i < select3.value - 1)
+        mat_B += '<br>';
+    }
+    input2.innerHTML = mat_B;
+  }
+  select4.onchange = () => {
+    mat_B = '';
+    for (let i = 0; i < select3.value; i++) {
+      for (let j = 0; j < select4.value; j++)
+        mat_B += `<input type="text" data-role="none" class="input" id="b${i}${j}"> &nbsp;`;
+      if (i < select3.value - 1)
+        mat_B += '<br>';
+    }
+    input2.innerHTML = mat_B;
+  }
+  let mat_C = '';
+  for (let i = 0; i < select5.value; i++) {
+    for (let j = 0; j < select6.value; j++)
+      mat_C += `<input type="text" data-role="none" class="input" id="c${i}${j}"> &nbsp;`;
+    if (i < select5.value - 1)
+      mat_C += '<br>';
+  }
+  input3.innerHTML = mat_C;
+  select5.onchange = () => {
+    mat_C = '';
+    for (let i = 0; i < select5.value; i++) {
+      for (let j = 0; j < select6.value; j++)
+        mat_C += `<input type="text" data-role="none" class="input" id="c${i}${j}"> &nbsp;`;
+      if (i < select5.value - 1)
+        mat_C += '<br>';
+    }
+    input3.innerHTML = mat_C;
+  }
+  select6.onchange = () => {
+    mat_C = '';
+    for (let i = 0; i < select5.value; i++) {
+      for (let j = 0; j < select6.value; j++)
+        mat_C += `<input type="text" data-role="none" class="input" id="c${i}${j}"> &nbsp;`;
+      if (i < select5.value - 1)
+        mat_C += '<br>';
+    }
+    input3.innerHTML = mat_C;
+  }
+  $('.button').click(() => {
+    mat_A = 'matrix(';
+    for (let i = 0; i < select1.value; i++) {
+      for (let j = 0; j < select2.value; j++) {
+        if (j == 0)
+          mat_A += '[';
+        mat_A += document.getElementById(`a${i}${j}`).value;
+        if (j < select2.value - 1)
+          mat_A += ',';
+        if (j == select2.value - 1)
+          mat_A += ']';
+      }
+      if (i < select1.value - 1)
+        mat_A += ',';
+    }
+    mat_A += ')';
+
+    mat_B = 'matrix(';
+    for (let i = 0; i < select3.value; i++) {
+      for (let j = 0; j < select4.value; j++) {
+        if (j == 0)
+          mat_B += '[';
+        mat_B += document.getElementById(`b${i}${j}`).value;
+        if (j < select4.value - 1)
+          mat_B += ',';
+        if (j == select4.value - 1)
+          mat_B += ']';
+      }
+      if (i < select3.value - 1)
+        mat_B += ',';
+    }
+    mat_B += ')';
+
+    mat_C = 'matrix(';
+    for (let i = 0; i < select5.value; i++) {
+      for (let j = 0; j < select6.value; j++) {
+        if (j == 0)
+          mat_C += '[';
+        mat_C += document.getElementById(`c${i}${j}`).value;
+        if (j < select6.value - 1)
+          mat_C += ',';
+        if (j == select6.value - 1)
+          mat_C += ']';
+      }
+      if (i < select5.value - 1)
+        mat_C += ',';
+    }
+    mat_C += ')';
+    nerdamer.setVar('matA', mat_A);
+    nerdamer.setVar('matB', mat_B);
+    nerdamer.setVar('matC', mat_C);
+
+    output.innerHTML = katex.renderToString(nerdamer(input.value).toTeX()
+      .replace(/,$|\\cdot(?= \\| [a-z])/g, ''), {
+        displayMode: true
+      });
+
+  });
+  </script>
+</div>

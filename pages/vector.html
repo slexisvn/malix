@@ -1,0 +1,298 @@
+<div data-role="page">
+  <style>
+  .input:focus {
+    border-bottom-color: #afb42b
+  }
+
+  .ui-selectmenu .ui-selectmenu-list li .ui-btn.ui-btn-active {
+    color: #afb42b
+  }
+  </style>
+  <div class="navbar lime darken-2">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div class="title">Vector</div>
+      <div class="right">
+        <select id="select" data-native-menu="false" data-icon="false">
+          <option value="2">E</option>
+          <option value="3">S</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="ui-content">
+    <select id="select1" data-native-menu="false" data-icon="false">
+      <option value="input_vector_area">Nhập vector</option>
+      <option value="main_area">Tính toán</option>
+    </select>
+    <div id="input_vector_area" class="content">
+      <div class="card">
+        <label>Nhập vector A</label>
+        <div id="input1"></div>
+      </div>
+      <div class="card">
+        <label>Nhập vector B</label>
+        <div id="input2"></div>
+      </div>
+      <div class="card">
+        <label>Nhập vector C</label>
+        <div id="input3"></div>
+      </div>
+      <div class="card">
+        <label>Nhập vector D</label>
+        <div id="input4"></div>
+      </div>
+    </div>
+    <div id="main_area" class="content" style="display:none">
+      <div class="card">
+        <label>Nhập biểu thức</label>
+        <input type="text" data-clear-btn="true" placeholder="vecA+vecB" id="input" />
+      </div>
+      <button class="button katex lime darken-2">=</button>
+      <div class="card">
+        <div id="output">
+          <span class="katex-display katex">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  var core = nerdamer.getCore();
+  var _ = core.PARSER;
+  var Symbol = core.Symbol;
+  var isVector = core.Utils.isVector;
+  var math = core.Utils.importFunctions();
+
+  function angle(vec1, vec2) {
+    if (isVector(vec1) && isVector(vec2)) return math.acos(_.divide(vec1.dot(vec2), _.multiply(math.abs(vec1), math.abs(vec2))))
+  }
+
+  function pointM(vec1, vec2) {
+    if (isVector(vec1) && isVector(vec2)) return _.divide(_.add(vec1, vec2), new Symbol(2))
+  }
+
+  function pointG(vec1, vec2, vec3) {
+    if (isVector(vec1) && isVector(vec2) && isVector(vec3)) return _.divide(_.add(_.add(vec1, vec2), vec3), new Symbol(3))
+  }
+
+  function pointH(vec1, vec2, vec3) {
+    if (isVector(vec1) && isVector(vec2) && isVector(vec3)) {
+      let C = math.abs(_.subtract(vec1.clone(), vec2.clone()));
+      let A = math.abs(_.subtract(vec2.clone(), vec3.clone()));
+      let B = math.abs(_.subtract(vec3.clone(), vec1.clone()));
+      let D = _.divide(new Symbol(1), _.subtract(_.add(_.pow(B, new Symbol(2)), _.pow(C, new Symbol(2))), _.pow(A, new Symbol(2))));
+      let E = _.divide(new Symbol(1), _.subtract(_.add(_.pow(C, new Symbol(2)), _.pow(A, new Symbol(2))), _.pow(B, new Symbol(2))));
+      let F = _.divide(new Symbol(1), _.subtract(_.add(_.pow(A, new Symbol(2)), _.pow(B, new Symbol(2))), _.pow(C, new Symbol(2))));
+      return _.divide(_.add(_.add(_.multiply(D, vec1), _.multiply(E, vec2)), _.multiply(F, vec3)), _.add(_.add(D, E), F))
+    }
+  }
+
+  function pointI(vec1, vec2, vec3) {
+    if (isVector(vec1) && isVector(vec2) && isVector(vec3)) {
+      let C = math.abs(_.subtract(vec1.clone(), vec2.clone()));
+      let A = math.abs(_.subtract(vec2.clone(), vec3.clone()));
+      let B = math.abs(_.subtract(vec3.clone(), vec1.clone()));
+      return _.divide(_.add(_.add(_.multiply(A, vec1), _.multiply(B, vec2)), _.multiply(C, vec3)), _.add(_.add(A, B), C))
+    }
+  }
+
+  function pointO(vec1, vec2, vec3) {
+    if (isVector(vec1) && isVector(vec2) && isVector(vec3)) {
+      let C = math.abs(_.subtract(vec1.clone(), vec2.clone()));
+      let A = math.abs(_.subtract(vec2.clone(), vec3.clone()));
+      let B = math.abs(_.subtract(vec3.clone(), vec1.clone()));
+      let D = _.multiply(_.pow(A, new Symbol(2)), _.subtract(_.add(_.pow(B, new Symbol(2)), _.pow(C, new Symbol(2))), _.pow(A, new Symbol(2))));
+      let E = _.multiply(_.pow(B, new Symbol(2)), _.subtract(_.add(_.pow(C, new Symbol(2)), _.pow(A, new Symbol(2))), _.pow(B, new Symbol(2))));
+      let F = _.multiply(_.pow(C, new Symbol(2)), _.subtract(_.add(_.pow(A, new Symbol(2)), _.pow(B, new Symbol(2))), _.pow(C, new Symbol(2))));
+      return _.divide(_.add(_.add(_.multiply(D, vec1), _.multiply(E, vec2)), _.multiply(F, vec3)), _.add(_.add(D, E), F))
+    }
+  }
+
+  function pE(vec1, vec2, vec3) {
+    if (isVector(vec1) && isVector(vec2) && isVector(vec3)) {
+      let nVec = _.subtract(vec2.clone(), vec1.clone()).cross(_.subtract(vec3.clone(), vec1.clone()));
+      return [nVec, _.multiply(nVec.dot(vec1), new Symbol(-1))]
+    }
+  }
+
+  function projE(vec1, vec2, D) {
+    let t = _.divide(_.multiply(_.add(vec1.dot(vec2), D), new Symbol(-1)), _.pow(math.abs(vec2), new Symbol(2)));
+    return _.add(vec1, _.multiply(t, vec2))
+  }
+
+  function projL(vec1, vec2, vec3) {
+    let t = _.divide(vec2.dot(_.subtract(vec1.clone(), vec3.clone())), _.pow(math.abs(vec2), new Symbol(2)));
+    return _.add(vec3, _.multiply(t, vec2))
+  }
+  nerdamer.register([{
+    name: 'angle',
+    numargs: 2,
+    visible: !0,
+    build() {
+      return angle
+    }
+  }, {
+    name: 'pointM',
+    numargs: 2,
+    visible: !0,
+    build() {
+      return pointM
+    }
+  }, {
+    name: 'pointG',
+    numargs: 3,
+    visible: !0,
+    build() {
+      return pointG
+    }
+  }, {
+    name: 'pointH',
+    numargs: 3,
+    visible: !0,
+    build() {
+      return pointH
+    }
+  }, {
+    name: 'pointI',
+    numargs: 3,
+    visible: !0,
+    build() {
+      return pointI
+    }
+  }, {
+    name: 'pointO',
+    numargs: 3,
+    visible: !0,
+    build() {
+      return pointO
+    }
+  }, {
+    name: 'pE',
+    numargs: 3,
+    visible: !0,
+    build() {
+      return pE
+    }
+  }, {
+    name: 'projE',
+    numargs: 3,
+    visible: !0,
+    build() {
+      return projE
+    }
+  }, {
+    name: 'projL',
+    numargs: 3,
+    visible: !0,
+    build() { return projL }
+  }]);
+
+  $('#select1').on('change', function() {
+    $('.content').hide();
+    $(`#${$(this).val()}`).show()
+  });
+
+  $('#input').textcomplete([{
+    match: /(^|\b)(\w{1,})$/,
+    search(term, callback) {
+      let words = ['abs', 'dot', 'cross', 'angle', 'vecA', 'vecB', 'vecC', 'vecD', 'pointM', 'pointG', 'pointH', 'pointI', 'pointO', 'pE', 'projE', 'projL'];
+      callback($.map(words, word => word.indexOf(term) === 0 ? word : null))
+    },
+    replace(word) {
+      if (word.includes('vec')) {
+        return word
+      } else {
+        return `${word}()`
+      }
+    }
+  }]);
+
+  input.onfocus = function() {
+    if (this.value.includes('()')) {
+      this.selectionStart = this.selectionEnd = this.value.indexOf('()') + 1
+    }
+  }
+  let vec_A = '';
+  let vec_B = '';
+  let vec_C = '';
+  let vec_D = '';
+  for (var i = 0; i < select.value; i++)
+    vec_A += `<input type="text" data-role="none" class="input" id="a${i}"> &nbsp;`;
+  input1.innerHTML = vec_A;
+  for (i = 0; i < select.value; i++)
+    vec_B += `<input type="text" data-role="none" class="input" id="b${i}"> &nbsp;`;
+  input2.innerHTML = vec_B;
+  for (i = 0; i < select.value; i++)
+    vec_C += `<input type="text" data-role="none" class="input" id="c${i}"> &nbsp;`;
+  input3.innerHTML = vec_C;
+  for (i = 0; i < select.value; i++)
+    vec_D += `<input type="text" data-role="none" class="input" id="d${i}"> &nbsp;`;
+  input4.innerHTML = vec_D;
+  select.onchange = () => {
+    vec_A = vec_B = vec_C = vec_D = '';
+    for (i = 0; i < select.value; i++)
+      vec_A += `<input type="text" data-role="none" class="input" id="a${i}"> &nbsp;`;
+    input1.innerHTML = vec_A;
+    for (i = 0; i < select.value; i++)
+      vec_B += `<input type="text" data-role="none" class="input" id="b${i}"> &nbsp;`;
+    input2.innerHTML = vec_B;
+    for (i = 0; i < select.value; i++)
+      vec_C += `<input type="text" data-role="none" class="input" id="c${i}"> &nbsp;`;
+    input3.innerHTML = vec_C;
+    for (i = 0; i < select.value; i++)
+      vec_D += `<input type="text" data-role="none" class="input" id="d${i}"> &nbsp;`;
+    input4.innerHTML = vec_D
+  }
+  $('.button').click(() => {
+    vec_A = vec_B = vec_C = vec_D = '[';
+    if (a0.value !== '') {
+      for (i = 0; i < select.value; i++) {
+        vec_A += document.getElementById(`a${i}`).value;
+        if (i < select.value - 1)
+          vec_A += ','
+      }
+    }
+    vec_A += ']';
+    if (b0.value !== '') {
+      for (i = 0; i < select.value; i++) {
+        vec_B += document.getElementById(`b${i}`).value;
+        if (i < select.value - 1)
+          vec_B += ','
+      }
+    }
+    vec_B += ']';
+    if (c0.value !== '') {
+      for (i = 0; i < select.value; i++) {
+        vec_C += document.getElementById(`c${i}`).value;
+        if (i < select.value - 1)
+          vec_C += ','
+      }
+    }
+    vec_C += ']';
+    if (d0.value !== '') {
+      for (i = 0; i < select.value; i++) {
+        vec_D += document.getElementById(`d${i}`).value;
+        if (i < select.value - 1)
+          vec_D += ','
+      }
+    }
+    vec_D += ']';
+    nerdamer.setVar('vecA', vec_A);
+    nerdamer.setVar('vecB', vec_B);
+    nerdamer.setVar('vecC', vec_C);
+    nerdamer.setVar('vecD', vec_D);
+    let result = nerdamer(input.value).toTeX().replace(/,$|\\cdot(?= \\| [a-z])/g, '');
+    if (result.includes('\\left[\\left[')) {
+      let arr = result.replace(/ |\\left|\\,|\\right|\[|\]/g, '').split(',');
+      result = (`${arr[0]}a+${arr[1]}b+${arr[2]}c+${arr[3]}= 0`).replace(/\+-/g, '-')
+    } else {
+      result = result.replace(/\[/g, '\\left(').replace(/\]/g, '\\right)').replace(/,/g, ';\\:')
+    }
+    output.innerHTML = katex.renderToString(result, {
+      displayMode: !0
+    })
+  })
+  </script>
+</div>

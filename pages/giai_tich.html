@@ -1,0 +1,203 @@
+<div data-role="page">
+  <style>
+  .ui-selectmenu .ui-selectmenu-list li .ui-btn.ui-btn-active {
+    color: #ff9800
+  }
+  </style>
+  <div class="navbar orange">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div class="title">Giải tích</div>
+      <div class="right">
+        <select data-native-menu="false" id="select" data-icon="false">
+          <option value="l">L</option>
+          <option value="d">D</option>
+          <option value="i">I</option>
+          <option value="t">T</option>
+          <option value="e">E</option>
+        </select>
+      </div>
+    </div>
+  </div>
+  <div class="ui-content">
+    <div id="d_deg_area">
+      <select data-native-menu="false" id="select_deg" data-icon="false">
+        <option value="1">Đạo hàm bậc 1</option>
+        <option value="2">Đạo hàm bậc 2</option>
+        <option value="3">Đạo hàm bậc 3</option>
+      </select>
+    </div>
+    <div class="card">
+      <label>Nhập hàm số</label>
+      <input type="text" id="input" placeholder="x*cos(x)" data-clear-btn="true" />
+    </div>
+    <div class="row" id="at_area">
+      <div class="col-50">
+        <div class="card">
+          <label>Tại</label>
+          <input type="text" placeholder="3" id="at" />
+        </div>
+      </div>
+    </div>
+    <div class="row margin-top-minus-8" id="defint_area">
+      <div class="col-50">
+        <div class="card">
+          <label>Cận dưới</label>
+          <input id="can_duoi" type="text" placeholder="0" />
+        </div>
+      </div>
+      <div class="col-50">
+        <div class="card">
+          <label>Cận trên</label>
+          <input id="can_tren" type="text" placeholder="pi/2" />
+        </div>
+      </div>
+    </div>
+    <button class="button katex orange">=</button>
+    <div class="card">
+      <div class="overflow">
+        <div id="output">
+          <span class="katex-display katex">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script>
+  $.getScript('../js/algebra.js', function() {
+    $.getScript('../js/calculus.js', function() {
+
+      $('#input').textcomplete([{
+        match: /(^|\b)(\w{1,})$/,
+        search: function(term, callback) {
+          var words = ['cos', 'sin', 'tan', 'ln', 'sqrt', 'asin', 'acos', 'atan'];
+          callback($.map(words, function(word) {
+            return word.indexOf(term) === 0 ? word : null;
+          }));
+        },
+        replace: function(word) {
+          return `${word}()`
+        }
+      }]);
+
+      input.onfocus = function() {
+        if (this.value.includes('()')) {
+          input.selectionStart = input.selectionEnd = this.value.indexOf('()') + 1;
+        }
+      }
+
+      let option = select.value;
+
+      $('#defint_area, #d_deg_area').hide();
+
+      $('#select').on('change', function() {
+        option = $(this).val();
+        if (option === 't') {
+          $('#d_deg_area, #at_area').hide();
+          $('#defint_area').show();
+        }
+        if (option === 'l' || option === 'e') {
+          $('#defint_area, #d_deg_area').hide();
+          $('#at_area').show();
+        }
+        if (option === 'i') {
+          $('#defint_area, #d_deg_area, #at_area').hide();
+        }
+        if (option === 'd') {
+          $('#defint_area').hide();
+          $('#d_deg_area, #at_area').show();
+        }
+      });
+
+      $('.button').click(function() {
+        let result = input.value;
+        let b = at.value;
+        if (option === 'l') {
+          if (b.includes('oo')) {
+            if (b === '+oo') {
+              b = '10^9';
+            }
+            if (b === '-oo') {
+              b = '-10^9';
+            }
+          } else {
+            if (b.search(/\+|-/g) > -1) {
+              b += '10^(-9)';
+            } else {
+              b += '+10^(-9)';
+            }
+          }
+          let num = +nerdamer(result).sub('x', b).evaluate().text();
+          if (num > 100000000.0) {
+            result = '+\\infty';
+          } else if (num < -100000000.0) {
+            result = '-\\infty';
+          } else {
+            if (num.toExponential().toString().includes('e-')) {
+              result = '0';
+            } else {
+              result = `\\approx ${num}`;
+            }
+          }
+        }
+
+        if (option === 'd') {
+          result = nerdamer(`diff(${result},x,${select_deg.value})`);
+          if (b === '') {
+            result = result.toTeX();
+          } else {
+            result = result.sub('x', b);
+            let approx = `\\approx ${result.evaluate().text()}`;
+            result = result.toTeX();
+            if (approx.includes('.')) {
+              result += approx;
+            }
+          }
+        }
+
+        if (option === 'i') {
+          result = nerdamer(`integrate(${result},x)`).toTeX();
+          if (!result.includes('int')) {
+            result += '+C';
+          } else {
+            result = '';
+          }
+        }
+
+        if (option === 't') {
+          result = nerdamer(`defint(${result},${can_duoi.value},${can_tren.value})`);
+          let approx_result = result.evaluate().text();
+          result = result.toTeX();
+          if (+result.substr(7, result.indexOf('}{') - 7) > 1000 || result.includes('int')) {
+            result = `\\approx${approx_result}`;
+          } else {
+            result += `\\approx${approx_result}`;
+          }
+        }
+
+        if (option === 'e') {
+          result = '';
+          if (b === '') {
+            b = '0'
+          }
+          for (let i = 0; i < 10; i++) {
+            if (i) {
+              result += `${nerdamer(`diff(${input.value},x,${i})/fact(${i})*(b-${b})^${i}`).sub('x', b).evaluate().text()}+`;
+            } else {
+              result += `${nerdamer(input.value).sub('x', b).evaluate().text()}+`;
+            }
+          }
+
+          result = `...${nerdamer(result.replace(/\+$/g, '').replace(/b/g, 'x')).toTeX()}`;
+        }
+
+        output.innerHTML = katex.renderToString(result.replace(/\\cdot(?= \\| [a-z])/g, ''), {
+          displayMode: true
+        });
+
+      });
+    })
+  })
+  </script>
+</div>
