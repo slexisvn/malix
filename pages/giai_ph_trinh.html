@@ -284,10 +284,11 @@
                       }
                     }
                   }
-                  let gx = nerdamer(`divide(${Input},${dy1})`).toTeX();
-                  other_result += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;
                   if (other_result === '') {
                     other_result = '<p align="center">Không có cực trị</p>'
+                  } else {
+                    let gx = nerdamer(`divide(${Input},${dy1})`).toTeX();
+                    other_result += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;
                   }
                   other_output.innerHTML = other_result.replace(/\\cdot(?= \\| [a-z])/g, '');
                 }
