@@ -1,2 +1,2 @@
 # Malix
-Malix − Collection of mathematical tools and mathematical formulas
+Malix − Collection of mathematical tools
