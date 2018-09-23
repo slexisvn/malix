@@ -186,7 +186,7 @@
   }
   input1.innerHTML = mat_A;
 
-  select1.onchange = () => {
+  select1.onchange = function() {
     mat_A = '';
     for (let i = 0; i < select1.value; i++) {
       for (let j = 0; j < select2.value; j++)
@@ -196,7 +196,7 @@
     }
     input1.innerHTML = mat_A;
   }
-  select2.onchange = () => {
+  select2.onchange = function() {
     mat_A = '';
     for (let i = 0; i < select1.value; i++) {
       for (let j = 0; j < select2.value; j++)
@@ -214,7 +214,7 @@
       mat_B += '<br>';
   }
   input2.innerHTML = mat_B;
-  select3.onchange = () => {
+  select3.onchange = function() {
     mat_B = '';
     for (let i = 0; i < select3.value; i++) {
       for (let j = 0; j < select4.value; j++)
@@ -224,7 +224,7 @@
     }
     input2.innerHTML = mat_B;
   }
-  select4.onchange = () => {
+  select4.onchange = function() {
     mat_B = '';
     for (let i = 0; i < select3.value; i++) {
       for (let j = 0; j < select4.value; j++)
@@ -242,7 +242,7 @@
       mat_C += '<br>';
   }
   input3.innerHTML = mat_C;
-  select5.onchange = () => {
+  select5.onchange = function() {
     mat_C = '';
     for (let i = 0; i < select5.value; i++) {
       for (let j = 0; j < select6.value; j++)
@@ -252,7 +252,7 @@
     }
     input3.innerHTML = mat_C;
   }
-  select6.onchange = () => {
+  select6.onchange = function() {
     mat_C = '';
     for (let i = 0; i < select5.value; i++) {
       for (let j = 0; j < select6.value; j++)
@@ -262,7 +262,7 @@
     }
     input3.innerHTML = mat_C;
   }
-  $('.button').click(() => {
+  $('.button').click(function() {
     mat_A = 'matrix(';
     for (let i = 0; i < select1.value; i++) {
       for (let j = 0; j < select2.value; j++) {
