@@ -169,10 +169,12 @@
           result = nerdamer(`defint(${result},${can_duoi.value},${can_tren.value})`);
           let approx_result = result.evaluate().text();
           result = result.toTeX();
-          if (+result.substr(7, result.indexOf('}{') - 7) > 1000 || result.includes('int')) {
-            result = `\\approx${approx_result}`;
-          } else {
-            result += `\\approx${approx_result}`;
+          if (!approx_result.includes('*')) {
+            if (+result.substr(7, result.indexOf('}{') - 7) > 1000 || result.includes('int')) {
+              result = `\\approx${approx_result}`;
+            } else {
+              result += `\\approx${approx_result}`;
+            }
           }
         }
 

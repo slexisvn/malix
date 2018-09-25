@@ -112,7 +112,7 @@
               o += `\\approx ${decimal[i]}`
             } else {
               o += `=${pretty[i]}`;
-              if (isNaN(pretty[i]) && decimal[i] !== 'i' && decimal[i] !== '-i' && decimal[i].length < 40) {
+              if (isNaN(pretty[i]) && decimal[i] !== 'i' && decimal[i] !== '-i' && !decimal[i].includes('(')) {
                 o += `\\approx ${decimal[i]}`
               }
             }

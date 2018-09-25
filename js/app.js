@@ -20,7 +20,7 @@ $('#search').css({
 $('#main_input').textcomplete([{
   match: /(^\w|^|\b)(\w{1,})$/,
   search(term, callback) {
-    let words = ['rd', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'combination', 'permutation', 'round', 'divisors', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'polarform', 'rectform', 'arg', 'imagpart', 'realpart', 'conjugate'];
+    let words = ['rd', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'polarform', 'rectform', 'arg', 'imagpart', 'realpart', 'conjugate'];
     callback($.map(words, word => word.indexOf(term) === 0 ? word : null));
   },
   replace(word) {
@@ -70,6 +70,7 @@ function rd(a, decimal) {
   let finalDecimal = decimal1 - decimal2;
   return _.parse(`${finalDecimal}/${finalPower}`)
 }
+
 nerdamer.register([{
   name: 'divisors',
   numargs: 1,

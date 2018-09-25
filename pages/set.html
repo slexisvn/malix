@@ -1,0 +1,45 @@
+<div data-role="page">
+  <div class="navbar purple darken-2">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div class="title">Tập hợp</div>
+    </div>
+  </div>
+  <div class="ui-content">
+    <div class="card">
+      <label>Nhập tập hợp A</label>
+      <input type="text" placeholder="1 3 5 9" data-clear-btn="true" id="inputA" />
+    </div>
+    <div class="card">
+      <label>Nhập tập hợp B</label>
+      <input type="text" placeholder="0 2 6 7" data-clear-btn="true" id="inputB" />
+    </div>
+    <div class="card overflow">
+      <div id="output"></div>
+    </div>
+  </div>
+  <script>
+  $.getScript('../js/set.js', function() {
+    $('#inputA, #inputB').on('input', function() {
+      let a = inputA.value.split(' ').map(parseFloat);
+      let b = inputB.value.split(' ').map(parseFloat);
+      let S1 = setOps.union(a, b);
+      let S2 = setOps.intersection(a, b);
+      let S3 = setOps.complement(a, b);
+      let S4 = setOps.difference(a, b)
+      let result = `\\begin{array}{l}
+      		${setOps.equals(a, b) ? 'A=B' : 'A\\ne B'} \\\\
+      		A\\cup B=${S1.length ? `\\{${S1}\\}` : '\\varnothing'} \\\\
+      		A\\cap B=${S2.length ? `\\{${S2}\\}` : '\\varnothing'} \\\\ 
+      		A\\backslash B=${S3.length ? `\\{${S3}\\}` : '\\varnothing'} \\\\
+      		A\\Delta B=${S4.length ? `\\{${S4}\\}` : '\\varnothing'}
+      	\\end{array}`;
+      output.innerHTML = katex.renderToString(result.replace(/,/g, ';'), {
+        displayMode: true
+      });
+    })
+  })
+  </script>
+</div>
