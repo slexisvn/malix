@@ -18,33 +18,60 @@
       </ul>
       <p>Hàm</p>
       <ul>
-        <li>rd(a, decimal) Trả về phân số của số thập phân vô hạn tuần hoàn với a là phần nguyên và decimal là phần thập phân có độ dài &gt; 2</li>
+        <li>approxrati(a, decimal) Trả về phân số của số thập phân vô hạn tuần hoàn với a là phần nguyên và decimal là phần thập phân có độ dài &gt; 2</li>
         <li>abs(x) Trả về giá trị tuyệt đối của x</li>
         <li>sqrt(x) Trả về căn bậc 2 của x</li>
         <li>mod(a, b) Trả về phần dư của phép chia a cho b</li>
         <li>pfactor(x) Phân tích x thành thừa số nguyên tố</li>
+        <li>exp(x) Trả về e<sup>x</sup></li>
         <li>min(a, b, ...) Trả về số nhỏ nhất trong dãy a, b, ..</li>
         <li>max(a, b, ...) Trả về số lớn nhất trong dãy a, b, ..</li>
         <li>floor(x) Trả về số nguyên lớn nhất không vượt quá x</li>
-        <li>ceiling(x) Trả về số nguyên nhỏ nhất không vượt quá x</li>
+        <li>ceil(x) Trả về số nguyên nhỏ nhất không vượt quá x</li>
         <li>fact(x) Trả về x!</li>
         <li>dfactorial(x) Trả về x!!</li>
         <li>log(a, b) Trả về log<sub>b</sub>a</li>
+        <li>ln(a)</li>
         <li>log10(x) Trả về log<sub>10</sub>x</li>
         <li>nCr(n, k) Trả về <span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.68333em;"></span><span class="strut bottom" style="height: 0.966438em; vertical-align: -0.283108em;"></span><span class="base"><span class="mord"><span style="margin-right: 0.07153em;" class="mord mathit">C</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.664392em;"><span class="" style="top: -2.41689em; margin-left: -0.07153em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span style="margin-right: 0.03148em;" class="mord mathit mtight">k</span></span></span><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.283108em;"></span></span></span></span></span></span></span></span></span></li>
         <li>nPr(n, k) Trả về <span><span class="katex"><span class="katex-html" aria-hidden="true"><span class="strut" style="height: 0.68333em;"></span><span class="strut bottom" style="height: 0.966438em; vertical-align: -0.283108em;"></span><span class="base"><span class="mord"><span style="margin-right: 0.13889em;" class="mord mathit">P</span><span class="msupsub"><span class="vlist-t vlist-t2"><span class="vlist-r"><span class="vlist" style="height: 0.664392em;"><span class="" style="top: -2.41689em; margin-left: -0.13889em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span style="margin-right: 0.03148em;" class="mord mathit mtight">k</span></span></span><span class="" style="top: -3.063em; margin-right: 0.05em;"><span class="pstrut" style="height: 2.7em;"></span><span class="sizing reset-size6 size3 mtight"><span class="mord mathit mtight">n</span></span></span></span><span class="vlist-s">​</span></span><span class="vlist-r"><span class="vlist" style="height: 0.283108em;"></span></span></span></span></span></span></span></span></span></li>
         <li>round(x, n) Làm tròn số x tới n đơn vị</li>
         <li>divisors(x) Trả về các ước của số nguyên x</li>
+        <li>sign(x) Trả về hàm sign của x</li>
         <li>Các hàm lượng giác cos, sin, tan, sec, csc, cot</li>
         <li>Các hàm lượng giác ngược acos, asin, atan, asec, acsc, acot</li>
         <li>Các hàm hyperbolic cosh, sinh, tanh, sech, csch, coth</li>
         <li>Các hàm hyperbolic ngược acosh, asinh, atanh, asech, acsch, acoth</li>
-        <li>polarform(z) Chuyển số phức z về dạng lượng giác re<sup>iφ</sup></li>
-        <li>rectform(re<sup>iφ</sup>) Chuyển dạng số phức dạng lượng giác re<sup>iφ</sup> về dạng a+bi</li>
+      </ul>
+      <p>Một số hàm đặc biệt khác</p>
+      <ul>
+        <li>Si(x), Ci(x), Ei(x), Shi(x), Chi(x) Trả về tích phân hàm lượng giác</li>
+        <li>rect(x) Trả về hàm rect hay hàm chữ nhật</li>
+        <li>tri(x) Trả về hàm tri hay hàm tam giác</li>
+        <li>step(x) Trả về hàm bước Heaviside</li>
+        <li>sinc(x) Trả về hàm sinc</li>
+        <li>erf(x) Trả về hàm lỗi</li>
+        <li>gamma(x) Trả về hàm Gamma</li>
+        <li>beta(a, b) Trả về hàm Beta</li>
+        <li>zeta(x) Trả về hàm Zeta</li>
+        <li>bernoulli(n) Trả về số Bernoulli</li>
+        <li>bell(n) Trả về số Bell thứ n</li>
+        <li>stirling1(n, k) Trả về số Stirling loại thứ nhất</li>
+        <li>stirling2(n, k) Trả về số Stirling loại thứ hai</li>
+        <li>catalan(n) Trả về số Catalan thứ n</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 align="center">Số phức</h3>
+      <p>Hàm</p>
+      <ul>
         <li>arg(z) Trả về argument của số phức z</li>
-        <li>imagpart(z) Trả về số thuần ảo của số phức z</li>
-        <li>realpart(z) Trả về số thực của số phức z</li>
-        <li>conjugate(z) Trả về số phức liên hợp của số phức z</li>
+        <li>imag(z) Trả về số thuần ảo của số phức z</li>
+        <li>real(z) Trả về số thực của số phức z</li>
+        <li>conj(z) Trả về số phức liên hợp của số phức z</li>
+        <li>polar(z) Chuyển số phức z về dạng lượng giác re<sup>iφ</sup></li>
+        <li>rect(re<sup>iφ</sup>) Chuyển dạng số phức dạng lượng giác re<sup>iφ</sup> về dạng a+bi</li>
+        <li>expcos(x), expsin(x) Trả về công thức Euler</li>
       </ul>
     </div>
     <div class="card">
@@ -60,18 +87,20 @@
       <h3 align="center">Đa thức</h3>
       <p>Môi trường</p>
       <ul>
-        <li>E Rút gọn đa thức</li>
+        <li>E Rút gọn đa thức. Hỗ trợ 1 số hàm đặc biệt
+          <ul>
+            <li>hermite(n) Trả về đa thức Hermite bậc n (nhà vật lí)</li>
+            <li>hermiteE(n) Trả về đa thức Hermite bậc n (nhà thống kê)</li>
+            <li>legendreP(n) Trả về đa thức Legendre bậc n loại thứ nhất</li>
+            <li>laguerre(n) Trả về đa thức Laguerre bậc n</li>
+            <li>lagrange Trả về đa thức nội suy Lagrange</li>
+            <li>chebyshevT(n) Trả về đa thức Chebyshev bậc n loại thứ nhất</li>
+            <li>chebyshevQ(n) Trả về đa thức Chebyshev bậc n loại thứ hai</li>
+          </ul>
+        </li>
         <li>F Phân tích đa thức thành nhân tử chung</li>
         <li>C Tìm hệ số</li>
         <li>P Phân tích phân thức thành các phân thức đơn</li>
-        <li>S Mộ t số đa thức đặc biệt
-          <ul>
-            <li>hermite(n) Trả về đa thức Hermite bậc n</li>
-            <li>legendre(n) Trả về đa thức Legendre bậc n</li>
-            <li>laguerre(n) Trả về đa thức Laguerre bậc n</li>
-            <li>lagrange Trả về đa thức nội suy Lagrange</li>
-          </ul>
-        </li>
       </ul>
     </div>
     <div class="card">

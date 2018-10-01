@@ -16,7 +16,6 @@
           <option value="f">F</option>
           <option value="c">C</option>
           <option value="p">P</option>
-          <option value="s">S</option>
         </select>
       </div>
     </div>
@@ -57,17 +56,98 @@
   </div>
   <script>
   $.getScript('../js/algebra.js', function() {
+
     function hermite(n) {
-      return n === 0 ? '1' : n === 1 ? '2*x' : `2*x*(${hermite(n - 1)})-2*${n - 1}*(${hermite(n - 2)})`
+      let h = '';
+      for (let m = 0; m <= Math.floor(n / 2); m++) {
+        h += `(${((-1) ** m) * (2 ** (n - 2 * m))}x^${n - 2 * m})/${Math2.factorial(m) * Math2.factorial(n - 2 * m)}+`
+      }
+      return _.parse(`${Math2.factorial(n)}*(${h.replace(/\+$/, '')})`)
     }
 
-    function legendre(n) {
-      return n === 0 ? '1' : n === 1 ? 'x' : `((2*(${n}-1)+1)*x*(${legendre(n - 1)})-(${n}-1)*(${legendre(n - 2)}))/${n}`
+    function hermiteE(n) {
+      let h = '';
+      for (let m = 0; m <= Math.floor(n / 2); m++) {
+        h += `(${(-1) ** m}x^${n - 2 * m})/${(2 ** m) * Math2.factorial(m) * Math2.factorial(n - 2 * m)}+`
+      }
+      return _.parse(`${Math2.factorial(n)}*(${h.replace(/\+$/, '')})`)
+    }
+
+    function legendreP(n) {
+      let l = '';
+      for (let k = 0; k <= n; k++) {
+        l += `${binom(n, k) ** 2}(x-1)^${n - k}(x+1)^${k}+`
+      }
+      return _.parse(`(${l.replace(/\+$/, '')})/2^${n}`)
     }
 
     function laguerre(n) {
-      return n === 0 ? '1' : n === 1 ? '1-x' : `((2*(${n}-1)+1-x)*(${laguerre(n - 1)})-(${n}-1)*(${laguerre(n - 2)}))/${n}`
+      let l = '';
+      for (let k = 0; k <= n; k++) {
+        l += `${binom(n, k) * ((-1) ** k) / Math2.factorial(k)}x^${k}+`
+      }
+      return _.parse(l.replace(/\+$/, ''))
     }
+
+    function chebyshevT(n) {
+      let c = '';
+      for (let k = 0; k <= Math.floor(n / 2); k++) {
+        c += `${binom(n, 2 * k)}(1-x^(-2))^${k}+`
+      }
+      return _.parse(`x^${n}*(${c.replace(/\+$/, '')})`)
+    }
+
+    function chebyshevU(n) {
+      let c = '';
+      for (let k = 0; k <= Math.floor(n / 2); k++) {
+        c += `${binom(n + 1, 2 * k + 1)}(1-x^(-2))^${k}+`
+      }
+      return _.parse(`x^${n}*(${c.replace(/\+$/, '')})`)
+    }
+
+    nerdamer.register([{
+      name: 'laguerre',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return laguerre
+      }
+    }, {
+      name: 'legendreP',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return legendreP
+      }
+    }, {
+      name: 'hermite',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return hermite
+      }
+    }, {
+      name: 'hermiteE',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return hermiteE
+      }
+    }, {
+      name: 'chebyshevT',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return chebyshevT
+      }
+    }, {
+      name: 'chebyshevU',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return chebyshevU
+      }
+    }]);
 
     let option = select.value;
 
@@ -101,18 +181,6 @@
           case 'p':
             result = nerdamer(`partfrac(${input.value},x)`).toTeX();
             break;
-          case 's':
-            let num = parseInt(Input.replace(/(\w*)\(([^\)]*)\)/g, '$2'));
-            if (Input.includes('hermite')) {
-              result = nerdamer(`expand(${hermite(num)})`).toTeX()
-            }
-            if (Input.includes('legendre')) {
-              result = nerdamer(`expand(${legendre(num)})`).toTeX()
-            }
-            if (Input.includes('laguerre')) {
-              result = nerdamer(`expand(${laguerre(num)})`).toTeX()
-            }
-            break;
         }
       } else {
         let n = '';
@@ -139,26 +207,22 @@
       })
     });
 
-    $('#input').on('input', function() {
-      if (option === 's') {
-        $('#input').textcomplete([{
-          match: /(^|\b)(\w{1,})$/,
-          search: function(term, callback) {
-            var words = ['hermite', 'legendre', 'laguerre', 'lagrange'];
-            callback($.map(words, function(word) {
-              return word.indexOf(term) === 0 ? word : null
-            }))
-          },
-          replace: function(word) {
-            if (word !== 'lagrange') {
-              return `${word}()`
-            } else {
-              $('#main_area, #lagrange_area').toggle()
-            }
-          }
-        }])
+    $('#input').textcomplete([{
+      match: /(^|\b)(\w{1,})$/,
+      search: function(term, callback) {
+        var words = ['hermite', 'hermiteE', 'legendreP', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU'];
+        callback($.map(words, function(word) {
+          return word.indexOf(term) === 0 ? word : null
+        }))
+      },
+      replace: function(word) {
+        if (word !== 'lagrange') {
+          return `${word}()`
+        } else {
+          $('#main_area, #lagrange_area').toggle()
+        }
       }
-    });
+    }]);
     input.onfocus = function() {
       if (this.value.indexOf('()') > -1) {
         this.selectionStart = this.selectionEnd = this.value.indexOf('()') + 1

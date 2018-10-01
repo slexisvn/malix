@@ -22,37 +22,31 @@
     </div>
   </div>
   <div class="ui-content">
-    <div id="d_deg_area">
-      <select data-native-menu="false" id="select_deg" data-icon="false">
-        <option value="1">Đạo hàm bậc 1</option>
-        <option value="2">Đạo hàm bậc 2</option>
-        <option value="3">Đạo hàm bậc 3</option>
-      </select>
-    </div>
-    <div class="card">
-      <label>Nhập hàm số</label>
-      <input type="text" id="input" placeholder="x*cos(x)" data-clear-btn="true" />
-    </div>
-    <div class="row" id="at_area">
-      <div class="col-50">
-        <div class="card">
-          <label>Tại</label>
-          <input type="text" placeholder="3" id="at" />
-        </div>
+    <select data-native-menu="false" id="select_deg" data-icon="false">
+      <option value="1">Đạo hàm bậc 1</option>
+      <option value="2">Đạo hàm bậc 2</option>
+      <option value="3">Đạo hàm bậc 3</option>
+    </select>
+    <div class="row margin-top-minus-8">
+      <div class="col-70 card">
+        <label>Nhập hàm số</label>
+        <input type="text" id="input" placeholder="x*cos(x)" data-clear-btn="true" />
       </div>
-    </div>
-    <div class="row margin-top-minus-8" id="defint_area">
-      <div class="col-50">
-        <div class="card">
-          <label>Cận dưới</label>
-          <input id="can_duoi" type="text" placeholder="0" />
-        </div>
+      <div class="col-30 card">
+        <label>Theo</label>
+        <input type="text" value="x" id="variable" data-clear-btn="true" placeholder="x" />
       </div>
-      <div class="col-50">
-        <div class="card">
-          <label>Cận trên</label>
-          <input id="can_tren" type="text" placeholder="pi/2" />
-        </div>
+      <div class="col-50 card margin-top at_area">
+        <label>Tại</label>
+        <input type="text" placeholder="3" id="at" data-clear-btn="true" />
+      </div>
+      <div class="col-50 defint_area card margin-top">
+        <label>Cận dưới</label>
+        <input id="can_duoi" type="text" placeholder="0" data-clear-btn="true" />
+      </div>
+      <div class="col-50 defint_area card margin-top">
+        <label>Cận trên</label>
+        <input id="can_tren" type="text" placeholder="pi/2" data-clear-btn="true" />
       </div>
     </div>
     <button class="button katex orange">=</button>
@@ -89,24 +83,24 @@
 
       let option = select.value;
 
-      $('#defint_area, #d_deg_area').hide();
+      $('.defint_area, #select_deg-button').hide();
 
       $('#select').on('change', function() {
         option = $(this).val();
         if (option === 't') {
-          $('#d_deg_area, #at_area').hide();
-          $('#defint_area').show();
+          $('#select_deg-button, .at_area').hide();
+          $('.defint_area').show();
         }
         if (option === 'l' || option === 'e') {
-          $('#defint_area, #d_deg_area').hide();
-          $('#at_area').show();
+          $('.defint_area, #select_deg-button').hide();
+          $('.at_area').show();
         }
         if (option === 'i') {
-          $('#defint_area, #d_deg_area, #at_area').hide();
+          $('.defint_area, #select_deg-button, .at_area').hide();
         }
         if (option === 'd') {
-          $('#defint_area').hide();
-          $('#d_deg_area, #at_area').show();
+          $('.defint_area').hide();
+          $('#select_deg-button, .at_area').show();
         }
       });
 
@@ -128,7 +122,7 @@
               b += '+10^(-9)';
             }
           }
-          let num = +nerdamer(result).sub('x', b).evaluate().text();
+          let num = +nerdamer(result).sub(variable.value, b).evaluate().text();
           if (num > 100000000.0) {
             result = '+\\infty';
           } else if (num < -100000000.0) {
@@ -143,11 +137,11 @@
         }
 
         if (option === 'd') {
-          result = nerdamer(`diff(${result},x,${select_deg.value})`);
+          result = nerdamer(`diff(${result},${variable.value},${select_deg.value})`);
           if (b === '') {
             result = result.toTeX();
           } else {
-            result = result.sub('x', b);
+            result = result.sub(variable.value, b);
             let approx = `\\approx ${result.evaluate().text()}`;
             result = result.toTeX();
             if (approx.includes('.')) {
@@ -157,7 +151,7 @@
         }
 
         if (option === 'i') {
-          result = nerdamer(`integrate(${result},x)`).toTeX();
+          result = nerdamer(`integrate(${result},${variable.value})`).toTeX();
           if (!result.includes('int')) {
             result += '+C';
           } else {
@@ -166,7 +160,7 @@
         }
 
         if (option === 't') {
-          result = nerdamer(`defint(${result},${can_duoi.value},${can_tren.value})`);
+          result = nerdamer(`defint(${result},${can_duoi.value},${can_tren.value},${variable.value})`);
           let approx_result = result.evaluate().text();
           result = result.toTeX();
           if (!approx_result.includes('*')) {
@@ -185,9 +179,9 @@
           }
           for (let i = 0; i < 10; i++) {
             if (i) {
-              result += `${nerdamer(`diff(${input.value},x,${i})/fact(${i})*(b-${b})^${i}`).sub('x', b).evaluate().text()}+`;
+              result += `${nerdamer(`diff(${input.value},${variable.value},${i})/fact(${i})*(b-${b})^${i}`).sub(variable.value, b).evaluate().text()}+`;
             } else {
-              result += `${nerdamer(input.value).sub('x', b).evaluate().text()}+`;
+              result += `${nerdamer(input.value).sub(variable.value, b).evaluate().text()}+`;
             }
           }
 

@@ -35,17 +35,6 @@
     }
   }]);
 
-  function factorial(n) {
-    let s = 1;
-    for (let i = 1; i <= n; i++)
-      s *= i;
-    return s
-  }
-
-  function choose(n, k) {
-    return factorial(n) / (factorial(k) * factorial(n - k))
-  }
-
   function FormatPow(power) {
     if (power != 1) {
       return `^{${power}}`
@@ -85,7 +74,8 @@
     while (a != b)
       if (a > b)
         a -= b;
-      else b -= a;
+      else 
+        b -= a;
     return a
   }
 
@@ -117,7 +107,7 @@
         if (Input.includes('cos')) {
           out = `\\dfrac1{${2 ** (n - 1)}}\\left[\\cos(${n}x)`;
           for (var i = 1; i < n / 2; i++) {
-            out += `+${choose(n, i)}\\cos(`;
+            out += `+${binom(n, i)}\\cos(`;
             if (n - 2 * i != 1)
               out += (n - 2 * i);
             out += 'x)'
@@ -127,7 +117,7 @@
         if (Input.includes('sin')) {
           out = `\\dfrac{${(-1) ** ((n - n % 2) / 2)}}{${2 ** (n - 1)}}\\left[\\sin(${n}x)`;
           for (var i = 1; i < n / 2; i++) {
-            coeff = (-1) ** i * choose(n, i);
+            coeff = (-1) ** i * binom(n, i);
             if (coeff > 0)
               out += '+';
             if (coeff != 1)
@@ -143,18 +133,18 @@
         if (Input.includes('cos')) {
           out = `\\dfrac1{${2 ** (n - 1)}}\\left[\\cos(${n}x)`;
           for (var i = 1; i < n / 2; i++)
-            out += `+${choose(n, i)}\\cos(${n - 2 * i}x)`;
-          out += `\\right]+${ReF(choose(n, n / 2), 2 ** n)}`
+            out += `+${binom(n, i)}\\cos(${n - 2 * i}x)`;
+          out += `\\right]+${ReF(binom(n, n / 2), 2 ** n)}`
         }
         if (Input.includes('sin')) {
           out = `\\dfrac{${(-1) ** (n / 2)}}{${2 ** (n - 1)}}\\left[\\cos(${n}x)`;
           for (var i = 1; i < n / 2; i++) {
-            coeff = (-1) ** i * choose(n, i);
+            coeff = (-1) ** i * binom(n, i);
             if (coeff > 0)
               out += '+';
             out += `${coeff}\\cos(${n - 2 * i}x)`
           }
-          out += `\\right]+${ReF(choose(n, n / 2), 2 ** n)}`
+          out += `\\right]+${ReF(binom(n, n / 2), 2 ** n)}`
         }
       }
       output.innerHTML = `$$${out}$$`
@@ -162,7 +152,7 @@
       var n = +Input.substring(4, Input.indexOf('x'));
       if (Input.includes('sin'))
         for (var k = 0; k <= (n - 1) / 2; k++) {
-          coeff = (-1) ** k * choose(n, 2 * k + 1);
+          coeff = (-1) ** k * binom(n, 2 * k + 1);
           if (n - 2 * k - 1 == 0 && 2 * k + 1 == 0)
             out += FormatCoeff(3, coeff);
           else if (k == 0)
@@ -175,7 +165,7 @@
         }
       if (Input.includes('cos')) {
         for (var k = 0; k <= n / 2; k++) {
-          coeff = ((-1) ** k * n * (2 ** (n - 1 - 2 * k)) * (factorial(n - k) / (factorial(k) * factorial(n - 2 * k)))) / (n - k);
+          coeff = ((-1) ** k * n * (2 ** (n - 1 - 2 * k)) * (Math2.factorial(n - k) / (Math2.factorial(k) * Math2.factorial(n - 2 * k)))) / (n - k);
           if (n - 2 * k == 0)
             out2 += FormatCoeff(3, coeff);
           else if (k == 0)
@@ -185,7 +175,7 @@
             out2 += `\\cos${FormatPow(n - 2 * k)} x`
         }
         for (var k = 0; k <= n / 2; k++) {
-          coeff = (-1) ** k * choose(n, 2 * k);
+          coeff = (-1) ** k * binom(n, 2 * k);
           if (n - 2 * k == 0 && 2 * k == 0)
             out += FormatCoeff(3, coeff);
           else if (k == 0)
@@ -200,7 +190,7 @@
       if (Input.includes('tan')) {
         out += '\\dfrac{';
         for (var k = 0; k <= (n - 1) / 2; k++) {
-          coeff = (-1) ** k * choose(n, 2 * k + 1);
+          coeff = (-1) ** k * binom(n, 2 * k + 1);
           if (2 * k + 1 == 0)
             out += FormatCoeff(3, coeff);
           else if (k == 0)
@@ -211,7 +201,7 @@
         }
         out += '}{';
         for (var k = 0; k <= n / 2; k++) {
-          coeff = (-1) ** k * choose(n, 2 * k);
+          coeff = (-1) ** k * binom(n, 2 * k);
           if (n - 2 * k - 1 == 0 && 2 * k + 1 == 0)
             out += FormatCoeff(3, coeff);
           else if (k == 0)

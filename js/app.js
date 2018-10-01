@@ -18,9 +18,9 @@ $('#search').css({
 });
 
 $('#main_input').textcomplete([{
-  match: /(^\w|^|\b)(\w{1,})$/,
+  match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    let words = ['rd', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'polarform', 'rectform', 'arg', 'imagpart', 'realpart', 'conjugate'];
+    let words = ['approxrati', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulli', 'bell', 'stirling1', 'stirling2', 'catalan'];
     callback($.map(words, word => word.indexOf(term) === 0 ? word : null));
   },
   replace(word) {
@@ -47,7 +47,7 @@ function divisors(num) {
   return divisors
 }
 
-function primeFactors(num) {
+function primeFactor(num) {
   let ifactors = Math2.ifactor(num);
   let array = new Vector();
   for (let i in ifactors) {
@@ -58,7 +58,7 @@ function primeFactors(num) {
   return array
 }
 
-function rd(a, decimal) {
+function approxrati(a, decimal) {
   let decimalBeforeRepeatLength = 2;
   let power1 = 10 ** decimal.toString().length;
   let num = parseFloat(a.toString() + '.' + decimal.toString());
@@ -71,6 +71,125 @@ function rd(a, decimal) {
   return _.parse(`${finalDecimal}/${finalPower}`)
 }
 
+function binom(n, k) {
+  return Math2.factorial(n) / (Math2.factorial(k) * Math2.factorial(n - k))
+}
+
+function gamma(x) {
+  let d = Number(x.multiplier.den);
+  let n = Number(x.multiplier.num);
+  let q = (n - 1) / d;
+  if (d === 1) {
+    return _.parse(Math2.factorial(x - 1));
+  }
+  if (d === 2) {
+    if (q > 0) {
+      return _.parse(`sqrt(pi)*(${Math2.dfactorial(2*q - 1)}/2^${q})`);
+    } else {
+      q = - q;
+      return _.parse(`sqrt(pi)*(-1)^${q}*(2^${q}/${Math2.dfactorial(2*q - 1)})`);
+    }
+  }
+  if (d > 2) {
+    return _.parse(Math2.gamma(n / d));
+  }
+}
+
+function beta(x, y) {
+  return _.parse(nerdamer(`(gamma(${x})*gamma(${y}))/gamma(${x}+${y})`))
+}
+
+function worpitzky(n, k) {
+  let W = '';
+  for (let i = 0; i <= k; i++) {
+    W += `(-1)^(${i + k})*(${i + 1})^${n}*nCr(${k},${i})+`
+  }
+  return nerdamer(W.replace(/\+$/, '')).toString()
+}
+
+function bernoulli(n) {
+  let B = '';
+  for (let i = 0; i <= n; i++) {
+    B += `(-1)^${i}*${worpitzky(n, i)}/${i + 1}+`
+  }
+  return _.parse(nerdamer(B.replace(/\+$/, '')))
+}
+
+function approx_zeta(x) {
+  let sum2 = 0;
+  for (let i = 0; i < 100; i++) {
+    let sum1 = 0;
+    for (let k = 0; k < i + 1; k++) {
+      sum1 += ((-1) ** k) * binom(i, k) * ((k + 1) ** (-x))
+    }
+    sum2 +=  sum1 / (2 ** (i + 1))
+  }
+  return sum2 / (1 - 2 ** (1 - x))
+}
+
+function zeta(x) {
+  if (x.isInteger()) {
+    let xNum = Number(x);
+    if (xNum >= 0) {
+      if (xNum % 2) {
+        if (xNum === 1) {
+          return Symbol.infinity()
+        } else {
+          return _.parse(approx_zeta(xNum))
+        }
+      } else {
+        let n = xNum / 2;
+        return _.parse(nerdamer(`(-1)^${n + 1}*(bernoulli(${xNum})*(2*pi)^(${xNum}))/(2*${Math2.factorial(xNum)})`))
+      }
+    } else {
+      if (xNum % 2) {
+        let n = -xNum;
+        return _.parse(nerdamer(`(-1)^${n}*(bernoulli(${n + 1})/${n + 1})`))
+      } else {
+        return _.parse('0')
+      }
+    }
+  } else {
+    return _.parse(approx_zeta(Number(x.multiplier.num) / Number(x.multiplier.den)))
+  }
+}
+
+function ystirling1(n, k) {
+  if (n === 0 && k === 0) {
+    return 1
+  } else {
+    if ((n > 0 && k === 0) || (n === 0 && k > 0) || (k > n)) {
+      return 0
+    } else {
+      return ystirling1(n - 1, k - 1) + (n - 1) * ystirling1(n - 1, k)
+    }
+  }
+}
+
+function stirling1(n, k) {
+  return _.parse(ystirling1(n, k));
+}
+
+function stirling2(n, k) {
+  let sum = 0;
+  for (let j = 0; j <= k; j++) {
+    sum += ((-1) ** (k - j)) * binom(k, j) * (j ** n)
+  }
+  return _.parse(sum / Math2.factorial(k))
+}
+
+function bell(n) {
+  let sum = 0;
+  for (let i = 0; i <= n; i++) {
+    sum += stirling2(n, i);
+  }
+  return _.parse(sum)
+}
+
+function catalan(n) {
+  return _.parse(binom(2 * n, n) / (n + 1));
+}
+
 nerdamer.register([{
   name: 'divisors',
   numargs: 1,
@@ -79,23 +198,79 @@ nerdamer.register([{
     return divisors
   }
 }, {
-  name: 'primeFactors',
+  name: 'primeFactor',
   numargs: 1,
   visible: !0,
   build: function() {
-    return primeFactors
+    return primeFactor
   }
 }, {
-  name: 'rd',
+  name: 'approxrati',
   numargs: 2,
   visible: !0,
   build: function() {
-    return rd
+    return approxrati
+  }
+}, {
+  name: 'gamma',
+  numargs: 1,
+  visible: !0,
+  build: function() {
+    return gamma
+  }
+}, {
+  name: 'beta',
+  numargs: 2,
+  visible: !0,
+  build: function() {
+    return beta
+  }
+}, {
+  name: 'zeta',
+  numargs: 1,
+  visible: !0,
+  build: function() {
+    return zeta
+  }
+}, {
+  name: 'bernoulli',
+  numargs: 1,
+  visible: !0,
+  build: function() {
+    return bell
+  }
+}, {
+  name: 'bell',
+  numargs: 1,
+  visible: !0,
+  build: function() {
+    return bell
+  }
+}, {
+  name: 'stirling1',
+  numargs: 2,
+  visible: !0,
+  build: function() {
+    return stirling1
+  }
+}, {
+  name: 'stirling2',
+  numargs: 2,
+  visible: !0,
+  build: function() {
+    return stirling2
+  }
+}, {
+  name: 'catalan',
+  numargs: 1,
+  visible: !0,
+  build: function() {
+    return catalan
   }
 }]);
 
 function frac2Dec(n, d) {
-  let pFS = nerdamer(`primeFactors(${d})`).toString().replace(/\[|\]/g, '').split(',').map(parseFloat);
+  let pFS = nerdamer(`primeFactor(${d})`).toString().replace(/\[|\]/g, '').split(',').map(parseFloat);
   for (var i = 0; i < pFS.length; i++) {
     if (pFS[i] !== 2 && pFS[i] !== 5) {
       let output = [];
@@ -137,8 +312,16 @@ main_input.oninput = function() {
     eq = eq.replace(/\\cdot/g, '\\times').replace(/\\left\(|\\right\)/g, '')
   }
 
+  if (/floor|ceil|!|fact|dfactorial/.test(Input)) {
+  	eq = approx
+  }
+
   if (!isNaN(eq)) {
     eq = eq.replace(/\d{1,3}(?=(\d{3})+(?!\d))/g, '$&\\:');
+  }
+
+  if (/e\+|e-/.test(eq)) {
+  	eq = `${eq.replace(/e\+|e/, '\\times10^{')}}`;
   }
 
   main_output.innerHTML = katex.renderToString(eq.replace(/\\cdot/g, ''), {
@@ -146,15 +329,15 @@ main_input.oninput = function() {
   });
 
   if (!Input.includes('pfactor')) {
-    if (approx.includes('.')) {
+    if (approx.includes('.') && !/e\+|e-/.test(approx)) {
       approx_area.style.display = '';
-      approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
+      main_approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
         displayMode: !0
       })
     } else {
       approx_area.style.display = 'none'
     }
-    if ((eq.match(/frac/g) || []).length === 1) {
+    if ((eq.match(/frac/g) || []).length === 1 && !/gamma|beta|zeta/.test(Input)) {
       let frac = eq.replace('}{', '/').replace(/\\frac{|}/g, '').split('/');
       let tu = +frac[0];
       let mau = +frac[1];

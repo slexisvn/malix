@@ -195,12 +195,12 @@
           p = parseFloat(p_binomial.value);
           if (p >= 0 && p <= 1) {
             if (xs.placeholder === '2')
-              result = `p = ${nerdamer(`combination(${n.value},${xs.value})*${p}^${xs.value}*(1-${p})^(${n.value}-${xs.value})`).evaluate().text()}`;
+              result = `p = ${nerdamer(`nCr(${n.value},${xs.value})*${p}^${xs.value}*(1-${p})^(${n.value}-${xs.value})`).evaluate().text()}`;
             else {
               s = '';
               arr = xs.value.split(' ');
               for (let i = 0; i < arr.length; i++)
-                s += `Pr(X = ${arr[i]}) = ${nerdamer(`combination(${n.value},${arr[i]})*${p}^${arr[i]}*(1-${p})^(${n.value}-${arr[i]})`).evaluate().text()}<br/>`;
+                s += `Pr(X = ${arr[i]}) = ${nerdamer(`nCr(${n.value},${arr[i]})*${p}^${arr[i]}*(1-${p})^(${n.value}-${arr[i]})`).evaluate().text()}<br/>`;
               result = s
             }
           }
@@ -211,7 +211,7 @@
             let sum = 0;
             if (xs.placeholder === '2') {
               for (let i = 0; i <= Math.abs(xs.value); i++) {
-                sum += parseFloat(nerdamer(`combination(${n.value},${i})*${p}^${i}*(1-${p})^(${n.value}-${i})`).text())
+                sum += parseFloat(nerdamer(`nCr(${n.value},${i})*${p}^${i}*(1-${p})^(${n.value}-${i})`).text())
               }
               result = `p = ${sum}`
             } else {
@@ -220,7 +220,7 @@
               for (let i = 0; i < arr.length; i++) {
                 sum = 0;
                 for (let j = 0; j <= Math.abs(arr[i]); j++) {
-                  sum += parseFloat(nerdamer(`combination(${n.value},${j})*${p}^${j}*(1-${p})^(${n.value}-${j})`).text())
+                  sum += parseFloat(nerdamer(`nCr(${n.value},${j})*${p}^${j}*(1-${p})^(${n.value}-${j})`).text())
                 }
                 s += `Pr(X = ${arr[i]}) = ${sum}<br/>`
               }
@@ -252,7 +252,6 @@
         }
         output.innerHTML = `<span class="katex-display katex">${result}</span>`
       }
-      $('.button')
     })
   })
   </script>
