@@ -57,6 +57,32 @@
   <script>
   $.getScript('../js/algebra.js', function() {
 
+    function bernoulliP(m) {
+      let b1 = ''
+      let b2 = '';
+      for (let n = 0; n <= m; n++) {
+        b2 = '';
+        for (let k = 0; k <= n; k++) {
+          b2 += `${((-1) ** k) * binom(n, k)}(x+${k})^${m}+`
+        }
+        b1 += `(${b2.replace(/\+$/, '')})/${n + 1}+`
+      }
+      return _.parse(b1.replace(/\+$/, ''))
+    }
+
+    function eulerP(m) {
+      let e1 = ''
+      let e2 = '';
+      for (let n = 0; n <= m; n++) {
+        e2 = '';
+        for (let k = 0; k <= n; k++) {
+          e2 += `${((-1) ** k) * binom(n, k)}(x+${k})^${m}+`
+        }
+        e1 += `(${e2.replace(/\+$/, '')})/${2 ** n}+`
+      }
+      return _.parse(e1.replace(/\+$/, ''))
+    }
+
     function hermite(n) {
       let h = '';
       for (let m = 0; m <= Math.floor(n / 2); m++) {
@@ -118,6 +144,20 @@
       visible: !0,
       build: function() {
         return legendreP
+      }
+    }, {
+      name: 'eulerP',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return eulerP
+      }
+    }, {
+      name: 'bernoulliP',
+      numargs: 1,
+      visible: !0,
+      build: function() {
+        return bernoulliP
       }
     }, {
       name: 'hermite',
@@ -200,7 +240,7 @@
           d = d.replace(/\*$/g, '');
           result += `${n})/(${d})+`
         }
-        result = nerdamer(`expand(${result.replace(/\+-/g, '-').replace(/\+$/g, '')})`).toTeX()
+        result = nerdamer(`expand(${result.replace(/\+$/g, '')})`).toTeX()
       }
       output.innerHTML = katex.renderToString(result.replace(/\\cdot(?= \\| [a-z])/g, ''), {
         displayMode: !0
@@ -210,7 +250,7 @@
     $('#input').textcomplete([{
       match: /(^|\b)(\w{1,})$/,
       search: function(term, callback) {
-        var words = ['hermite', 'hermiteE', 'legendreP', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU'];
+        var words = ['hermite', 'hermiteE', 'legendreP', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'];
         callback($.map(words, function(word) {
           return word.indexOf(term) === 0 ? word : null
         }))

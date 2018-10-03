@@ -5,25 +5,12 @@
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
       <div class="title">Vẽ đồ thị</div>
-      <div class="right">
-        <a href="#" class="link" id="btn-more"><i class="material-icons">add</i></a>
-      </div>
     </div>
   </div>
   <div class="ui-content">
     <div class="card">
       <label>Nhập hàm số</label>
-      <input type="text" data-clear-btn="true" id="input1" value="x" />
-    </div>
-    <div id="more" style="display:none">
-      <div class="card">
-        <label>Nhập hàm số 2</label>
-        <input type="text" data-clear-btn="true" id="input2" value="0" />
-      </div>
-      <div class="card">
-        <label>Nhập hàm số 3</label>
-        <input type="text" data-clear-btn="true" id="input3" value="0" />
-      </div>
+      <input type="text" data-clear-btn="true" id="input" placeholder="x" />
     </div>
     <div class="card">
       <div class="overflow center">
@@ -34,12 +21,7 @@
   <script>
   $.getScript('../js/graph.js', function() {
 
-    $('#btn-more .material-icons').click(function() {
-      $('#more').slideToggle('slow');
-      $(this).text($(this).text() === 'add' ? 'remove' : 'add');
-    });
-
-    $('#input1,#input2,#input3').textcomplete([{
+    $('#input').textcomplete([{
       match: /(^|\b)(\w{1,})$/,
       search: function(term, callback) {
         var words = ['cos', 'sin', 'tan', 'sqrt', 'abs', 'asin', 'acos', 'atan'];
@@ -52,7 +34,26 @@
       }
     }]);
 
-    function draw() {
+    functionPlot({
+      target: '#plot',
+      grid: true,
+      width: 350,
+      tip: {
+        xLine: true,
+        yLine: true,
+      },
+      data: [{
+        fn: '0'
+      }]
+    });
+
+    $('#input').on('input', function(event) {
+      event.preventDefault();
+      let arrInput = input.value.replace(/ln/g, 'log').split(':');
+      let arrData = [];
+      for (let i = 0; i < arrInput.length; i++) {
+      	arrData.push(JSON.parse(`{"fn":"${arrInput[i]}"}`));
+      }
       functionPlot({
         target: '#plot',
         grid: true,
@@ -61,36 +62,16 @@
           xLine: true,
           yLine: true,
         },
-        data: [{
-          fn: input1.value.replace(/ln/g, 'log'),
-          graphType: 'polyline',
-          updateOnMouseMove: true
-        }, {
-          fn: input2.value.replace(/ln/g, 'log'),
-          graphType: 'polyline',
-          updateOnMouseMove: true
-        }, {
-          fn: input3.value.replace(/ln/g, 'log'),
-          graphType: 'polyline',
-          updateOnMouseMove: true
-        }]
+        data: arrData
       });
-    }
-
-    $('#input1,#input2,#input3').on('input', function(event) {
-      event.preventDefault();
-      draw();
     })
 
-    $('#input1,#input2,#input3').focus(function() {
+    $('#input').focus(function() {
       if ($(this).val().includes('()')) {
-        input1.selectionStart = input1.selectionEnd = input1.value.indexOf('()') + 1;
-        input2.selectionStart = input2.selectionEnd = input2.value.indexOf('()') + 1;
-        input3.selectionStart = input3.selectionEnd = input3.value.indexOf('()') + 1;
+        input.selectionStart = input.selectionEnd = input.value.indexOf('()') + 1;
       }
     })
 
-    draw();
   })
   </script>
 </div>

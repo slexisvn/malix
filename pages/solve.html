@@ -93,22 +93,10 @@
           }
         }
 
-        function checkBigNumberInFrac(str) {
-          let check_arr = str.split(/\\frac{(\d+)}{(\d+)}/);
-          for (let i = 0; i < check_arr.length; i++) {
-            if (!isNaN(check_arr[i])) {
-              if (parseFloat(check_arr[i]) > 50) {
-                return true
-              }
-            }
-          }
-          return false
-        }
-
         function formatEq(decimal, pretty) {
           let o = '';
           for (let i = 0; i < pretty.length; i++) {
-            if (checkBigNumberInFrac(pretty[i])) {
+            if (checkFrac(pretty[i], 0)) {
               o += `\\approx ${decimal[i]}`
             } else {
               o += `=${pretty[i]}`;

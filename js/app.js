@@ -20,7 +20,7 @@ $('#search').css({
 $('#main_input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    let words = ['approxrati', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulli', 'bell', 'stirling1', 'stirling2', 'catalan'];
+    let words = ['approxrati', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN'];
     callback($.map(words, word => word.indexOf(term) === 0 ? word : null));
   },
   replace(word) {
@@ -33,6 +33,22 @@ var _ = core.PARSER;
 var Vector = core.Vector;
 var Symbol = core.Symbol;
 var Math2 = core.Math2;
+
+function checkFrac(str, option) {
+  let check_arr = str.split(/\\frac{(\d+)}{(\d+)}/);
+  for (let i = 0; i < check_arr.length; i++) {
+    if (!isNaN(check_arr[i])) {
+      if (parseFloat(check_arr[i]) > 50) {
+        return true
+      }
+    } else {
+      if (option) {
+        return true
+      }
+    }
+  }
+  return false
+}
 
 function divisors(num) {
   let divisors = new Vector();
@@ -86,7 +102,7 @@ function gamma(x) {
     if (q > 0) {
       return _.parse(`sqrt(pi)*(${Math2.dfactorial(2*q - 1)}/2^${q})`);
     } else {
-      q = - q;
+      q = -q;
       return _.parse(`sqrt(pi)*(-1)^${q}*(2^${q}/${Math2.dfactorial(2*q - 1)})`);
     }
   }
@@ -107,7 +123,7 @@ function worpitzky(n, k) {
   return nerdamer(W.replace(/\+$/, '')).toString()
 }
 
-function bernoulli(n) {
+function bernoulliN(n) {
   let B = '';
   for (let i = 0; i <= n; i++) {
     B += `(-1)^${i}*${worpitzky(n, i)}/${i + 1}+`
@@ -122,7 +138,7 @@ function approx_zeta(x) {
     for (let k = 0; k < i + 1; k++) {
       sum1 += ((-1) ** k) * binom(i, k) * ((k + 1) ** (-x))
     }
-    sum2 +=  sum1 / (2 ** (i + 1))
+    sum2 += sum1 / (2 ** (i + 1))
   }
   return sum2 / (1 - 2 ** (1 - x))
 }
@@ -139,12 +155,12 @@ function zeta(x) {
         }
       } else {
         let n = xNum / 2;
-        return _.parse(nerdamer(`(-1)^${n + 1}*(bernoulli(${xNum})*(2*pi)^(${xNum}))/(2*${Math2.factorial(xNum)})`))
+        return _.parse(nerdamer(`(-1)^${n + 1}*(bernoulliN(${xNum})*(2*pi)^(${xNum}))/(2*${Math2.factorial(xNum)})`))
       }
     } else {
       if (xNum % 2) {
         let n = -xNum;
-        return _.parse(nerdamer(`(-1)^${n}*(bernoulli(${n + 1})/${n + 1})`))
+        return _.parse(nerdamer(`(-1)^${n}*(bernoulliN(${n + 1})/${n + 1})`))
       } else {
         return _.parse('0')
       }
@@ -190,6 +206,22 @@ function catalan(n) {
   return _.parse(binom(2 * n, n) / (n + 1));
 }
 
+function eulerN(n) {
+  if (n % 2) {
+    return new Symbol(0)
+  } else {
+    n /= 2;
+    let e = '';
+    for (let k = 1; k <= 2 * n + 1; k++) {
+      for (let j = 0; j <= k; j++) {
+        e += `${binom(k, j) * ((-1) ** j) * ((k - 2 * j) ** (2 * n + 1))}/(i^${k}*(${(2 ** k) * k}))+`
+      }
+    }
+    console.log(e);
+    return _.parse(`i*(${e.replace(/\+$/, '')})`)
+  }
+}
+
 nerdamer.register([{
   name: 'divisors',
   numargs: 1,
@@ -233,11 +265,18 @@ nerdamer.register([{
     return zeta
   }
 }, {
-  name: 'bernoulli',
+  name: 'bernoulliN',
   numargs: 1,
   visible: !0,
   build: function() {
     return bell
+  }
+}, {
+  name: 'eulerN',
+  numargs: 1,
+  visible: !0,
+  build: function() {
+    return eulerN
   }
 }, {
   name: 'bell',
@@ -312,32 +351,23 @@ main_input.oninput = function() {
     eq = eq.replace(/\\cdot/g, '\\times').replace(/\\left\(|\\right\)/g, '')
   }
 
-  if (/floor|ceil|!|fact|dfactorial/.test(Input)) {
-  	eq = approx
-  }
-
   if (!isNaN(eq)) {
     eq = eq.replace(/\d{1,3}(?=(\d{3})+(?!\d))/g, '$&\\:');
   }
 
   if (/e\+|e-/.test(eq)) {
-  	eq = `${eq.replace(/e\+|e/, '\\times10^{')}}`;
+    eq = `${eq.replace(/e\+|e/, '\\times10^{')}}`;
   }
 
-  main_output.innerHTML = katex.renderToString(eq.replace(/\\cdot/g, ''), {
-    displayMode: !0
-  });
+  if (approx.includes('.') && !/e\+|e-/.test(approx) && !checkFrac(eq, 0)) {
 
-  if (!Input.includes('pfactor')) {
-    if (approx.includes('.') && !/e\+|e-/.test(approx)) {
-      approx_area.style.display = '';
-      main_approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
-        displayMode: !0
-      })
-    } else {
-      approx_area.style.display = 'none'
-    }
-    if ((eq.match(/frac/g) || []).length === 1 && !/gamma|beta|zeta/.test(Input)) {
+    approx_area.style.display = '';
+    main_approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
+      displayMode: !0
+    })
+
+    if (!checkFrac(eq, 1)) {
+
       let frac = eq.replace('}{', '/').replace(/\\frac{|}/g, '').split('/');
       let tu = +frac[0];
       let mau = +frac[1];
@@ -349,20 +379,31 @@ main_input.oninput = function() {
       } else {
         mix_area.style.display = 'none'
       }
+
       let decimal = frac2Dec(tu, mau);
       if (decimal !== '0') {
         if (decimal.includes('-')) {
           decimal = `-${decimal.replace(/-/g, '')}`
         }
-        repeatDec_area.style.display = '';
-        repeatDec_output.innerHTML = katex.renderToString(decimal, {
+        repeat_area.style.display = '';
+        repeat_output.innerHTML = katex.renderToString(decimal, {
           displayMode: !0
         })
       } else {
-        repeatDec_area.style.display = 'none'
+        repeat_area.style.display = 'none'
       }
     } else {
-      repeatDec_area.style.display = mix_area.style.display = 'none'
+      repeat_area.style.display = mix_area.style.display = 'none'
     }
+  } else {
+    repeat_area.style.display = mix_area.style.display = approx_area.style.display = 'none'
   }
+
+  if (/floor|ceil|!|fact|dfactorial/.test(Input) && !Input.includes('pfactor') || checkFrac(eq, 0)) {
+    eq = approx;
+  }
+
+  main_output.innerHTML = katex.renderToString(eq.replace(/\\cdot/g, ''), {
+    displayMode: !0
+  });
 }
