@@ -2,7 +2,9 @@
   <div class="navbar red darken-2">
     <div class="navbar-inner">
       <div class="left">
-        <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+        <a href="#" class="link" data-rel="back">
+          <i class="material-icons">arrow_back</i>
+        </a>
       </div>
       <div class="title">Khai triển lượng giác</div>
     </div>
@@ -10,7 +12,7 @@
   <div class="ui-content">
     <div class="card">
       <label>Nhập cosnx, sinnx, tannx hoặc cos<sup>n</sup>x, sin<sup>n</sup>x</label>
-      <input type="text" placeholder="cos(3x)" id="input" data-clear-btn="true" />
+      <input type="text" placeholder="cos(3x)" id="inputDiffer" data-clear-btn="true" />
     </div>
     <button class="button katex red darken-2">=</button>
     <div class="card">
@@ -22,71 +24,21 @@
     </div>
   </div>
   <script>
-  $('#input').textcomplete([{
+  $('#inputDiffer').textcomplete([{
     match: /(^|\b)(\w{1,})$/,
     search(term, callback) {
       const words = ['cos(x)^', 'sin(x)^', 'cos(', 'sin(', 'tan('];
       callback($.map(words, word => word.indexOf(term) === 0 ? word : null))
     },
     replace(word) {
-      if (!word.includes('^'))
+      if (!word.includes('^')) {
         return `${word}x)`;
+      }
       return word
     }
   }]);
 
-  function FormatPow(power) {
-    if (power != 1) {
-      return `^{${power}}`
-    }
-    return ''
-  }
-
-  function FormatCoeff(request, coeff) {
-    let out = "";
-    if (request == 1) {
-      if (coeff == -1)
-        out += '-';
-      if (coeff != 1 && coeff != -1)
-        out += coeff
-    }
-    if (request == 2) {
-      if (coeff == 1)
-        out += '+';
-      if (coeff == -1)
-        out += '-';
-      if (coeff != 1 && coeff != -1)
-        if (coeff < 0)
-          out += coeff;
-        else out += `+${coeff}`
-    }
-    if (request == 3) {
-      if (coeff < 0)
-        out += coeff;
-      else out += `+${coeff}`
-    }
-    if (request == 4)
-      out += coeff;
-    return out
-  }
-
-  function ucln(a, b) {
-    while (a != b)
-      if (a > b)
-        a -= b;
-      else 
-        b -= a;
-    return a
-  }
-
-  function ReF(a, b) {
-    const uc_ln = ucln(a, b);
-    a /= uc_ln;
-    b /= uc_ln;
-    return `\\dfrac{${a}}{${b}}`
-  }
-
-  input.onfocus = function() {
+  inputDiffer.onfocus = function() {
     let a = this.value;
     if (a.includes('(x)') && !a.includes('^')) {
       this.selectionStart = this.selectionEnd = a.indexOf('(x)') + 1
@@ -94,129 +46,82 @@
   }
 
   $('.button').click(function() {
-    const Input = input.value;
-    var n;
-    let coeff;
-    let out = '';
-    let out2 = '';
+    let Input = inputDiffer.value;
+    let n;
+    let result = '';
+    let result2 = '';
     if (Input.includes('^')) {
-      if (Input.includes('cos'))
+      if (Input.includes('cos')) {
         n = +Input.replace('cos(x)^', '');
-      else n = +Input.replace('sin(x)^', '');
+      } else {
+        n = +Input.replace('sin(x)^', '');
+      }
       if (n % 2) {
         if (Input.includes('cos')) {
-          out = `\\dfrac1{${2 ** (n - 1)}}\\left[\\cos(${n}x)`;
-          for (var i = 1; i < n / 2; i++) {
-            out += `+${binom(n, i)}\\cos(`;
-            if (n - 2 * i != 1)
-              out += (n - 2 * i);
-            out += 'x)'
+          result = `1/${2 ** (n - 1)}*(cos(${n}x)`;
+          for (let i = 1; i < n / 2; i++) {
+            result += `+${binom(n, i)}cos(${n - 2 * i}x)`;
           }
-          out += '\\right]'
+          result += ')';
         }
         if (Input.includes('sin')) {
-          out = `\\dfrac{${(-1) ** ((n - n % 2) / 2)}}{${2 ** (n - 1)}}\\left[\\sin(${n}x)`;
-          for (var i = 1; i < n / 2; i++) {
-            coeff = (-1) ** i * binom(n, i);
-            if (coeff > 0)
-              out += '+';
-            if (coeff != 1)
-              out += `${coeff}\\sin(`;
-            else out += '\\sin(';
-            if (n - 2 * i != 1)
-              out += (n - 2 * i);
-            out += 'x)'
+          result = `(${(-1) ** ((n - n % 2) / 2)})/(${2 ** (n - 1)})*(sin(${n}x)`
+          for (let i = 1; i < n / 2; i++) {
+            result += `+${(-1) ** i * binom(n, i)}sin(${n - 2 * i}x)`;
           }
-          out += '\\right]'
+          result += ')'
         }
       } else {
         if (Input.includes('cos')) {
-          out = `\\dfrac1{${2 ** (n - 1)}}\\left[\\cos(${n}x)`;
-          for (var i = 1; i < n / 2; i++)
-            out += `+${binom(n, i)}\\cos(${n - 2 * i}x)`;
-          out += `\\right]+${ReF(binom(n, n / 2), 2 ** n)}`
+          result = `1/(${2 ** (n - 1)})*(cos(${n}x)`
+          for (let i = 1; i < n / 2; i++) {
+            result += `+${binom(n, i)}cos(${n - 2 * i}x)`;
+          }
+          result += `)+${binom(n, n / 2)}/${2 ** n}`
         }
         if (Input.includes('sin')) {
-          out = `\\dfrac{${(-1) ** (n / 2)}}{${2 ** (n - 1)}}\\left[\\cos(${n}x)`;
-          for (var i = 1; i < n / 2; i++) {
-            coeff = (-1) ** i * binom(n, i);
-            if (coeff > 0)
-              out += '+';
-            out += `${coeff}\\cos(${n - 2 * i}x)`
+          result = `(${(-1) ** (n / 2)})/(${2 ** (n - 1)})*(cos(${n}x)`
+          for (let i = 1; i < n / 2; i++) {
+            result = `+${(-1) ** i * binom(n, i)}cos(${n - 2 * i}x)`;
           }
-          out += `\\right]+${ReF(binom(n, n / 2), 2 ** n)}`
+          result += `)+${binom(n, n / 2)}/${2 ** n}`
         }
       }
-      output.innerHTML = `$$${out}$$`
     } else {
-      var n = +Input.substring(4, Input.indexOf('x'));
-      if (Input.includes('sin'))
-        for (var k = 0; k <= (n - 1) / 2; k++) {
-          coeff = (-1) ** k * binom(n, 2 * k + 1);
-          if (n - 2 * k - 1 == 0 && 2 * k + 1 == 0)
-            out += FormatCoeff(3, coeff);
-          else if (k == 0)
-            out += FormatCoeff(1, coeff);
-          else out += FormatCoeff(2, coeff);
-          if (n - 2 * k - 1)
-            out += `\\cos${FormatPow(n - 2 * k - 1)} x`;
-          if (2 * k + 1)
-            out += `\\sin${FormatPow(2 * k + 1)} x`
+      n = +Input.substring(4, Input.indexOf('x'));
+
+      if (Input.includes('sin')) {
+        for (let k = 0; k <= (n - 1) / 2; k++) {
+          result += `${(-1) ** k * binom(n, 2 * k + 1)}cos(x)^${n - 2 * k - 1}sin(x)^${2 * k + 1}+`;
         }
+      }
+
       if (Input.includes('cos')) {
-        for (var k = 0; k <= n / 2; k++) {
-          coeff = ((-1) ** k * n * (2 ** (n - 1 - 2 * k)) * (Math2.factorial(n - k) / (Math2.factorial(k) * Math2.factorial(n - 2 * k)))) / (n - k);
-          if (n - 2 * k == 0)
-            out2 += FormatCoeff(3, coeff);
-          else if (k == 0)
-            out2 += FormatCoeff(1, coeff);
-          else out2 += FormatCoeff(2, coeff);
-          if (n - 2 * k)
-            out2 += `\\cos${FormatPow(n - 2 * k)} x`
+
+        for (let k = 0; k <= n / 2; k++) {
+          result += `${(-1) ** k * binom(n, 2 * k)}cos(x)^${n - 2 * k}sin(x)^${2 * k}+`
         }
-        for (var k = 0; k <= n / 2; k++) {
-          coeff = (-1) ** k * binom(n, 2 * k);
-          if (n - 2 * k == 0 && 2 * k == 0)
-            out += FormatCoeff(3, coeff);
-          else if (k == 0)
-            out += FormatCoeff(1, coeff);
-          else out += FormatCoeff(2, coeff);
-          if (n - 2 * k)
-            out += `\\cos${FormatPow(n - 2 * k)} x`;
-          if (2 * k)
-            out += `\\sin${FormatPow(2 * k)} x`
+
+        for (let k = 0; k <= n / 2; k++) {
+          result2 += `${((-1) ** k * n * (2 ** (n - 1 - 2 * k)) * (Math2.factorial(n - k) / (Math2.factorial(k) * Math2.factorial(n - 2 * k)))) / (n - k)}cos(x)^${n - 2 * k}+`;
         }
+        result2 = `\\\\ \\\\ ${nerdamer(result2.replace(/\+$/, '')).toTeX()}`
       }
       if (Input.includes('tan')) {
-        out += '\\dfrac{';
-        for (var k = 0; k <= (n - 1) / 2; k++) {
-          coeff = (-1) ** k * binom(n, 2 * k + 1);
-          if (2 * k + 1 == 0)
-            out += FormatCoeff(3, coeff);
-          else if (k == 0)
-            out += FormatCoeff(1, coeff);
-          else out += FormatCoeff(2, coeff);
-          if (2 * k + 1)
-            out += `\\tan${FormatPow(2 * k + 1)} x`
+        result = '(';
+        for (let k = 0; k <= (n - 1) / 2; k++) {
+          result += `${(-1) ** k * binom(n, 2 * k + 1)}tan(x)^${2 * k + 1}+`;
         }
-        out += '}{';
-        for (var k = 0; k <= n / 2; k++) {
-          coeff = (-1) ** k * binom(n, 2 * k);
-          if (n - 2 * k - 1 == 0 && 2 * k + 1 == 0)
-            out += FormatCoeff(3, coeff);
-          else if (k == 0)
-            out += FormatCoeff(4, coeff);
-          else out += FormatCoeff(2, coeff);
-          if (2 * k)
-            out += `\\tan${FormatPow(2 * k)} x`
+        result = `${result.replace(/\+$/, '')})/(`
+        for (let k = 0; k <= n / 2; k++) {
+          result += `${(-1) ** k * binom(n, 2 * k)}tan(x)^${2 * k}+`;
         }
-        out += '}'
+        result = `${result.replace(/\+$/, '')})`
       }
-      if (!Input.includes('cos'))
-        output.innerHTML = `$$${out}$$`;
-      else output.innerHTML = `$$${out}$$hoặc$$${out2}$$`
     }
-    renderMathInElement(document.getElementById("output"),{delimiters:[{left:"$$",right:"$$",display:!0},{left:"$",right:"$",display:!1}]});
+    output.innerHTML = katex.renderToString(`\\begin{gathered}${nerdamer(result.replace(/\+$/, '')).toTeX() + result2}\\end{gathered}`.replace(/\\cdot(?= \\| [a-z])/g, ''), {
+      displayMode: true
+    })
   })
   </script>
 </div>

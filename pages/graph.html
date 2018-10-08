@@ -10,7 +10,7 @@
   <div class="ui-content">
     <div class="card">
       <label>Nhập hàm số</label>
-      <input type="text" data-clear-btn="true" id="input" placeholder="x" />
+      <input type="text" data-clear-btn="true" id="input" placeholder="x:cos(x)" />
     </div>
     <div class="card">
       <div class="overflow center">
@@ -65,13 +65,6 @@
         data: arrData
       });
     })
-
-    $('#input').focus(function() {
-      if ($(this).val().includes('()')) {
-        input.selectionStart = input.selectionEnd = input.value.indexOf('()') + 1;
-      }
-    })
-
   })
   </script>
 </div>

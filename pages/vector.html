@@ -29,20 +29,7 @@
     </select>
     <div id="input_vector_area" class="content">
       <div class="card">
-        <label>Nhập vector A</label>
-        <div id="input1"></div>
-      </div>
-      <div class="card">
-        <label>Nhập vector B</label>
-        <div id="input2"></div>
-      </div>
-      <div class="card">
-        <label>Nhập vector C</label>
-        <div id="input3"></div>
-      </div>
-      <div class="card">
-        <label>Nhập vector D</label>
-        <div id="input4"></div>
+        <div id="input_vector"></div>
       </div>
     </div>
     <div id="main_area" class="content" style="display:none">
@@ -59,8 +46,8 @@
     </div>
   </div>
   <script>
-  var isVector = core.Utils.isVector;
-  var math = core.Utils.importFunctions();
+  let isVector = core.Utils.isVector;
+  let math = core.Utils.importFunctions();
 
   function angle(vec1, vec2) {
     if (isVector(vec1) && isVector(vec2)) return math.acos(_.divide(vec1.dot(vec2), _.multiply(math.abs(vec1), math.abs(vec2))))
@@ -123,67 +110,70 @@
     let t = _.divide(vec2.dot(_.subtract(vec1.clone(), vec3.clone())), _.pow(math.abs(vec2), new Symbol(2)));
     return _.add(vec3, _.multiply(t, vec2))
   }
+
   nerdamer.register([{
     name: 'angle',
     numargs: 2,
     visible: !0,
-    build() {
+    build: function() {
       return angle
     }
   }, {
     name: 'pointM',
     numargs: 2,
     visible: !0,
-    build() {
+    build: function() {
       return pointM
     }
   }, {
     name: 'pointG',
     numargs: 3,
     visible: !0,
-    build() {
+    build: function() {
       return pointG
     }
   }, {
     name: 'pointH',
     numargs: 3,
     visible: !0,
-    build() {
+    build: function() {
       return pointH
     }
   }, {
     name: 'pointI',
     numargs: 3,
     visible: !0,
-    build() {
+    build: function() {
       return pointI
     }
   }, {
     name: 'pointO',
     numargs: 3,
     visible: !0,
-    build() {
+    build: function() {
       return pointO
     }
   }, {
     name: 'pE',
     numargs: 3,
     visible: !0,
-    build() {
+    build: function() {
       return pE
     }
   }, {
     name: 'projE',
     numargs: 3,
     visible: !0,
-    build() {
+    build: function() {
       return projE
     }
   }, {
     name: 'projL',
     numargs: 3,
     visible: !0,
-    build() { return projL }
+    build: function() { 
+      return projL 
+    }
   }]);
 
   $('#select1').on('change', function() {
@@ -206,81 +196,78 @@
     }
   }]);
 
-  input.onfocus = function() {
-    if (this.value.includes('()')) {
-      this.selectionStart = this.selectionEnd = this.value.indexOf('()') + 1
+  let vecA, vecB, vecC, vecD;
+
+  function create_input_vector(n) {
+    vecA = vecB = vecC = vecD = '';
+    for (let i = 0; i < n; i++) {
+      vecA += `<input type="text" data-role="none" class="input" id="a${i}" /> &nbsp;`;
+      vecB += `<input type="text" data-role="none" class="input" id="b${i}" /> &nbsp;`;
+      vecC += `<input type="text" data-role="none" class="input" id="c${i}" /> &nbsp;`;
+      vecD += `<input type="text" data-role="none" class="input" id="d${i}" /> &nbsp;`;
     }
+
+    input_vector.innerHTML = `<label>Nhập vector A</label>${vecA}<br /><br /><label>Nhập vector B</label>${vecB}<br /><br /><label>Nhập vector C</label>${vecC}<br /><br /><label>Nhập vector D</label>${vecD}`
   }
-  let vec_A = '';
-  let vec_B = '';
-  let vec_C = '';
-  let vec_D = '';
-  for (var i = 0; i < select.value; i++)
-    vec_A += `<input type="text" data-role="none" class="input" id="a${i}"> &nbsp;`;
-  input1.innerHTML = vec_A;
-  for (i = 0; i < select.value; i++)
-    vec_B += `<input type="text" data-role="none" class="input" id="b${i}"> &nbsp;`;
-  input2.innerHTML = vec_B;
-  for (i = 0; i < select.value; i++)
-    vec_C += `<input type="text" data-role="none" class="input" id="c${i}"> &nbsp;`;
-  input3.innerHTML = vec_C;
-  for (i = 0; i < select.value; i++)
-    vec_D += `<input type="text" data-role="none" class="input" id="d${i}"> &nbsp;`;
-  input4.innerHTML = vec_D;
-  select.onchange = () => {
-    vec_A = vec_B = vec_C = vec_D = '';
-    for (i = 0; i < select.value; i++)
-      vec_A += `<input type="text" data-role="none" class="input" id="a${i}"> &nbsp;`;
-    input1.innerHTML = vec_A;
-    for (i = 0; i < select.value; i++)
-      vec_B += `<input type="text" data-role="none" class="input" id="b${i}"> &nbsp;`;
-    input2.innerHTML = vec_B;
-    for (i = 0; i < select.value; i++)
-      vec_C += `<input type="text" data-role="none" class="input" id="c${i}"> &nbsp;`;
-    input3.innerHTML = vec_C;
-    for (i = 0; i < select.value; i++)
-      vec_D += `<input type="text" data-role="none" class="input" id="d${i}"> &nbsp;`;
-    input4.innerHTML = vec_D
+
+  create_input_vector(2);
+
+  select.onchange = function() {
+    create_input_vector(this.value);
   }
-  $('.button').click(() => {
-    vec_A = vec_B = vec_C = vec_D = '[';
+  
+  $('.button').click(function() {
+    let option = select.value;
+    vecA = vecB = vecC = vecD = '[';
+
     if (a0.value !== '') {
-      for (i = 0; i < select.value; i++) {
-        vec_A += document.getElementById(`a${i}`).value;
-        if (i < select.value - 1)
-          vec_A += ','
+      for (let i = 0; i < option; i++) {
+        vecA += document.getElementById(`a${i}`).value;
+        if (i < option - 1) {
+          vecA += ','
+        }
       }
     }
-    vec_A += ']';
+    vecA += ']';
+
     if (b0.value !== '') {
-      for (i = 0; i < select.value; i++) {
-        vec_B += document.getElementById(`b${i}`).value;
-        if (i < select.value - 1)
-          vec_B += ','
+      for (let i = 0; i < option; i++) {
+        vecB += document.getElementById(`b${i}`).value;
+        if (i < option - 1) {
+          vecB += ','
+        }
       }
     }
-    vec_B += ']';
+    vecB += ']';
+
     if (c0.value !== '') {
-      for (i = 0; i < select.value; i++) {
-        vec_C += document.getElementById(`c${i}`).value;
-        if (i < select.value - 1)
-          vec_C += ','
+      for (let i = 0; i < option; i++) {
+        vecC += document.getElementById(`c${i}`).value;
+        if (i < option - 1) {
+          vecC += ','
+        }
       }
     }
-    vec_C += ']';
+    vecC += ']';
+
     if (d0.value !== '') {
-      for (i = 0; i < select.value; i++) {
-        vec_D += document.getElementById(`d${i}`).value;
-        if (i < select.value - 1)
-          vec_D += ','
+      for (let i = 0; i < option; i++) {
+        vecD += document.getElementById(`d${i}`).value;
+        if (i < option - 1) {
+          vecD += ','
+        }
       }
     }
-    vec_D += ']';
-    nerdamer.setVar('vecA', vec_A);
-    nerdamer.setVar('vecB', vec_B);
-    nerdamer.setVar('vecC', vec_C);
-    nerdamer.setVar('vecD', vec_D);
+    vecD += ']';
+
+    nerdamer.clearVars();
+    nerdamer.setVar('vecA', vecA);
+    nerdamer.setVar('vecB', vecB);
+    nerdamer.setVar('vecC', vecC);
+    nerdamer.setVar('vecD', vecD);
+
     let result = nerdamer(input.value).toTeX().replace(/,$|\\cdot(?= \\| [a-z])/g, '');
+
     if (result.includes('\\left[\\left[')) {
       let arr = result.replace(/ |\\left|\\,|\\right|\[|\]/g, '').split(',');
       result = (`${arr[0]}a+${arr[1]}b+${arr[2]}c+${arr[3]}= 0`).replace(/\+-/g, '-')

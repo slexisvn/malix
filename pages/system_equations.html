@@ -60,29 +60,29 @@
 
   $('.button').click(function() {
     option = select.value;
-    let mat_A = 'matrix(';
-    let mat_B = 'matrix(';
+    let matA = 'matrix(';
+    let matB = 'matrix(';
     for (let i = 0; i < option; i++) {
+      matA += '[';
       for (let j = 0; j < option; j++) {
-        if (j == 0)
-          mat_A += '[';
-        mat_A += document.getElementById(`a${i}${j}`).value;
-        if (j < option - 1)
-          mat_A += ',';
-        if (j == option - 1)
-          mat_A += ']';
+        matA += document.getElementById(`a${i}${j}`).value;
+        if (j < option - 1) {
+          matA += ',';
+        }
       }
-      if (i < option - 1)
-        mat_A += ',';
+      matA += ']';
+      if (i < option - 1) {
+        matA += ',';
+      }
     }
-    mat_A += ')';
+    matA += ')';
     for (let i = 0; i < option; i++) {
-      mat_B += `[${document.getElementById(`a${i}${option}`).value}]`;
+      matB += `[${document.getElementById(`a${i}${option}`).value}]`;
       if (i < option - 1)
-        mat_B += ',';
+        matB += ',';
     }
-    mat_B += ')';
-    let result = nerdamer(`invert(${mat_A})*${mat_B}`).toTeX()
+    matB += ')';
+    let result = nerdamer(`invert(${matA})*${matB}`).toTeX()
       .replace(/bmatrix/g, 'cases')
       .replace('cases}', 'cases} x_1 = ');
     let arr = result.split('\\cr');

@@ -2,8 +2,15 @@
 
 var ripple=function(){function rippleStart(e){rippleContainer=getRippleContainer(e.target),("0"==rippleContainer.getAttribute("animating")||!rippleContainer.hasAttribute("animating"))&&e.target.className.search(/ripple|button/g)>-1&&(rippleContainer.setAttribute("animating","1"),offsetX="number"==typeof e.offsetX?e.offsetX:e.touches[0].clientX-e.target.getBoundingClientRect().left,offsetY="number"==typeof e.offsetY?e.offsetY:e.touches[0].clientY-e.target.getBoundingClientRect().top,fullCoverRadius=Math.max(Math.sqrt(Math.pow(offsetX,2)+Math.pow(offsetY,2)),Math.sqrt(Math.pow(e.target.clientWidth-offsetX,2)+Math.pow(e.target.clientHeight-offsetY,2)),Math.sqrt(Math.pow(offsetX,2)+Math.pow(e.target.clientHeight-offsetY,2)),Math.sqrt(Math.pow(offsetY,2)+Math.pow(e.target.clientWidth-offsetX,2))),expandTime=e.target.getAttribute("ripple-press-expand-time")||3,rippleContainer.style.transition="transform "+expandTime+"s ease-out, box-shadow 0.1s linear",rippleContainer.style.background=e.target.getAttribute("ripple-color")||"white",rippleContainer.style.opacity=e.target.getAttribute("ripple-opacity")||"0.6",rippleContainer.style.boxShadow=e.target.getAttribute("ripple-shadow")||"none",rippleContainer.style.top=offsetY+"px",rippleContainer.style.left=offsetX+"px",rippleContainer.style.transform="translate(-50%, -50%) scale("+fullCoverRadius/100+")")} function rippleEnd(e){rippleContainer=getRippleContainer(e.target),"1"==rippleContainer.getAttribute("animating")&&(rippleContainer.setAttribute("animating","2"),background=window.getComputedStyle(rippleContainer,null).getPropertyValue("background"),destinationRadius=e.target.clientWidth+e.target.clientHeight,rippleContainer.style.transition="none",expandTime=e.target.getAttribute("ripple-release-expand-time")||.4,rippleContainer.style.transition="transform "+expandTime+"s linear, background "+expandTime+"s linear, opacity "+expandTime+"s ease-in-out",rippleContainer.style.transform="translate(-50%, -50%) scale("+destinationRadius/100+")",rippleContainer.style.background="radial-gradient(transparent 10%, "+background+" 40%)",rippleContainer.style.opacity="0",e.target.dispatchEvent(new CustomEvent("ripple-button-click",{target:e.target})),eval(e.target.getAttribute("onrippleclick")))} function rippleRetrieve(e){rippleContainer=getRippleContainer(e.target),"translate(-50%, -50%) scale(0)"==rippleContainer.style.transform&&rippleContainer.setAttribute("animating","0"),"1"==rippleContainer.getAttribute("animating")&&(rippleContainer.setAttribute("animating","3"),collapseTime=e.target.getAttribute("ripple-leave-collapse-time")||.4,rippleContainer.style.transition="transform "+collapseTime+"s linear, box-shadow "+collapseTime+"s linear",rippleContainer.style.boxShadow="none",rippleContainer.style.transform="translate(-50%, -50%) scale(0)")} function getRippleContainer(e){for(childs=e.childNodes,ii=0;ii<childs.length;ii++)try{if(childs[ii].className.indexOf("rippleContainer")>-1)return childs[ii]}catch(t){} return e}var ripple={registerRipples:function(){for(rippleButtons=document.querySelectorAll(".ripple,.button"),i=0;i<rippleButtons.length;i++)rippleButtons[i].addEventListener("touchstart",function(e){rippleStart(e)},{passive:!0}),rippleButtons[i].addEventListener("touchmove",function(e){if(e.target.hasAttribute("ripple-cancel-on-move"))return void rippleRetrieve(e);try{overEl=document.elementFromPoint(e.touches[0].clientX,e.touches[0].clientY).className.search(/ripple|button/g)>=0}catch(t){overEl=!1}overEl||rippleRetrieve(e)},{passive:!0}),rippleButtons[i].addEventListener("touchend",function(e){rippleEnd(e)},{passive:!0}),rippleButtons[i].addEventListener("mousedown",function(e){rippleStart(e)},{passive:!0}),rippleButtons[i].addEventListener("mouseup",function(e){rippleEnd(e)},{passive:!0}),rippleButtons[i].addEventListener("mousemove",function(e){!e.target.hasAttribute("ripple-cancel-on-move")||0==e.movementX&&0==e.movementY||rippleRetrieve(e)},{passive:!0}),rippleButtons[i].addEventListener("mouseleave",function(e){rippleRetrieve(e)},{passive:!0}),rippleButtons[i].addEventListener("transitionend",function(e){("2"==e.target.getAttribute("animating")||"3"==e.target.getAttribute("animating"))&&(e.target.style.transition="none",e.target.style.transform="translate(-50%, -50%) scale(0)",e.target.style.boxShadow="none",e.target.setAttribute("animating","0"))},{passive:!0}),getRippleContainer(rippleButtons[i])==rippleButtons[i]&&(rippleButtons[i].innerHTML+='<div class="rippleContainer"></div>')},ripple:function(t){t.className.search(/ripple|button/g)<0||(rect=t.getBoundingClientRect(),e={target:t,offsetX:rect.width/2,offsetY:rect.height/2},rippleStart(e),rippleEnd(e))}};return ripple}();
 
-$(document).on("pageinit", function() {
+jQuery.fn.extend({setCursorPosition:function(e){return 0==this.length?this:$(this).setSelection(e,e)},setSelection:function(e,t){if(0==this.length)return this;if(input=this[0],input.createTextRange){var n=input.createTextRange();n.collapse(!0),n.moveEnd("character",t),n.moveStart("character",e),n.select()}else input.setSelectionRange&&(input.focus(),input.setSelectionRange(e,t));return this}});
+
+$(document).on('pageinit', function() {
   ripple.registerRipples();
+  $('#main_input, #input').on('focus', function() {
+    if ($(this).val().includes('()')) {
+      $(this).setCursorPosition($(this).val().indexOf('()') + 1)
+    }
+  });
 });
 
 $('div[id*=area]').hide();
@@ -20,7 +27,7 @@ $('#search').css({
 $('#main_input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    let words = ['approxrati', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN'];
+    let words = ['approxratio', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN', 'arg', 'imagpart', 'realpart', 'conjugate', 'polarform', 'rectform'];
     callback($.map(words, word => word.indexOf(term) === 0 ? word : null));
   },
   replace(word) {
@@ -74,7 +81,7 @@ function primeFactor(num) {
   return array
 }
 
-function approxrati(a, decimal) {
+function approxratio(a, decimal) {
   let decimalBeforeRepeatLength = 2;
   let power1 = 10 ** decimal.toString().length;
   let num = parseFloat(a.toString() + '.' + decimal.toString());
@@ -237,11 +244,11 @@ nerdamer.register([{
     return primeFactor
   }
 }, {
-  name: 'approxrati',
+  name: 'approxratio',
   numargs: 2,
   visible: !0,
   build: function() {
-    return approxrati
+    return approxratio
   }
 }, {
   name: 'gamma',
@@ -331,12 +338,6 @@ function frac2Dec(n, d) {
   return '0'
 }
 
-main_input.onfocus = function() {
-  if (this.value.includes('()')) {
-    this.selectionStart = this.selectionEnd = this.value.indexOf('()') + 1
-  }
-}
-
 main_input.oninput = function() {
   let Input = this.value;
   let option = main_select.value;
@@ -353,10 +354,6 @@ main_input.oninput = function() {
 
   if (!isNaN(eq)) {
     eq = eq.replace(/\d{1,3}(?=(\d{3})+(?!\d))/g, '$&\\:');
-  }
-
-  if (/e\+|e-/.test(eq)) {
-    eq = `${eq.replace(/e\+|e/, '\\times10^{')}}`;
   }
 
   if (approx.includes('.') && !/e\+|e-/.test(approx) && !checkFrac(eq, 0)) {
@@ -401,6 +398,10 @@ main_input.oninput = function() {
 
   if (/floor|ceil|!|fact|dfactorial/.test(Input) && !Input.includes('pfactor') || checkFrac(eq, 0)) {
     eq = approx;
+  }
+
+  if (/e\+|e-/.test(eq)) {
+    eq = `${eq.replace(/e\+|e/, '\\times10^{')}}`;
   }
 
   main_output.innerHTML = katex.renderToString(eq.replace(/\\cdot/g, ''), {

@@ -53,12 +53,6 @@
           }
         }]);
 
-        input.onfocus = function() {
-          if (this.value.includes('()')) {
-            this.selectionStart = this.selectionEnd = this.value.indexOf('()') + 1
-          }
-        }
-
         function findClosingBracket(str) {
           let depth = 1;
           for (let i = str.indexOf('{') + 1; i < str.length; i++) {

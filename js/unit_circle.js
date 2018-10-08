@@ -1,5 +1,5 @@
 function circletriangleMain() {
-  w = 300, h = 350, el = document.getElementById("canvasId"), ratio = 2, el.width = 400 * ratio, el.height = 450 * ratio, el.style.width = "300px", el.style.height = "350px", g = el.getContext("2d"), g.setTransform(ratio, 0, 0, ratio, 0, 0), circleX = 190, circleY = 270, circleRadius = 150, angle = 1, coordsQ = !1, quadQ = !1, anglesQ = !1, degQ = !0, angles = [
+  w = 300, h = 350, el = document.getElementById("canvasId"), ratio = 2, el.width = 400 * ratio, el.height = 450 * ratio, el.style.width = "300px", el.style.height = "350px", g = el.getContext("2d"), g.setTransform(ratio, 0, 0, ratio, 0, 0), circleX = 190, circleY = 270, circleRadius = 150, angle = 1, coordsQ = !1, quadQ = !1, anglesQ = !1, degQ = !1, angles = [
     [0, 0, 1, "1,0", 1],
     [30, 1, 6, "+3+1", 1],
     [45, 1, 4, "+2+2", 1],

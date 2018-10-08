@@ -71,12 +71,6 @@
         }
       });
 
-      input.onfocus = function() {
-        if (this.value.indexOf('()') > -1) {
-          this.selectionStart = this.selectionEnd = this.value.indexOf('()') + 1
-        }
-      }
-
       $('.button').click(function() {
         let Input = input.value;
         if (option === 'u') {

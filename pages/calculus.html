@@ -65,7 +65,7 @@
       $('#input').textcomplete([{
         match: /(^|\b)(\w{1,})$/,
         search: function(term, callback) {
-          var words = ['cos', 'sin', 'tan', 'ln', 'sqrt', 'asin', 'acos', 'atan'];
+          var words = ['cos', 'sin', 'tan', 'cot', 'ln', 'sqrt', 'asin', 'acos', 'atan'];
           callback($.map(words, function(word) {
             return word.indexOf(term) === 0 ? word : null;
           }));
@@ -74,13 +74,7 @@
           return `${word}()`
         }
       }]);
-
-      input.onfocus = function() {
-        if (this.value.includes('()')) {
-          input.selectionStart = input.selectionEnd = this.value.indexOf('()') + 1;
-        }
-      }
-
+      
       let option = select.value;
 
       $('.defint_area, #select_deg-button').hide();
@@ -188,7 +182,7 @@
           result = `...${nerdamer(result.replace(/\+$/g, '').replace(/b/g, 'x')).toTeX()}`;
         }
 
-        output.innerHTML = katex.renderToString(result.replace(/\\cdot(?= \\| [a-z])/g, ''), {
+        output.innerHTML = katex.renderToString(result.replace(/\\cdot(?= \\| [a-z])/g, '').replace(/log/g, 'ln'), {
           displayMode: true
         });
 
