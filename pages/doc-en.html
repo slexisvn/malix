@@ -1,0 +1,160 @@
+<div data-role="page">
+  <div class="navbar green darken-2">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div class="title">Document</div>
+    </div>
+  </div>
+  <div class="ui-content">
+    <div class="card">
+      <p>By default, operations are performed in RADIAN</p>
+    </div>
+    <div class="card">
+      <h3 align="center">Calculate</h3>
+      <ul>
+        <li>R Radian</li>
+        <li>D Degree</li>
+        <li>G Gradian</li>
+      </ul>
+      <p>Functions</p>
+      <ul>
+        <li>approxratio(a, decimal) Returns the repeating decimal. Eg. approxratio(2,333) -> 7/3, approxratio(2,21333) -> 166/75</li>
+        <li>abs(x) Returns the absolute value of a real number or the magnitude of a complex number</li>
+        <li>sqrt(x) Returns the square root of x</li>
+        <li>mod(a, b) Returns the remainder of the result of a divided by b</li>
+        <li>pfactor(x) Returns the prime factors of x</li>
+        <li>exp(x) Returns the exponential of x</li>
+        <li>min(a, b, ...) Returns the min of a set of numbers</li>
+        <li>max(a, b, ...) Returns the max of a set of numbers</li>
+        <li>floor(x) Returns the largest integer not greater than x</li>
+        <li>ceil(x) Returns the smallest integer not less than x</li>
+        <li>fact(x) Can be entered as x!</li>
+        <li>dfactorial(x) Can be entered as x!!</li>
+        <li>log(a, b) Returns the logarithm of a base b</li>
+        <li>ln(a) Returns the natural logarithm of x</li>
+        <li>log10(x) Returns the logarithm of a base 10</li>
+        <li>nCr(n, k) Returns the number of combinations of n items taken k at a time</li>
+        <li>nPr(n, k)  Returns the number of permutations of n items taken k at a time</li>
+        <li>round(x) Rounds x to the nearest integer</li>
+        <li>round(x, n) Round x to n significant digits</li>
+        <li>divisors(x) Returns the divisor of an integer x</li>
+        <li>sign(x) Returns the sign of x</li>
+        <li>Trigonometric: cos, sin, tan, sec, csc, cot, acos, asin, atan, asec, acsc, acot</li>
+        <li>Hyperbolic trig: cosh, sinh, tanh, sech, csch, coth, acosh, asinh, atanh, asech, acsch, acoth</li>
+        <li>arg(z) Returns the angle of complex z</li>
+        <li>imagpart(z) Returns the imaginary part of complex z</li>
+        <li>realpart(z) Returns the real part of complex z</li>
+        <li>conjugate(z) Returns the complex conjugate of z</li>
+        <li>polarform(z) Returns complex z in polar form</li>
+        <li>rectform(z) Returns complex z in rectangular form</li>
+        <li>Si(x), Ci(x), Ei(x), Shi(x), Chi(x) Returns the trigonometric integral</li>
+        <li>rect(x) Returns the rectangular function</li>
+        <li>tri(x) Returns the triangular function</li>
+        <li>step(x) Returns the Heaviside step function</li>
+        <li>sinc(x) Returns the cardinal sine function</li>
+        <li>erf(x) Returns the error function of x</li>
+        <li>gamma(x) Returns the Gamma function of x</li>
+        <li>beta(a, b) Returns the Beta function of a, b</li>
+        <li>zeta(x) Returns the Zeta function of x</li>
+        <li>bernoulliN(n) Returns the nth Bernoulli number</li>
+        <li>eulerN(n) Returns the nth Euler number</li>
+        <li>bell(n) Returns the nth Bell number</li>
+        <li>stirling1(n, k) Returns the Stirling numbers of the first kind</li>
+        <li>stirling2(n, k) Returns the Stirling numbers of the second kind</li>
+        <li>catalan(n) Returns the nth Catalan number</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 align="center">Solve</h3>
+      <p>Support</p>
+      <ul>
+        <li>Solve polynomial equations, simple trigonometry equations, simple logarithmic equations</li>
+        <li>Solve polynomial inequalities of degree 2, 3, 4</li>
+        <li>Solve rational inequalities</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 align="center">Polynomial</h3>
+      <p>Mode</p>
+      <ul>
+        <li>E Expands a function or expression. Functions
+          <ul>
+            <li>hermite(n) Returns the nth "physicists" Hermite polynomial</li>
+            <li>hermiteE(n) Returns the nth "probabilists" Hermite polynomial</li>
+            <li>legendreP(n) Returns the nth Legendre polynomial</li>
+            <li>laguerre(n) Returns the nth Laguerre polynomial</li>
+            <li>lagrange Returns the Lagrange polynomial</li>
+            <li>bernoulliP(n) Returns the nth Bernoulli polynomial</li>
+            <li>chebyshevT(n) Returns the nth Chebyshev polynomial of the first kind</li>
+            <li>chebyshevQ(n) Returns the nth Chebyshev polynomial of the second kind</li>
+            <li>eulerP(n) Returns the nth Euler polynomial</li>
+          </ul>
+        </li>
+        <li>F Factor an expression</li>
+        <li>C Finds the coefficient of x to the n</li>
+        <li>P Performs partial fraction decomposition</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 align="center">Calculus</h3>
+      <p>Mode</p>
+      <ul>
+        <li>L Limit</li>
+        <li>D Derivate</li>
+        <li>I Integral</li>
+        <li>T Definite integral</li>
+        <li>E Taylor expansion</li>
+      </ul>
+      <p>In mode D, if x0 is omitted, the derivative at point isn't calculate</p>
+      <p>In mode E, if x0 is omitted then x0 = 0 is used</p>
+    </div>
+    <div class="card">
+      <h3 align="center">Matrix</h3>
+      <p>Functions</p>
+      <ul>
+        <li>determinant(m) Returns the determinant of matrix m</li>
+        <li>invert(m) Returns the inverse of matrix m</li>
+        <li>imatrix(n) Returns an n by n identity matrix</li>
+        <li>transpose(m) Transposes a matrix</li>
+        <li>adjunct(m) Returns the adjunct of matrix m</li>
+        <li>hilbert(n) Returns an n by n Hilbert matrix</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 align="center">Vector</h3>
+      <p>Functions</p>
+      <ul>
+        <li>abs(u) Returns the vector length</li>
+        <li>dot(u, v) Returns the dot product of vectors u and v</li>
+        <li>cross(u, v) Returns the cross product of vectors u and v</li>
+        <li>angle(u, v) Returns the angle of vectors u and v</li>
+        <li>pointM(A, B) Returns the midpoint coordinates of point A and point B</li>
+        <li>pointG(A, B, C) Returns the centroid coordinates of triangle ABC</li>
+        <li>pointH(A, B, C) Returns the orthocenter coordinates of triangle ABC</li>
+        <li>pointI(A, B, C) Returns the incenter coordinates of triangle ABC</li>
+        <li>pointO(A, B, C) Returns the circumcenter coordinates of triangle ABC</li>
+        <li>line(A, B) Returns the equation of a line through point A and point B in the plane</li>
+        <li>plane(A, B, C) Returns the equation of a plane through point A, point B and point C in space</li>
+        <li>projL(A, u, M) Returns the projection of point A onto the line (x - x0) / a = (y - y0) / b = (z - z0) / c, with u = (a; b; c) is the directon vector and point M0(x0; y0; z0) is belong to this line</li>
+        <li>projP(A, n, D) Returns the projection of point A onto the plane Ax + By + Cz + D = 0, with n = (A; B; C) is the normal vector of this plane</li>
+      </ul>
+    </div>
+    <div class="card">
+      <h3 align="center">Number sequence</h3>
+      <p>Mode</p>
+      <ul>
+        <li>U Finds the general term of number sequence</li>
+        <li>S Finds the general sum of number sequence</li>
+        <li>O Functions
+          <ul>
+            <li>fib(n) Returns the nth Fibnoacci number</li>
+            <li>lucas(n) Returns the nth Lucas number</li>
+            <li>farey(n) Returns the nth Farey sequence</li>
+          </ul>
+        </li>
+      </ul>
+    </div>
+  </div>
+</div>

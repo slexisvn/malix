@@ -4,12 +4,12 @@
       <div class="left">
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Vẽ đồ thị</div>
+      <div class="title">Graph</div>
     </div>
   </div>
   <div class="ui-content">
     <div class="card">
-      <label>Nhập hàm số</label>
+      <label>Enter functions</label>
       <input type="text" data-clear-btn="true" id="input" placeholder="x:cos(x)" />
     </div>
     <div class="card">
@@ -19,6 +19,10 @@
     </div>
   </div>
   <script>
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Vẽ đồ thị';
+    document.getElementsByTagName('label')[1].innerHTML = 'Nhập hàm số';
+  }
   $.getScript('../js/graph.js', function() {
 
     $('#input').textcomplete([{
@@ -64,7 +68,7 @@
         },
         data: arrData
       });
-    })
-  })
+    });
+  });
   </script>
 </div>

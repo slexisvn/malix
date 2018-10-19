@@ -9,7 +9,7 @@
       <div class="left">
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Phân phối xác suất</div>
+      <div class="title">Distribution</div>
       <div class="right">
         <button id="btn_list_var" class="hidden button"><span id="text_">Var</span></button>
       </div>
@@ -17,46 +17,46 @@
   </div>
   <div class="ui-content">
     <select data-native-menu="false" id="select" data-icon="false">
-      <option value="normal_pd">Mật độ xác suất bình thường</option>
-      <option value="normal_cd">Phân phối tích lũy bình thường</option>
-      <option value="inv_normal">Phân phối tích lũy bình thường nghịch đảo</option>
-      <option value="binomial_pd">Xác suất nhị thức</option>
-      <option value="binomial_cd">Phân phối tích lũy nhị thức</option>
-      <option value="poisson_pd">Xác suất Poisson</option>
-      <option value="poisson_cd">Phân phối tích lũy Poisson</option>
+      <option value="normal_pd">Normal PD</option>
+      <option value="normal_cd">Normal CD</option>
+      <option value="inv_normal">Inverse normal</option>
+      <option value="binomial_pd">Binomial PD</option>
+      <option value="binomial_cd">Binomial CD</option>
+      <option value="poisson_pd">Poisson PD</option>
+      <option value="poisson_cd">Poisson CD</option>
     </select>
     <div id="normal_pd" class="hidden card">
-      <label id="list_var">X</label>
+      <label>x</label>
       <input type="text" id="xs" placeholder="2" />
     </div>
     <div class="row hidden" id="normal_cd">
       <div class="col-50">
         <div class="card">
-          <label>Biên dưới</label>
+          <label>Lower</label>
           <input id="lower" type="text" placeholder="2" />
         </div>
       </div>
       <div class="col-50">
         <div class="card">
-          <label>Biên trên</label>
+          <label>Upper</label>
           <input id="upper" type="text" placeholder="4" />
         </div>
       </div>
     </div>
     <div id="inv_normal" class="hidden card">
-      <label>Giá trị xác suất</label>
+      <label>Area</label>
       <input type="text" id="area" placeholder="0.67" />
     </div>
     <div class="row hidden" id="normal">
       <div class="col-50">
         <div class="card">
-          <label>Độ lệch chuẩn</label>
+          <label>σ</label>
           <input id="sigma" type="text" placeholder="3" />
         </div>
       </div>
       <div class="col-50">
         <div class="card">
-          <label>Giá trị TB</label>
+          <label>μ</label>
           <input id="mu" type="text" placeholder="1" />
         </div>
       </div>
@@ -64,20 +64,20 @@
     <div class="row hidden margin-top-minus-8" id="binomial">
       <div class="col-50">
         <div class="card">
-          <label>Số thử nghiệm</label>
+          <label>N</label>
           <input id="n" type="text" placeholder="3" />
         </div>
       </div>
       <div class="col-50">
         <div class="card">
-          <label>XS thành công</label>
+          <label>p</label>
           <input id="p_binomial" type="text" placeholder="0.2" />
         </div>
       </div>
     </div>
     <div id="poisson" class="card hidden">
-      <label>Giá trị trung bình</label>
-      <input type="text" id="mu_poisson" placeholder="3" />
+      <label>λ</label>
+      <input type="text" id="lambda" placeholder="3" />
     </div>
     <button id="cal" class="button katex blue darken-2">=</button>
     <div class="card">
@@ -89,6 +89,17 @@
     </div>
   </div>
   <script>
+  var lb = document.getElementsByTagName('label');
+  if (LN === 'vi') {
+    let _vi = ['Mật độ xác suất bình thường', 'Phân phối tích lũy bình thường', 'Phân phối tích lũy bình thường nghịch đảo', 'Xác suất nhị thức', 'Phân phối tích lũy nhị thức', 'Xác suất Poisson', 'Phân phối tích lũy Poisson'];
+    document.getElementsByClassName('title')[1].innerHTML = 'Phân phối';
+    for (let i = 0; i < 7; i++) {
+      select.options[i].text = _vi[i]
+    }
+    lb[2].innerHTML = 'Biên dưới';
+    lb[3].innerHTML = 'Biên trên';
+    lb[4].innerHTML = 'Giá trị xác suất';
+  }
   $.getScript('../js/algebra.js', function() {
     $.getScript('../js/calculus.js', function() {
       const Z_MAX = 6;
@@ -142,12 +153,12 @@
       btn_list_var.style.display = 'none';
       btn_list_var.onclick = function() {
         if (bool) {
-          list_var.innerHTML = 'Danh sách dữ liệu';
+          lb[1].innerHTML = LN === 'vi' ? 'Danh sách dữ liệu' : 'List';
           text_.innerHTML = 'List';
           xs.placeholder = '1 2 3 4 5';
           bool = !1
         } else {
-          list_var.innerHTML = 'X';
+          lb[1].innerHTML = 'x';
           text_.innerHTML = 'Var';
           xs.placeholder = '2';
           bool = !0
@@ -157,7 +168,7 @@
       select.onchange = function() {
         option = this.value;
         xs.value = '';
-        list_var.innerHTML = 'X';
+        lb[1].innerHTML = 'X';
         text_.innerHTML = 'Var';
         let class_name = document.getElementsByClassName('hidden');
         for (let i = 0; i < class_name.length; i++) {
@@ -230,23 +241,23 @@
         }
         if (option === 'poisson_pd') {
           if (xs.placeholder === '2')
-            result = `p &approx; ${nerdamer(`(${mu_poisson.value}^(${xs.value}))/(${xs.value}!)*e^(-${mu_poisson.value})`).evaluate().text()}`;
+            result = `p &approx; ${nerdamer(`(${lambda.value}^(${xs.value}))/(${xs.value}!)*e^(-${lambda.value})`).evaluate().text()}`;
           else {
             s = '';
             arr = xs.value.split(' ');
             for (let i = 0; i < arr.length; i++)
-              s += `Pr(X = ${arr[i]}) = ${nerdamer(`(${mu_poisson.value}^(${arr[i]}))/(${arr[i]}!)*e^(-${mu_poisson.value})`).evaluate().text()}<br/>`;
+              s += `Pr(X = ${arr[i]}) = ${nerdamer(`(${lambda.value}^(${arr[i]}))/(${arr[i]}!)*e^(-${lambda.value})`).evaluate().text()}<br/>`;
             result = s
           }
         }
         if (option === 'poisson_cd') {
           if (xs.placeholder === '2')
-            result = `p &approx; ${nerdamer(`sum((${mu_poisson.value}^x)/(x!)*e^(-${mu_poisson.value}),x,0,abs(${xs.value}))`).evaluate().text()}`;
+            result = `p &approx; ${nerdamer(`sum((${lambda.value}^x)/(x!)*e^(-${lambda.value}),x,0,abs(${xs.value}))`).evaluate().text()}`;
           else {
             s = '';
             arr = xs.value.split(' ');
             for (let i = 0; i < arr.length; i++)
-              s += `Pr(X = ${arr[i]}) = ${nerdamer(`sum((${mu_poisson.value}^x)/(x!)*e^(-${mu_poisson.value}),x,0,abs(${arr[i]}))`).evaluate().text()}<br/>`;
+              s += `Pr(X = ${arr[i]}) = ${nerdamer(`sum((${lambda.value}^x)/(x!)*e^(-${lambda.value}),x,0,abs(${arr[i]}))`).evaluate().text()}<br/>`;
             result = s
           }
         }

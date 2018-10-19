@@ -9,33 +9,33 @@
       <div class="left">
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Thống kê</div>
+      <div class="title">Statistics</div>
       <div class="right">
-        <button id="btn-freq" class="button">Tần số</button>
+        <button id="btn-freq" class="button">Freq</button>
       </div>
     </div>
   </div>
-  <div class="ui-content" id="body">
+  <div class="ui-content" id="math">
     <select data-native-menu="false" id="select" data-icon="false">
-      <option value="1">Biến đơn</option>
-      <option value="2">Hồi quy tuyến tính</option>
-      <option value="3">Hồi quy bậc 2</option>
-      <option value="4">Hồi quy logarithm</option>
-      <option value="5">Hồi quy hàm mũ e</option>
-      <option value="6">Hồi quy hàm mũ ab</option>
-      <option value="7">Hồi quy hàm lũy thừa</option>
-      <option value="8">Hồi quy nghịch đảo</option>
+      <option value="1">1-Variable</option>
+      <option value="2">y=a+bx</option>
+      <option value="3">y=a+bx+c^2</option>
+      <option value="4">y=a+b•ln(x)</option>
+      <option value="5">y=a•e^(bx)</option>
+      <option value="6">y=a•b^x</option>
+      <option value="7">y=a•x^b</option>
+      <option value="8">y=a+b/x</option>
     </select>
     <div class="card">
-      <label>Danh sách dữ liệu X</label>
+      <label>X</label>
       <input type="text" placeholder="4 5 2" id="xInput" data-clear-btn="true" />
     </div>
     <div id="y_area" class="card none">
-      <label>Danh sách dữ liệu Y</label>
+      <label>Y</label>
       <input type="text" placeholder="2 2 3" id="yInput" data-clear-btn="true" />
     </div>
     <div id="freq_area" class="card none">
-      <label>Tần số</label>
+      <label>Frequency</label>
       <input type="text" placeholder="2 1 1" id="fInput" data-clear-btn="true" />
     </div>
     <button id="cal" class="button katex teal darken-2">=</button>
@@ -44,13 +44,13 @@
     </div>
     <div id="distr">
       <div class="card">
-        <label>PHÂN PHỐI CHUẨN</label>
+        <label>NORM DISTRIBUTION</label>
         <div align="center">
           <canvas id="plotDistr" width="300" height="350"></canvas>
         </div>
       </div>
       <div class="card">
-        <label>X</label>
+        <label>x</label>
         <input type="text" id="xx" placeholder="2" value="2" data-clear-btn="true" />
       </div>
       <div class="card overflow">
@@ -62,6 +62,12 @@
     </div>
   </div>
   <script>
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Thống kê';
+    document.getElementById('btn-freq').innerHTML = document.getElementsByTagName('label')[3].innerHTML = 'Tần số';
+    document.getElementsByTagName('label')[4].innerHTML = 'PHÂN PHỐI CHUẨN';
+    select.options[0].text = '1-Biến';
+  }
   $.getScript("../js/extra.js", function() {
     let option = select.value;
     const val = [
@@ -316,7 +322,7 @@
 
       _output.innerHTML = result;
 
-      renderMathInElement(document.getElementById("body"), { delimiters: [{ left: "$$", right: "$$", display: !0 }, { left: "$", right: "$", display: !1 }] });
+      renderMathInElement(document.getElementById("math"), { delimiters: [{ left: "$$", right: "$$", display: !0 }, { left: "$", right: "$", display: !1 }] });
     }
 
     xx.oninput = function() {

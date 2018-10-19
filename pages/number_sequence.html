@@ -9,7 +9,7 @@
       <div class="left">
         <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Dãy số</div>
+      <div class="title">Number sequence</div>
       <div class="right">
         <select data-native-menu="false" id="select" data-icon="false">
           <option value="u">U</option>
@@ -21,7 +21,7 @@
   </div>
   <div class="ui-content">
     <div class="card">
-      <label>Nhập dãy số</label>
+      <label>Enter the number sequence</label>
       <input type="text" id="input" placeholder="1 2 3 4" data-clear-btn="true" />
     </div>
     <button class="button katex teal">=</button>
@@ -34,25 +34,32 @@
     </div>
   </div>
   <script>
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Dãy số';
+    let lb = document.getElementsByTagName('label')[1].innerHTML = 'Nhập dãy số';
+  }
   $.getScript('../js/algebra.js', function() {
     $.getScript('../js/calculus.js', function() {
       let option = select.value;
 
-      $('#select').on('change', function() {
-        option = $(this).val();
-        if (option === 'u') {
-          $('label').text('Nhập dãy số');
-          $('#input').attr('placeholder', '1 2 3 4 5')
+      select.onchange = function() {
+        option = this.value;
+        let lb = document.getElementsByTagName('label')[1];
+        switch (option) {
+          case 'u':
+            lb.innerHTML = LN === 'vi' ? 'Nhập dãy số' : 'Enter the number sequence';
+            input.placeholder = '1 2 3 4 5';
+            break;
+          case 's':
+            lb.innerHTML = LN === 'vi' ? 'Nhập công thức tổng quát của dãy số' : 'Enter the general term of the number sequence';
+            input.placeholder = '2n+1';
+            break;
+          case 'o':
+            lb.innerHTML = '&nbsp;';
+            input.placeholder = 'farey(3)';
+            break;
         }
-        if (option === 's') {
-          $('label').text('Nhập công thức tổng quát của dãy số');
-          $('#input').attr('placeholder', '2n+1')
-        }
-        if (option === 'o') {
-          $('label').text('Nhập ...');
-          $('#input').attr('placeholder', 'farey(3)');
-        }
-      });
+      }
 
       $('#input').on('input', function() {
         if (option === 'o') {
@@ -74,18 +81,18 @@
       $('.button').click(function() {
         let Input = input.value;
         if (option === 'u') {
-          let tu = Input.split(' ');
+          let arr = Input.split(' ');
           let result;
-          if (tu.length === 5) {
+          if (arr.length === 5) {
             result = '(A_1/24)*(x-2)*(x-3)*(x-4)*(x-5)+(A_2/(-6))*(x-1)*(x-3)*(x-4)*(x-5)+(A_3/4)*(x-1)*(x-2)*(x-4)*(x-5)+(A_4/(-6))*(x-1)*(x-2)*(x-3)*(x-5)+(A_5/24)*(x-1)*(x-2)*(x-3)*(x-4)';
             for (let i = 0; i < 5; i++) {
-              result = result.replace(`A_${i + 1}`, tu[i])
+              result = result.replace(`A_${i + 1}`, arr[i])
             }
           }
-          if (tu.length === 4) {
+          if (arr.length === 4) {
             result = '(A_1/(-6))*(x-2)*(x-3)*(x-4)+(A_2/2)*(x-1)*(x-3)*(x-4)+(A_3/(-2))*(x-1)*(x-2)*(x-4)+(A_4/6)*(x-1)*(x-2)*(x-3)';
             for (let i = 0; i < 4; i++) {
-              result = result.replace(`A_${i + 1}`, tu[i])
+              result = result.replace(`A_${i + 1}`, arr[i])
             }
           }
           output.innerHTML = katex.renderToString(`u_n=  ${nerdamer(`expand(${result})`).toTeX().replace(/x/g, 'n').replace(/\\cdot(?= \\| [a-z])/g, '')}`, {
@@ -117,7 +124,7 @@
             sum *= 2;
             lcm += '*2'
           }
-          output.innerHTML = katex.renderToString(`S_n=${nerdamer(`factor(${phan_tich_100(sum)})/(${lcm})`).toTeX().replace(/x/g, 'n').replace(/\\cdot(?= \\| [a-z])/g, '').replace(/\\left\((\w)\\right\)/g, '$1')}`, {
+          output.innerHTML = katex.renderToString(`S_n=${nerdamer(`(${phan_tich_100(sum)})/(${lcm})`).toTeX().replace(/x/g, 'n').replace(/\\cdot(?= \\| [a-z])/g, '')}`, {
             displayMode: !0
           })
         }

@@ -112,7 +112,7 @@ function v045(v033) {
 }
 
 function v046(v022) {
-  if (v022 !== undefined) 
+  if (v022 !== undefined)
     this.v018 = v022;
   let v036 = this.v017;
   const v021 = this.v018;
@@ -227,4 +227,20 @@ function initialize_soroban() {
 }
 
 initialize_soroban();
-initialize_suanpan()
+initialize_suanpan();
+
+if (LN === 'vi') {
+  document.getElementsByClassName('title')[1].innerHTML = 'Bàn tính';
+  select.options[0].text = 'Trung Quốc';
+  select.options[1].text = 'Nhật Bản';
+}
+
+suanpan.htmldraw(7);
+select.onchange = function() {
+  if (select.value === 'suanpan') {
+    suanpan.htmldraw(7);
+  }
+  if (select.value === 'soroban') {
+    soroban.htmldraw(7);
+  }
+}

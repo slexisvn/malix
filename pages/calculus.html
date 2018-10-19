@@ -9,7 +9,7 @@
       <div class="left">
         <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Giải tích</div>
+      <div class="title">Calculus</div>
       <div class="right">
         <select data-native-menu="false" id="select" data-icon="false">
           <option value="l">L</option>
@@ -23,30 +23,30 @@
   </div>
   <div class="ui-content">
     <select data-native-menu="false" id="select_deg" data-icon="false">
-      <option value="1">Đạo hàm bậc 1</option>
-      <option value="2">Đạo hàm bậc 2</option>
-      <option value="3">Đạo hàm bậc 3</option>
+      <option value="1">First derivative</option>
+      <option value="2">Second derivative</option>
+      <option value="3">Third derivative</option>
     </select>
     <div class="row margin-top-minus-8">
       <div class="col-70 card">
-        <label>Nhập hàm số</label>
+        <label>Enter the expression</label>
         <input type="text" id="input" placeholder="x*cos(x)" data-clear-btn="true" />
       </div>
       <div class="col-30 card">
-        <label>Theo</label>
+        <label>For</label>
         <input type="text" value="x" id="variable" data-clear-btn="true" placeholder="x" />
       </div>
       <div class="col-50 card margin-top at_area">
-        <label>Tại</label>
+        <label>At</label>
         <input type="text" placeholder="3" id="at" data-clear-btn="true" />
       </div>
       <div class="col-50 defint_area card margin-top">
-        <label>Cận dưới</label>
-        <input id="can_duoi" type="text" placeholder="0" data-clear-btn="true" />
+        <label>From</label>
+        <input id="from" type="text" placeholder="0" data-clear-btn="true" />
       </div>
       <div class="col-50 defint_area card margin-top">
-        <label>Cận trên</label>
-        <input id="can_tren" type="text" placeholder="pi/2" data-clear-btn="true" />
+        <label>To</label>
+        <input id="to" type="text" placeholder="pi/2" data-clear-btn="true" />
       </div>
     </div>
     <button class="button katex orange">=</button>
@@ -59,6 +59,18 @@
     </div>
   </div>
   <script>
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Giải tích';
+    for (let i = 0; i < 3; i++) {
+      select_deg.options[i].text = `Đạo hàm bậc ${i}`;
+    }
+    let lb = document.getElementsByTagName('label');
+    lb[1].innerHTML = 'Nhập biểu thức';
+    lb[2].innerHTML = 'Theo';
+    lb[3].innerHTML = 'Tại';
+    lb[4].innerHTML = 'Cận dưới';
+    lb[5].innerHTML = 'Cận trên';
+  }
   $.getScript('../js/algebra.js', function() {
     $.getScript('../js/calculus.js', function() {
 
@@ -154,7 +166,7 @@
         }
 
         if (option === 't') {
-          result = nerdamer(`defint(${result},${can_duoi.value},${can_tren.value},${variable.value})`);
+          result = nerdamer(`defint(${result},${from.value},${to.value},${variable.value})`);
           let approx_result = result.evaluate().text();
           result = result.toTeX();
           if (!approx_result.includes('*')) {

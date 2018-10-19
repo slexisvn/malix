@@ -4,12 +4,12 @@
       <div class="left">
         <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Giải phương trình, bất phương trình</div>
+      <div class="title">Solve</div>
     </div>
   </div>
   <div class="ui-content" id="math">
     <div class="card">
-      <label>Nhập biểu thức</label>
+      <label>Enter the expression</label>
       <input type="text" data-clear-btn="true" placeholder="x^2-2x+1" id="input" />
     </div>
     <div class="row">
@@ -35,6 +35,10 @@
     </div>
   </div>
   <script>
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Giải phương trình, bất phương trình';
+    document.getElementsByTagName('label')[1].innerHTML = 'Nhập biểu thức';
+  }
   $.getScript('../js/algebra.js', function() {
     $.getScript('../js/calculus.js', function() {
       $.getScript('../js/solve.js', function() {
@@ -229,7 +233,7 @@
 
           if (operator === 'eq') {
             if (N.toString() === '[]') {
-              result = "<p align='center'>Không giải được</p>"
+              result = `<p align="center">${LN === 'vi' ? 'Không giải được' : 'Can\'t solve'}</p>`
             } else {
               result = formatEq(arr_decimal_n, arr_pretty_n);
 
@@ -241,7 +245,7 @@
                 if (deg === 2) {
                   let coeffs = nerdamer(`coeffs(${Input},x)`).text().replace(/\[|\]/g, '').split(',');
                   let delta = nerdamer(`(${coeffs[1]})^2-4*(${coeffs[2]})*(${coeffs[0]})`);
-                  other_output.innerHTML = `<p align="center">$${coeffs[2].charAt(0) === '-' ? '\\max' : '\\min'} y=${nerdamer(`-${delta}/(4*(${coeffs[2]}))`).toTeX()}$ tại $x=${nerdamer(`-${coeffs[1]}/(2*(${coeffs[2]}))`).toTeX()}$</p>`;
+                  other_output.innerHTML = `<p align="center">$${coeffs[2].charAt(0) === '-' ? '\\max' : '\\min'} y=${nerdamer(`-${delta}/(4*(${coeffs[2]}))`).toTeX()}$ ${LN === 'vi' ? 'tại' : 'at'} $x=${nerdamer(`-${coeffs[1]}/(2*(${coeffs[2]}))`).toTeX()}$</p>`;
                 }
                 //LOCAL MAX/MIN
                 if (deg === 3 || deg === 4) {
@@ -260,14 +264,16 @@
                     } else {
                       value_of_dy2[i] = parseFloat(nerdamer(dy2).sub('x', roots_decimal_of_dy1[i]).evaluate().text());
                       if (value_of_dy2[i] !== 0) {
-                        other_result += `<p align="center">$y_{\\text{C${
+                        other_result += `<p align="center">$y_{${LN === 'vi' ? `\\text{C${
                         char = value_of_dy2[i] > 0 ? 'T' : 'D'
-                      }}}=${nerdamer(Input).sub('x', roots_decimal_of_dy1[i]).toTeX()}$ tại $x=${roots_pretty_of_dy1[i]}$</p>`
+                      }}` : `\\text{Local ${
+                        char = value_of_dy2[i] > 0 ? 'Max' : 'Min'
+                      }}`}}=${nerdamer(Input).sub('x', roots_decimal_of_dy1[i]).toTeX()}$ ${LN === 'vi' ? 'tại' : 'at'} $x=${roots_pretty_of_dy1[i]}$</p>`
                       }
                     }
                   }
                   if (other_result === '') {
-                    other_result = '<p align="center">Không có cực trị</p>'
+                    other_result = `<p align="center">${LN === 'vi' ? 'Không có cực trị' : 'No Local Max/Min'}</p>`
                   } else {
                     let gx = nerdamer(`divide(${Input},${dy1})`).toTeX();
                     other_result += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;

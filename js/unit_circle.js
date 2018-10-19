@@ -61,13 +61,13 @@ function drawAngle() {
       e = [0, 1, 0];
       break;
     case 90:
-      e = [1, 0, "không xác định"];
+      e = [1, 0, LN === 'vi' ? 'không xác định' : 'undefined'];
       break;
     case 180:
       e = [0, -1, 0];
       break;
     case 270:
-      e = [-1, 0, "không xác định"];
+      e = [-1, 0, LN === 'vi' ? 'không xác định' : 'undefined'];
       break;
     case 360:
       e = [0, 1, 0]
@@ -215,3 +215,13 @@ TextBox.prototype.refresh = function() {
 }, TextBox.prototype.setClr = function(e) {
   this.clr = e
 }, circletriangleMain();
+
+if (LN === 'vi') {
+  document.getElementsByClassName('title')[1].innerHTML = 'Vòng tròn lượng giác';
+}
+
+update();
+
+select.onchange = function() {
+  toggleDeg()
+}

@@ -6,12 +6,12 @@
           <i class="material-icons">arrow_back</i>
         </a>
       </div>
-      <div class="title">Khai triển lượng giác</div>
+      <div class="title">Trigonometry expand</div>
     </div>
   </div>
   <div class="ui-content">
     <div class="card">
-      <label>Nhập cosnx, sinnx, tannx hoặc cos<sup>n</sup>x, sin<sup>n</sup>x</label>
+      <label>Enter cos(nx), sin(nx), tan(nx) or cos(x)<sup>n</sup>, sin(x)<sup>n</sup></label>
       <input type="text" placeholder="cos(3x)" id="inputDiffer" data-clear-btn="true" />
     </div>
     <button class="button katex red darken-2">=</button>
@@ -24,6 +24,10 @@
     </div>
   </div>
   <script>
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Khai triển lượng giác';
+    document.getElementsByTagName('label')[1].innerHTML = 'Nhập cos(nx), sin(nx), tan(nx) hoặc cos(x)<sup>n</sup>, sin(x)<sup>n</sup>';
+  }
   $('#inputDiffer').textcomplete([{
     match: /(^|\b)(\w{1,})$/,
     search(term, callback) {

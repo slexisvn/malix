@@ -4,7 +4,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Malix − Bộ sưu tập các công cụ Toán học</title>
+  <title>Malix − Collection of mathematical tools</title>
   <link rel="stylesheet" href="css/jqm.css" />
   <link rel="stylesheet" href="css/app.css" />
   <link rel="stylesheet" href="css/color.css" />
@@ -20,22 +20,22 @@
     }
     </style>
     <div data-role="panel" id="menu" data-display="overlay" data-position-fixed="true">
-      <ul data-role="listview" data-filter="true" data-filter-placeholder="Tìm công cụ" data-icon="false" id="search">
-        <li><a href="pages/convert.html">Đổi<img src="img/icon/convert.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/solve.html">Giải phương trình, bất phương trình<img src="img/icon/solve.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/system_equations.html">Giải hệ phương trình tuyến tính<img src="img/icon/system_equations.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/polynomial.html">Đa thức<img src="img/icon/polynomial.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/graph.html">Vẽ đồ thị<img src="img/icon/graph.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/calculus.html">Giải tích<img src="img/icon/calculus.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/matrix.html">Ma trận<img src="img/icon/matrix.svg" class="ui-li-icon" /></a></li>
+      <ul data-role="listview" data-filter="true" data-filter-placeholder="Search" data-icon="false" id="search">
+        <li><a href="pages/convert.html">Convert<img src="img/icon/convert.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/solve.html">Solve<img src="img/icon/solve.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/system_of_equations.html">System of equations<img src="img/icon/system_of_equations.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/polynomial.html">Polynomial<img src="img/icon/polynomial.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/graph.html">Graph<img src="img/icon/graph.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/calculus.html">Calculus<img src="img/icon/calculus.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/matrix.html">Matrix<img src="img/icon/matrix.svg" class="ui-li-icon" /></a></li>
         <li><a href="pages/vector.html">Vector<img src="img/icon/vector.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/probability_distribution.html">Phân phối xác suất<img src="img/icon/probability_distribution.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/statistical.html">Thống kê<img src="img/icon/statistical.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/sequence_number.html">Dãy số<img src="img/icon/sequence_number.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/trigonometry_expand.html">Khai triển lượng giác<img src="img/icon/trigonometry_expand.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/set.html">Tập hợp<img src="img/icon/set.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/unit_circle.html">Vòng tròn lượng giác<img src="img/icon/unit_circle.svg" class="ui-li-icon" /></a></li>
-        <li><a href="pages/abacus.html">Bàn tính<img src="img/icon/abacus.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/distribution.html">Distribution<img src="img/icon/distribution.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/statistics.html">Statistics<img src="img/icon/statistics.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/number_sequence.html">Number sequence<img src="img/icon/number_sequence.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/trigonometry_expand.html">Trigonometry expand<img src="img/icon/trigonometry_expand.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/set.html">Set<img src="img/icon/set.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/unit_circle.html">Unit circle<img src="img/icon/unit_circle.svg" class="ui-li-icon" /></a></li>
+        <li><a href="pages/abacus.html">Abacus<img src="img/icon/abacus.svg" class="ui-li-icon" /></a></li>
       </ul>
     </div>
     <div class="navbar deep-orange">
@@ -43,7 +43,7 @@
         <div class="left">
           <a href="#menu" class="link"><i class="material-icons">menu</i></a>
         </div>
-        <div class="title">Tính toán chung</div>
+        <div class="title">Calculate</div>
         <div class="right">
           <select data-native-menu="false" id="main_select" data-icon="false">
             <option value="R">R</option>
@@ -55,7 +55,7 @@
     </div>
     <div class="ui-content">
       <div class="card">
-        <label>Nhập biểu thức</label>
+        <label>Enter the expression</label>
         <input type="text" id="main_input" placeholder="2+3/5-cos(pi/2)" data-clear-btn="true" />
       </div>
       <div class="card" id="fomulas_btn">
@@ -80,8 +80,8 @@
           <i class="mfb-component__main-icon--active material-icons">clear</i>
         </a>
         <ul class="mfb-component__list">
-          <li><a href="pages/info.html" class="mfb-component__button--child deep-orange ripple"><i class="mfb-component__child-icon material-icons">info_outline</i></a></li>
-          <li><a href="pages/docs.html" class="mfb-component__button--child green darken-2 ripple"><i class="mfb-component__child-icon material-icons">help_outline</i></a></li>
+          <li><a href="pages/about.html" class="mfb-component__button--child deep-orange ripple"><i class="mfb-component__child-icon material-icons">info_outline</i></a></li>
+          <li><a href="pages/doc-en.html" class="mfb-component__button--child green darken-2 ripple"><i class="mfb-component__child-icon material-icons">help_outline</i></a></li>
         </ul>
       </li>
     </ul>

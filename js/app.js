@@ -24,6 +24,20 @@ $('#search').css({
   'height': `${window.innerHeight - 80}px`
 });
 
+var LN = navigator.language.substr(0, 2);
+
+if (LN === 'vi') {
+	let _vi = ['Đổi', 'Giải phương trình, bất phương trình', 'Hệ phương trình tuyến tính', 'Đa thức', 'Vẽ đồ thị', 'Giải tích', 'Ma trận', 'Vector', 'Phân phối', 'Thống kê', 'Dãy số', 'Khai triển lượng giác', 'Tập hợp', 'Vòng tròn lượng giác', 'Bàn tính'];
+	let els = document.getElementById('search');
+	for (let i = 0; i < 15; i++) {
+		els.getElementsByTagName('a')[i].childNodes[0].nodeValue = _vi[i];
+	}
+	els.dataset.filterPlaceholder = 'Tìm công cụ';
+	document.getElementsByClassName('title')[0].innerHTML = 'Phép tính thường';
+	document.getElementsByTagName('label')[0].innerHTML = 'Nhập biểu thức';
+	document.getElementsByClassName('mfb-component__button--child')[1].href = 'pages/doc-vi.html';
+}
+
 $('#main_input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
@@ -40,12 +54,14 @@ var _ = core.PARSER;
 var Vector = core.Vector;
 var Symbol = core.Symbol;
 var Math2 = core.Math2;
+var Matrix = core.Matrix;
+var MATH = core.Utils.importFunctions();
 
 function checkFrac(str, option) {
-  let check_arr = str.split(/\\frac{(\d+)}{(\d+)}/);
+  let check_arr = str.replace(/(-)\\frac{(\d+)}{(\d+)}/g, '\\frac{$2}{$3}').split(/\\frac{(\d+)}{(\d+)}/);
   for (let i = 0; i < check_arr.length; i++) {
     if (!isNaN(check_arr[i])) {
-      if (parseFloat(check_arr[i]) > 50) {
+      if (parseFloat(check_arr[i]) > 1000) {
         return true
       }
     } else {
@@ -119,7 +135,7 @@ function gamma(x) {
 }
 
 function beta(x, y) {
-  return _.parse(nerdamer(`(gamma(${x})*gamma(${y}))/gamma(${x}+${y})`))
+  return _.parse(`(gamma(${x})*gamma(${y}))/gamma(${x}+${y})`)
 }
 
 function worpitzky(n, k) {
@@ -135,7 +151,7 @@ function bernoulliN(n) {
   for (let i = 0; i <= n; i++) {
     B += `(-1)^${i}*${worpitzky(n, i)}/${i + 1}+`
   }
-  return _.parse(nerdamer(B.replace(/\+$/, '')))
+  return _.parse(B.replace(/\+$/, ''))
 }
 
 function approx_zeta(x) {
@@ -162,12 +178,12 @@ function zeta(x) {
         }
       } else {
         let n = xNum / 2;
-        return _.parse(nerdamer(`(-1)^${n + 1}*(bernoulliN(${xNum})*(2*pi)^(${xNum}))/(2*${Math2.factorial(xNum)})`))
+        return _.parse(`(-1)^${n + 1}*(bernoulliN(${xNum})*(2*pi)^(${xNum}))/(2*${Math2.factorial(xNum)})`)
       }
     } else {
       if (xNum % 2) {
         let n = -xNum;
-        return _.parse(nerdamer(`(-1)^${n}*(bernoulliN(${n + 1})/${n + 1})`))
+        return _.parse(`(-1)^${n}*(bernoulliN(${n + 1})/${n + 1})`)
       } else {
         return _.parse('0')
       }
@@ -224,7 +240,6 @@ function eulerN(n) {
         e += `${binom(k, j) * ((-1) ** j) * ((k - 2 * j) ** (2 * n + 1))}/(i^${k}*(${(2 ** k) * k}))+`
       }
     }
-    console.log(e);
     return _.parse(`i*(${e.replace(/\+$/, '')})`)
   }
 }
@@ -276,7 +291,7 @@ nerdamer.register([{
   numargs: 1,
   visible: !0,
   build: function() {
-    return bell
+    return bernoulliN
   }
 }, {
   name: 'eulerN',
@@ -347,7 +362,6 @@ main_input.oninput = function() {
   let I = nerdamer(Input);
   let eq = I.toTeX().replace(/\[|\]/g, '');
   let approx = I.evaluate().text();
-
   if (Input.includes('pfactor')) {
     eq = eq.replace(/\\cdot/g, '\\times').replace(/\\left\(|\\right\)/g, '')
   }
@@ -368,9 +382,9 @@ main_input.oninput = function() {
       let frac = eq.replace('}{', '/').replace(/\\frac{|}/g, '').split('/');
       let tu = +frac[0];
       let mau = +frac[1];
-      if (tu > mau) {
+      if (Math.abs(tu) > mau) {
         mix_area.style.display = '';
-        mix_output.innerHTML = katex.renderToString(`${(tu - (tu % mau)) / mau}\\frac{${tu % mau}}{${mau}}`, {
+        mix_output.innerHTML = katex.renderToString(`${(tu - (tu % mau)) / mau}\\frac{${Math.abs(tu) % mau}}{${mau}}`, {
           displayMode: !0
         })
       } else {

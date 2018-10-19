@@ -13,20 +13,21 @@
       <div class="left">
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Ma trận</div>
+      <div class="title">Matrix</div>
     </div>
   </div>
   <div class="ui-content">
     <select data-native-menu="false" data-icon="false" id="select">
-      <option value="matA_area">Nhập ma trận A</option>
-      <option value="matB_area">Nhập ma trận B</option>
-      <option value="matC_area">Nhập ma trận C</option>
-      <option value="main_area">Tính toán</option>
+      <option value="matA_area">Enter the matrix A</option>
+      <option value="matB_area">Enter the matrix B</option>
+      <option value="matC_area">Enter the matrix C</option>
+      <option value="matD_area">Enter the matrix D</option>
+      <option value="main_area">Calculate</option>
     </select>
     <div id="matA_area" class="content">
       <div class="row">
         <div class="col-50">
-          <label>Số dòng</label>
+          <label>Rows</label>
           <select data-native-menu="false" data-icon="false" id="matA_rows">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -36,7 +37,7 @@
           </select>
         </div>
         <div class="col-50">
-          <label>Số cột</label>
+          <label>Columns</label>
           <select data-native-menu="false" data-icon="false" id="matA_cols">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -53,7 +54,7 @@
     <div id="matB_area" class="content hide">
       <div class="row">
         <div class="col-50">
-          <label>Số dòng</label>
+          <label>Rows</label>
           <select data-native-menu="false" data-icon="false" id="matB_rows">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -63,7 +64,7 @@
           </select>
         </div>
         <div class="col-50">
-          <label>Số cột</label>
+          <label>Columns</label>
           <select data-native-menu="false" data-icon="false" id="matB_cols">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -80,7 +81,7 @@
     <div id="matC_area" class="content hide">
       <div class="row">
         <div class="col-50">
-          <label>Số dòng</label>
+          <label>Rows</label>
           <select data-native-menu="false" data-icon="false" id="matC_rows">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -90,7 +91,7 @@
           </select>
         </div>
         <div class="col-50">
-          <label>Số cột</label>
+          <label>Columns</label>
           <select data-native-menu="false" data-icon="false" id="matC_cols">
             <option value="1">1</option>
             <option value="2">2</option>
@@ -104,9 +105,36 @@
         <div id="matC_input"></div>
       </div>
     </div>
+    <div id="matD_area" class="content hide">
+      <div class="row">
+        <div class="col-50">
+          <label>Rows</label>
+          <select data-native-menu="false" data-icon="false" id="matD_rows">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+        <div class="col-50">
+          <label>Columns</label>
+          <select data-native-menu="false" data-icon="false" id="matD_cols">
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+          </select>
+        </div>
+      </div>
+      <div class="card overflow-nowrap">
+        <div id="matD_input"></div>
+      </div>
+    </div>
     <div id="main_area" class="content hide">
       <div class="card">
-        <label>Nhập biểu thức</label>
+        <label>Enter the expression</label>
         <input type="text" data-clear-btn="true" placeholder="matA*invert(matB)" id="input" />
       </div>
       <button class="button katex deep-purple darken-2">=</button>
@@ -118,8 +146,19 @@
     </div>
   </div>
   <script>
-  let Matrix = core.Matrix;
-  let math = core.Utils.importFunctions();
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Ma trận';
+    let lb = document.getElementsByTagName('label');
+    for (let i = 1; i < 9; i++) {
+      lb[i].innerHTML = i % 2 ? 'Số dòng' : 'Số cột';
+    }
+    lb[9].innerHTML = 'Nhập biểu thức';
+    select.options[0].text = 'Nhập ma trận A';
+    select.options[1].text = 'Nhập ma trận B';
+    select.options[2].text = 'Nhập ma trận C';
+    select.options[3].text = 'Nhập ma trận D';
+    select.options[4].text = 'Tính toán';
+  }
 
   function hilbert(n) {
     let m = new Matrix();
@@ -133,7 +172,7 @@
   }
 
   function adjunct(m) {
-    return _.multiply(math.determinant(m), math.invert(m));
+    return _.multiply(MATH.determinant(m), MATH.invert(m));
   }
 
   nerdamer.register([{
@@ -174,11 +213,12 @@
     }
   }]);
 
-  let matA, matB, matC;
-  
+  let matA, matB, matC, matD;
+  //init
   matA_input.innerHTML = `<input type="text" data-role="none" class="input" id="a00" />`;
   matB_input.innerHTML = `<input type="text" data-role="none" class="input" id="b00" />`;
   matC_input.innerHTML = `<input type="text" data-role="none" class="input" id="c00" />`;
+  matD_input.innerHTML = `<input type="text" data-role="none" class="input" id="d00" />`;
   
   $('#matA_rows, #matA_cols').on('change', function() {
     matA = '';
@@ -225,8 +265,23 @@
     matC_input.innerHTML = matC;
   });
 
+  $('#matD_rows, #matD_cols').on('change', function() {
+    matD = '';
+    let row = $('#matD_rows').val();
+    let col = $('#matD_cols').val();
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < col; j++) {
+        matD += `<input type="text" data-role="none" class="input" id="d${i}${j}" /> &nbsp;`;
+      }
+      if (i < row - 1) {
+        matD += '<br />';
+      }
+    }
+    matD_input.innerHTML = matD;
+  });
+
   $('.button').click(function() {
-    matA = 'matrix(';
+    matA = matB = matC = matD = 'matrix(';
     for (let i = 0; i < matA_rows.value; i++) {
       matA += '[';
       for (let j = 0; j < matA_cols.value; j++) {
@@ -242,7 +297,6 @@
     }
     matA += ')';
 
-    matB = 'matrix(';
     for (let i = 0; i < matB_rows.value; i++) {
       matB += '[';
       for (let j = 0; j < matB_cols.value; j++) {
@@ -257,7 +311,6 @@
     }
     matB += ')';
 
-    matC = 'matrix(';
     for (let i = 0; i < matC_rows.value; i++) {
       matC += '[';
       for (let j = 0; j < matC_cols.value; j++) {
@@ -272,10 +325,25 @@
     }
     matC += ')';
 
+    for (let i = 0; i < matD_rows.value; i++) {
+      matD += '[';
+      for (let j = 0; j < matD_cols.value; j++) {
+        matD += document.getElementById(`d${i}${j}`).value;
+        if (j < matD_cols.value - 1) {
+          matD += ',';
+        }
+      }
+      matD += ']';
+      if (i < matD_rows.value - 1)
+        matD += ',';
+    }
+    matD += ')';
+
     nerdamer.clearVars();
     nerdamer.setVar('matA', matA);
     nerdamer.setVar('matB', matB);
     nerdamer.setVar('matC', matC);
+    nerdamer.setVar('matD', matD);
 
     output.innerHTML = katex.renderToString(nerdamer(input.value).toTeX().replace(/,$|\\cdot(?= \\| [a-z])/g, ''), {
       displayMode: true

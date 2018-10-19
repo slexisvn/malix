@@ -9,7 +9,7 @@
       <div class="left">
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Vòng tròn lượng giác</div>
+      <div class="title">Unit circle</div>
       <div class="right">
         <select data-native-menu="false" id="select" data-icon="false">
           <option value="R">R</option>
@@ -25,12 +25,5 @@
       </div>
     </div>
   </div>
-  <script>
-  $.getScript('../js/unit_circle.js', function() {
-    update();
-    $('select').on('change', function() {
-      toggleDeg()
-    })
-  })
-  </script>
+  <script src="../js/unit_circle.js"></script>
 </div>

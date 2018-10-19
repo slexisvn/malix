@@ -9,29 +9,15 @@
       <div class="left">
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Bàn tính</div>
+      <div class="title">Abacus</div>
     </div>
   </div>
   <div class="ui-content">
     <select data-native-menu="false" id="select" data-icon="false">
-      <option value="suanpan">Trung Quốc</option>
-      <option value="soroban">Nhật Bản</option>
+      <option value="suanpan">China</option>
+      <option value="soroban">Japan</option>
     </select>
     <div id="output"></div>
   </div>
-  <script>
-  $.getScript("../js/abacus.js", function() {
-    suanpan.htmldraw(7);
-    select.onchange = function() {
-      if (select.value === 'suanpan') {
-        suanpan.htmldraw(7);
-      }
-      if (select.value === 'soroban') {
-        soroban.htmldraw(7);
-      }
-    }
-
-    $('.button');
-  });
-  </script>
+  <script src="../js/abacus.js"></script>
 </div>

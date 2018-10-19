@@ -9,7 +9,7 @@
       <div class="left">
         <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
       </div>
-      <div class="title">Đa thức</div>
+      <div class="title">Polynomial</div>
       <div class="right">
         <select data-native-menu="false" id="select" data-icon="false">
           <option value="e">E</option>
@@ -23,25 +23,25 @@
   <div class="ui-content">
     <div id="main_area">
       <div class="card">
-        <label>Nhập đa thức</label>
+        <label>Enter the expression</label>
         <input type="text" id="input" placeholder="(x-1)^2*(2x-5)-7x+8" data-clear-btn="true" />
       </div>
       <div class="row" id="coeff_area">
         <div class="col-50">
           <div class="card">
-            <label>Hệ số tại</label>
-            <input type="text" placeholder="2" id="coeff" />
+            <label>x^</label>
+            <input type="text" placeholder="2" id="degree" />
           </div>
         </div>
       </div>
     </div>
     <div id="lagrange_area">
       <div class="card">
-        <label>Nhập các giá trị của biến</label>
+        <label>Enter values of x</label>
         <input type="text" id="xs" placeholder="1 2 3" data-clear-btn="true" />
       </div>
       <div class="card">
-        <label>Nhập các giá trị của hàm</label>
+        <label>Enter values of f</label>
         <input type="text" id="fs" placeholder="1 2 3" data-clear-btn="true" />
       </div>
     </div>
@@ -55,6 +55,14 @@
     </div>
   </div>
   <script>
+  if (LN === 'vi') {
+    document.getElementsByClassName('title')[1].innerHTML = 'Đa thức';
+    let lb = document.getElementsByTagName('label');
+    lb[1].innerHTML = 'Nhập biểu thức';
+    lb[3].innerHTML = 'Nhập các giá trị của x';
+    lb[4].innerHTML = 'Nhập các giá trị của f';
+  }
+
   $.getScript('../js/algebra.js', function() {
 
     function bernoulliP(m) {
@@ -99,7 +107,7 @@
       return _.parse(`${Math2.factorial(n)}*(${h.replace(/\+$/, '')})`)
     }
 
-    function legendreP(n) {
+    function legendre(n) {
       let l = '';
       for (let k = 0; k <= n; k++) {
         l += `${binom(n, k) ** 2}(x-1)^${n - k}(x+1)^${k}+`
@@ -139,11 +147,11 @@
         return laguerre
       }
     }, {
-      name: 'legendreP',
+      name: 'legendre',
       numargs: 1,
       visible: !0,
       build: function() {
-        return legendreP
+        return legendre
       }
     }, {
       name: 'eulerP',
@@ -216,7 +224,7 @@
             result = nerdamer(`factor(${Input})`).toTeX().replace(/\\left\((\w)\\right\)/g, '$1');
             break;
           case 'c':
-            result = nerdamer(`vecget(coeffs(${Input}, x),${coeff.value} )`).toTeX();
+            result = nerdamer(`vecget(coeffs(${Input}, x),${degree.value} )`).toTeX();
             break;
           case 'p':
             result = nerdamer(`partfrac(${input.value},x)`).toTeX();
@@ -250,7 +258,7 @@
     $('#input').textcomplete([{
       match: /(^|\b)(\w{1,})$/,
       search: function(term, callback) {
-        var words = ['hermite', 'hermiteE', 'legendreP', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'];
+        var words = ['hermite', 'hermiteE', 'legendre', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'];
         callback($.map(words, function(word) {
           return word.indexOf(term) === 0 ? word : null
         }))
