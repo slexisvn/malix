@@ -1,5 +1,5 @@
 <div data-role="page">
-  <div class="navbar light-green darken-2">
+  <div class="navbar">
     <div class="navbar-inner">
       <div class="left">
         <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
@@ -9,7 +9,7 @@
   </div>
   <div class="ui-content">
     <div class="card">
-      <label>Enter functions</label>
+      <label>Functions</label>
       <input type="text" data-clear-btn="true" id="input" placeholder="x:cos(x)" />
     </div>
     <div class="card">
@@ -18,57 +18,5 @@
       </div>
     </div>
   </div>
-  <script>
-  if (LN === 'vi') {
-    document.getElementsByClassName('title')[1].innerHTML = 'Vẽ đồ thị';
-    document.getElementsByTagName('label')[1].innerHTML = 'Nhập hàm số';
-  }
-  $.getScript('../js/graph.js', function() {
-
-    $('#input').textcomplete([{
-      match: /(^|\b)(\w{1,})$/,
-      search: function(term, callback) {
-        var words = ['cos', 'sin', 'tan', 'sqrt', 'abs', 'asin', 'acos', 'atan'];
-        callback($.map(words, function(word) {
-          return word.indexOf(term) === 0 ? word : null;
-        }));
-      },
-      replace: function(word) {
-        return `${word}()`;
-      }
-    }]);
-
-    functionPlot({
-      target: '#plot',
-      grid: true,
-      width: 350,
-      tip: {
-        xLine: true,
-        yLine: true,
-      },
-      data: [{
-        fn: '0'
-      }]
-    });
-
-    $('#input').on('input', function(event) {
-      event.preventDefault();
-      let arrInput = input.value.replace(/ln/g, 'log').split(':');
-      let arrData = [];
-      for (let i = 0; i < arrInput.length; i++) {
-      	arrData.push(JSON.parse(`{"fn":"${arrInput[i]}"}`));
-      }
-      functionPlot({
-        target: '#plot',
-        grid: true,
-        width: 350,
-        tip: {
-          xLine: true,
-          yLine: true,
-        },
-        data: arrData
-      });
-    });
-  });
-  </script>
+  <script src="../js/graph.js"></script>
 </div>

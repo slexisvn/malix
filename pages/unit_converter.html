@@ -1,0 +1,55 @@
+<div data-role="page">
+  <div class="navbar">
+    <div class="navbar-inner">
+      <div class="left">
+        <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+      </div>
+      <div class="title">Unit converter</div>
+    </div>
+  </div>
+  <div class="ui-content">
+    <select data-native-menu="false" id="quantity_select" data-icon="false">
+      <option value="temp">Temperature</option>
+      <option value="length">Length</option>
+      <option value="area">Area</option>
+      <option value="weight">Weight</option>
+      <option value="volume">Volume</option>
+      <option value="speed">Speed</option>
+      <option value="press">Pressure</option>
+      <option value="force">Force</option>
+      <option value="work">Work</option>
+      <option value="power">Power</option>
+      <option value="base">Base</option>
+      <option value="num_systems">Numeral systems</option>
+    </select>
+    <div class="card">
+      <input type="text" data-clear-btn="true" placeholder="0" id="input" />
+    </div>
+    <div class="row">
+      <div class="col-50">
+        <label>From</label>
+        <select data-native-menu="false" id="from" data-icon="false">
+          <option value="C">C</option>
+          <option value="F">F</option>
+          <option value="K">K</option>
+        </select>
+      </div>
+      <div class="col-50">
+        <label>To</label>
+        <select data-native-menu="false" id="to" data-icon="false">
+          <option value="C">C</option>
+          <option value="F">F</option>
+          <option value="K">K</option>
+        </select>
+      </div>
+    </div>
+    <div class="card">
+      <div class="overflow">
+        <div id="output">
+          <span class="katex-display katex">0</span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="../js/unit_converter.js"></script>
+</div>

@@ -7,21 +7,15 @@
   <title>Malix − Collection of mathematical tools</title>
   <link rel="stylesheet" href="css/jqm.css" />
   <link rel="stylesheet" href="css/app.css" />
-  <link rel="stylesheet" href="css/color.css" />
   <link rel="stylesheet" href="css/mfb.min.css" />
   <link rel="stylesheet" href="css/katex.css" />
 </head>
 
 <body>
   <div data-role="page">
-    <style>
-    .ui-selectmenu .ui-selectmenu-list li .ui-btn.ui-btn-active {
-      color: #ff5722
-    }
-    </style>
     <div data-role="panel" id="menu" data-display="overlay" data-position-fixed="true">
-      <ul data-role="listview" data-filter="true" data-filter-placeholder="Search" data-icon="false" id="search">
-        <li><a href="pages/convert.html">Convert<img src="img/icon/convert.svg" class="ui-li-icon" /></a></li>
+      <ul data-role="listview" data-filter="true" data-filter-placeholder="Search tools" data-icon="false" id="search">
+        <li><a href="pages/unit_converter.html">Unit converter<img src="img/icon/unit_converter.svg" class="ui-li-icon" /></a></li>
         <li><a href="pages/solve.html">Solve<img src="img/icon/solve.svg" class="ui-li-icon" /></a></li>
         <li><a href="pages/system_of_equations.html">System of equations<img src="img/icon/system_of_equations.svg" class="ui-li-icon" /></a></li>
         <li><a href="pages/polynomial.html">Polynomial<img src="img/icon/polynomial.svg" class="ui-li-icon" /></a></li>
@@ -38,7 +32,7 @@
         <li><a href="pages/abacus.html">Abacus<img src="img/icon/abacus.svg" class="ui-li-icon" /></a></li>
       </ul>
     </div>
-    <div class="navbar deep-orange">
+    <div class="navbar">
       <div class="navbar-inner">
         <div class="left">
           <a href="#menu" class="link"><i class="material-icons">menu</i></a>
@@ -55,7 +49,7 @@
     </div>
     <div class="ui-content">
       <div class="card">
-        <label>Enter the expression</label>
+        <label>Expression</label>
         <input type="text" id="main_input" placeholder="2+3/5-cos(pi/2)" data-clear-btn="true" />
       </div>
       <div class="card" id="fomulas_btn">
@@ -73,15 +67,15 @@
         <div id="mix_output"></div>
       </div>
     </div>
-    <ul id="menu" class="mfb-component--br mfb-zoomin" data-mfb-toggle="click">
+    <ul id="menu" class="mfb-component--br mfb-fountain" data-mfb-toggle="click">
       <li class="mfb-component__wrap">
         <a href="#" class="mfb-component__button--main ripple">
           <i class="mfb-component__main-icon--resting material-icons">add</i>
           <i class="mfb-component__main-icon--active material-icons">clear</i>
         </a>
         <ul class="mfb-component__list">
-          <li><a href="pages/about.html" class="mfb-component__button--child deep-orange ripple"><i class="mfb-component__child-icon material-icons">info_outline</i></a></li>
-          <li><a href="pages/doc-en.html" class="mfb-component__button--child green darken-2 ripple"><i class="mfb-component__child-icon material-icons">help_outline</i></a></li>
+          <li><a href="pages/about.html" class="mfb-component__button--child"><i class="mfb-component__child-icon material-icons">info_outline</i></a></li>
+          <li><a href="pages/doc-en.html" class="mfb-component__button--child"><i class="mfb-component__child-icon material-icons">help_outline</i></a></li>
         </ul>
       </li>
     </ul>

@@ -103,11 +103,11 @@ function drawCoords() {
     if (i < angles.length - 1) {
       var c = Math.cos(t) * circleRadius,
         r = -Math.sin(t) * circleRadius;
-      g.fillStyle = "#000000", g.beginPath(), g.arc(circleX + c, circleY + r, 3, 0, 2 * Math.PI), g.fill();
+      g.fillStyle = "#fff", g.beginPath(), g.arc(circleX + c, circleY + r, 3, 0, 2 * Math.PI), g.fill();
       var c = Math.cos(t) * (circleRadius + 22),
         r = -Math.sin(t) * (circleRadius + 22),
         a = angles[i][3];
-      if (l) g.fillStyle = "#000000", g.font = "15px Arial", g.textAlign = "center", g.fillText(a, circleX + c, circleY + r);
+      if (l) g.fillStyle = "#fff", g.font = "15px Arial", g.textAlign = "center", g.fillText(a, circleX + c, circleY + r);
       else {
         switch (currX = circleX + c, currY = circleY + r, e) {
           case 1:
@@ -122,7 +122,7 @@ function drawCoords() {
           case 4:
             currX -= 5
         }
-        g.fillStyle = "#000000", g.font = "15px Arial", g.textAlign = "center", g.fillText("(", currX, currY), currX += 10;
+        g.fillStyle = "#fff", g.font = "15px Arial", g.textAlign = "center", g.fillText("(", currX, currY), currX += 10;
         for (var n = 0; n < 2; n++) {
           n > 0 && (g.font = "15px Arial", g.fillText(",", currX, currY), currX += 12);
           var o = !0;
@@ -154,17 +154,17 @@ function drawAngles() {
     if (i < angles.length - 1) {
       var l = Math.cos(e) * circleRadius,
         c = -Math.sin(e) * circleRadius;
-      g.fillStyle = "#000000", g.beginPath(), g.arc(circleX + l, circleY + c, 3, 0, 2 * Math.PI), g.fill();
+      g.fillStyle = "#fff", g.beginPath(), g.arc(circleX + l, circleY + c, 3, 0, 2 * Math.PI), g.fill();
       var l = Math.cos(e) * (circleRadius - 22),
         c = -Math.sin(e) * (circleRadius - 22);
-      degQ ? (g.fillStyle = "#000000", g.font = "15px Arial", g.textAlign = "center", g.fillText(t.toString() + "°", circleX + l, circleY + c + 5)) : (numer = angles[i][1], denom = angles[i][2], "1" == numer && (numer = ""), "0" != numer && (numer += "π"), "1" == denom ? (g.fillStyle = "#000000", g.font = "15px Arial", g.textAlign = "center", g.fillText(numer, circleX + l, circleY + c)) : drawFrac(g, !0, numer, denom, circleX + l, circleY + c))
+      degQ ? (g.fillStyle = "#fff", g.font = "15px Arial", g.textAlign = "center", g.fillText(t.toString() + "°", circleX + l, circleY + c + 5)) : (numer = angles[i][1], denom = angles[i][2], "1" == numer && (numer = ""), "0" != numer && (numer += "π"), "1" == denom ? (g.fillStyle = "#fff", g.font = "15px Arial", g.textAlign = "center", g.fillText(numer, circleX + l, circleY + c)) : drawFrac(g, !0, numer, denom, circleX + l, circleY + c))
     }
   }
 }
 
 function drawFrac(e, t, i, l, c, r) {
-  e.fillStyle = "#000000", e.font = "17px Arial", e.textAlign = "center", t || e.fillText("-", c - 14, r + 4), e.font = "12px Arial";
-  e.fillText(i, c, r - 3), e.fillText(l, c, r + 12), e.strokeStyle = "#000000", e.beginPath(), e.lineWidth = 1, e.moveTo(c - 8, r), e.lineTo(c + 8, r), e.stroke()
+  e.fillStyle = "#fff", e.font = "17px Arial", e.textAlign = "center", t || e.fillText("-", c - 14, r + 4), e.font = "12px Arial";
+  e.fillText(i, c, r - 3), e.fillText(l, c, r + 12), e.strokeStyle = "#fff", e.beginPath(), e.lineWidth = 1, e.moveTo(c - 8, r), e.lineTo(c + 8, r), e.stroke()
 }
 
 function to3Dig(e) {
@@ -176,7 +176,7 @@ function hiGraphics() {
 }
 
 function TextBox(e, t, i, l, c, r, a, n, o) {
-  this.g = e, this.font = t, this.fontSize = i, this.wd = l, this.lines = c, this.txt = r, this.posx = a, this.posy = n, this.clr = "#000000", this.refresh()
+  this.g = e, this.font = t, this.fontSize = i, this.wd = l, this.lines = c, this.txt = r, this.posx = a, this.posy = n, this.clr = "#fff", this.refresh()
 }
 hiGraphics.prototype.clear = function(e) {
   return g = e.getContext("2d"), g.clearRect(0, 0, e.width, e.height), !0

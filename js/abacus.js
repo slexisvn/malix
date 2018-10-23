@@ -1,7 +1,7 @@
 var images = document.getElementsByTagName('img');
 
 function v041(v009 = event) {
-  const charCode = (v009.charCode) ? v009.charCode : ((v009.keyCode) ? v009.keyCode : ((v009.which) ? v009.which : 0));
+  let charCode = (v009.charCode) ? v009.charCode : ((v009.keyCode) ? v009.keyCode : ((v009.which) ? v009.which : 0));
   if ((charCode <= 31 || (charCode >= 48 && charCode <= 57)) || (this.v026 == 'C' && (charCode >= 65 && charCode <= 70))) {
     return !0
   }
@@ -9,7 +9,7 @@ function v041(v009 = event) {
 }
 
 function v042(v011) {
-  const v010 = v011;
+  v010 = v011;
   v012 = v010.substring(0, 1);
   v013 = v010.slice(1);
   v014 = v013.split('-');
@@ -28,7 +28,7 @@ function v042(v011) {
 }
 
 function v043() {
-  const value = 0;
+  let value = 0;
   let v025 = "";
   if (this.v026 == "C") {
     for (i = this.v018 - 1; i >= 0; i--) {
@@ -112,12 +112,13 @@ function v045(v033) {
 }
 
 function v046(v022) {
-  if (v022 !== undefined)
+  if (v022 !== undefined) {
     this.v018 = v022;
+  }
   let v036 = this.v017;
-  const v021 = this.v018;
-  let a = `<div class=card><input id=number type=text oninput="${this.abacusname}.assignstring(number.value);" style="border:none;width:100%;outline:none"/></div> <button class="button ui-btn deep-purple" onclick="${this.abacusname}.reset();number.value=${this.abacusname}.currentvaluestring;return false" style="font-size:16px">Reset</button>`;
-  a += "<div class=card><div class=overflow><table cellpadding=0 cellspacing=0>";
+  let v021 = this.v018;
+  let a = `<div class=card><input id=number type=text oninput="${this.abacusname}.assignstring(number.value);" style="border:none;width:100%;outline:none;background:none;color:#fff"/></div> <button class="button ui-btn deep-purple" onclick="${this.abacusname}.reset();number.value=${this.abacusname}.currentvaluestring;return false" style="font-size:16px">Reset</button>`;
+  a += "<div class=card><div class=overflow><table cellpadding=0 cellspacing=0 align=center>";
   for (v015 = 0; v015 < v036 + 2; v015++) {
     a += "<tr>";
     for (v016 = v021 - 1; v016 >= 0; --v016) {
@@ -137,7 +138,7 @@ function v046(v022) {
   }
   a += "</table>";
   v036 = this.v027;
-  a += "<table cellpadding=0 cellspacing=0>";
+  a += "<table cellpadding=0 cellspacing=0 align=center>";
   for (v015 = 0; v015 < v036 + 3; v015++) {
     if (v015 == 0) a += '<tr style="line-height:6px;">';
     else a += "<tr>";
@@ -213,15 +214,15 @@ function Abacus(nm, nc, abtype, iv, imagep, beadpic, nobeadpic, basepic, middlep
 }
 
 function initialize_suanpan() {
-  const columns = 7;
-  const abacus_size = "Small";
+  let columns = 7;
+  let abacus_size = "Small";
   suanpan = new Abacus("suanpan", columns, "Suanpan", 0, "../img/", `${abacus_size}Suanpan_image_bead.png`, `${abacus_size}Soroban_image_nobead.png`, `${abacus_size}Soroban_image_bottomborder.png`, `${abacus_size}Soroban_image_middlesep.png`, `${abacus_size}Soroban_image_top.png`);
   return
 }
 
 function initialize_soroban() {
-  const columns = 7;
-  const abacus_size = "Small";
+  let columns = 7;
+  let abacus_size = "Small";
   soroban = new Abacus("soroban", columns, "Soroban", 0, "../img/", `${abacus_size}Soroban_image_bead.png`, `${abacus_size}Soroban_image_nobead.png`, `${abacus_size}Soroban_image_bottomborder.png`, `${abacus_size}Soroban_image_middlesep.png`, `${abacus_size}Soroban_image_top.png`);
   return
 }

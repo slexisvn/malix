@@ -2,7 +2,7 @@
 Malix − Collection of mathematical tools
 
 * Calculate
-* Convert
+* Unit converter
 * Solve
 * System of equations
 * Polynomial

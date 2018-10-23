@@ -112,8 +112,8 @@
 if (LN === 'vi') {
   document.getElementsByClassName('title')[1].innerHTML = 'Tập hợp';
   let lb = document.getElementsByTagName('label');
-  lb[1].innerHTML = 'Nhập tập hợp A';
-  lb[2].innerHTML = 'Nhập tập hợp B';
+  lb[1].innerHTML = 'Tập hợp A';
+  lb[2].innerHTML = 'Tập hợp B';
 }
 
 $('#inputA, #inputB').on('input', function() {
