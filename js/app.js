@@ -25,11 +25,10 @@ var LN = navigator.language.substr(0, 2);
 
 if (LN === 'vi') {
 	let _vi = ['Đổi', 'Giải phương trình, bất phương trình', 'Hệ phương trình tuyến tính', 'Đa thức', 'Vẽ đồ thị', 'Giải tích', 'Ma trận', 'Vector', 'Phân phối', 'Thống kê', 'Dãy số', 'Khai triển lượng giác', 'Tập hợp', 'Vòng tròn lượng giác', 'Bàn tính'];
-	let els = document.getElementById('search');
 	for (let i = 0; i < 15; i++) {
-		els.getElementsByTagName('a')[i].childNodes[0].nodeValue = _vi[i];
+		search.getElementsByTagName('a')[i].childNodes[0].nodeValue = _vi[i];
 	}
-	els.dataset.filterPlaceholder = 'Tìm công cụ';
+	search.dataset.filterPlaceholder = 'Tìm công cụ';
 	document.getElementsByClassName('title')[0].innerHTML = 'Phép tính thường';
 	document.getElementsByTagName('label')[0].innerHTML = 'Biểu thức';
 	document.getElementsByClassName('mfb-component__button--child')[1].href = 'pages/doc-vi.html';
