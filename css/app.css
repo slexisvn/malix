@@ -63,7 +63,7 @@ a {
 }
 
 .textcomplete-dropdown {
-  background-color: #323232;
+  background-color: #616161;
   list-style: none;
   padding: 0;
   margin: 0;
@@ -234,7 +234,7 @@ button.ui-btn {
 
 .card,
 button.ui-btn {
-  background-color: #303030;
+  background-color: #424242;
   color: #fff
 }
 
@@ -388,11 +388,11 @@ button.ui-btn:active {
 }
 
 .mfb-component__button--main {
-  background-color: #323232
+  background-color: #616161
 }
 
 .mfb-component__button--child {
-  background-color: #424242
+  background-color: #616161
 }
 
 #seach a {

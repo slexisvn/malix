@@ -17,7 +17,7 @@ function circletriangleMain() {
     [315, 7, 4, "+2-2", 4],
     [330, 11, 6, "+3-1", 4],
     [360, 2, 1, "", 4]
-  ], angleBox = new TextBox(g, "Arial", 24, 100, 1, "", 170, 110, !1), angleBox.setClr("#0000ff"), angleTypeBox = new TextBox(g, "Arial", 24, 200, 1, "", 290, 140, !0), el.addEventListener("touchmove", ontouchmove, !1), el.addEventListener("mousemove", onmousemove, !1), update()
+  ], angleBox = new TextBox(g, "Arial", 24, 100, 1, "", 170, 110, !1), angleBox.setClr("#7986cb"), angleTypeBox = new TextBox(g, "Arial", 24, 200, 1, "", 290, 140, !0), el.addEventListener("touchmove", ontouchmove, !1), el.addEventListener("mousemove", onmousemove, !1), update()
 }
 
 function onmousemove(e) {
@@ -73,7 +73,7 @@ function drawAngle() {
       e = [0, 1, 0]
   }
   var t = "";
-  switch (t = degQ ? angleSnap + "°" : to3Dig(angle), g.font = "18px Arial", g.textAlign = "center", g.fillStyle = "#44dd44", g.fillText("sin(" + t + ") = " + e[0], w / 2, 20, w), g.fillStyle = "#0000ff", g.fillText("cos(" + t + ") = " + e[1], w / 2, 45, w), g.fillStyle = "#ff4444", g.fillText("tan(" + t + ") = " + e[2], w / 2, 70, w), g.lineJoin = "round", g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#aaaaaa", g.moveTo(circleX, circleY), g.lineTo(circleX + cX, circleY + cY), g.stroke(), g.beginPath(), g.lineWidth = 1, g.strokeStyle = "#ff00ff", g.moveTo(circleX, circleY + circleRadius + 10), g.lineTo(circleX, circleY - circleRadius - 10), g.moveTo(circleX + circleRadius + 10, circleY), g.lineTo(circleX - circleRadius - 10, circleY), g.stroke(), HiGraphics.lineStyle(2, "#aaaaaa", 1), angleSnap) {
+  switch (t = degQ ? angleSnap + "°" : to3Dig(angle), g.font = "18px Arial", g.textAlign = "center", g.fillStyle = "#44dd44", g.fillText("sin(" + t + ") = " + e[0], w / 2, 20, w), g.fillStyle = "#7986cb", g.fillText("cos(" + t + ") = " + e[1], w / 2, 45, w), g.fillStyle = "#ff4444", g.fillText("tan(" + t + ") = " + e[2], w / 2, 70, w), g.lineJoin = "round", g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#aaaaaa", g.moveTo(circleX, circleY), g.lineTo(circleX + cX, circleY + cY), g.stroke(), g.beginPath(), g.lineWidth = 1, g.strokeStyle = "#ff00ff", g.moveTo(circleX, circleY + circleRadius + 10), g.lineTo(circleX, circleY - circleRadius - 10), g.moveTo(circleX + circleRadius + 10, circleY), g.lineTo(circleX - circleRadius - 10, circleY), g.stroke(), HiGraphics.lineStyle(2, "#aaaaaa", 1), angleSnap) {
     case 90:
       HiGraphics.drawBox(g, circleX, circleY - 25, 25, 0);
       break;
@@ -83,7 +83,7 @@ function drawAngle() {
     default:
       HiGraphics.drawArc(g, circleX, circleY, 30, -angle, 0)
   }
-  g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#0000ff", g.moveTo(circleX, circleY), g.lineTo(circleX + cX, circleY), g.stroke(), g.closePath(), g.fillStyle = "#44dd44", g.fillText(e[0], circleX + cX + 5, circleY + cY / 2), g.fillStyle = "#0000ff", g.fillText(e[1], circleX + cX / 2, circleY), g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#44dd44", g.moveTo(circleX + cX, circleY), g.lineTo(circleX + cX, circleY + cY), g.stroke(), g.closePath(), g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#ff4444", g.moveTo(circleX + cX, circleY + cY), g.lineTo(circleX + cX - tanLen * Math.sin(angle), circleY), g.stroke(), g.closePath()
+  g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#7986cb", g.moveTo(circleX, circleY), g.lineTo(circleX + cX, circleY), g.stroke(), g.closePath(), g.fillStyle = "#44dd44", g.fillText(e[0], circleX + cX + 5, circleY + cY / 2), g.fillStyle = "#7986cb", g.fillText(e[1], circleX + cX / 2, circleY), g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#44dd44", g.moveTo(circleX + cX, circleY), g.lineTo(circleX + cX, circleY + cY), g.stroke(), g.closePath(), g.beginPath(), g.lineWidth = 2, g.strokeStyle = "#ff4444", g.moveTo(circleX + cX, circleY + cY), g.lineTo(circleX + cX - tanLen * Math.sin(angle), circleY), g.stroke(), g.closePath()
 }
 
 function angleDeg(e, t) {
