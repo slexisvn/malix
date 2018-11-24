@@ -1,5 +1,5 @@
 if (LN === 'vi') {
-  select1.options[0].text = 'Nhập vector';
+  select1.options[0].text = 'Nhập các vector';
   select1.options[1].text = 'Tính toán';
   document.getElementsByTagName('label')[1].innerHTML = 'Biểu thức';
 }
@@ -163,11 +163,7 @@ $('#input').textcomplete([{
     callback($.map(words, word => word.indexOf(term) === 0 ? word : null))
   },
   replace(word) {
-    if (word.includes('vec')) {
-      return word
-    } else {
-      return `${word}()`
-    }
+    return word.includes('vec') ? word : `${word}()`
   }
 }]);
 

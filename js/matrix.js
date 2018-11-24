@@ -57,11 +57,7 @@ $('#input').textcomplete([{
     callback($.map(words, word => word.indexOf(term) === 0 ? word : null));
   },
   replace(word) {
-    if (word === 'matA' || word === 'matB' || word === 'matC') {
-      return word;
-    } else {
-      return `${word}()`;
-    }
+    return word === 'matA' || word === 'matB' || word === 'matC' ? word : `${word}()`;
   }
 }]);
 

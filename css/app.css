@@ -27,7 +27,7 @@ label {
   white-space: nowrap
 }
 
-.input,
+.input, .input-set,
 a {
   outline: 0
 }
@@ -403,14 +403,21 @@ button.ui-btn:active {
   color: #009688
 }
 
-.input {
+.input, .input-set {
   background: 0 0;
   color: #fff;
-  width: 25%;
   border: none;
   border-bottom: 1px solid #009688
 }
 
-.input:focus {
+.input:focus, .input-set:focus {
   border-bottom: 2px #009688 solid
+}
+
+.input {
+  width: 25%;
+}
+
+.input-set {
+  width: 100%
 }

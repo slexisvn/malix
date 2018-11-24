@@ -24,7 +24,7 @@ $('#search').css({
 var LN = navigator.language.substr(0, 2);
 
 if (LN === 'vi') {
-	let _vi = ['Đổi', 'Giải phương trình, bất phương trình', 'Hệ phương trình tuyến tính', 'Đa thức', 'Vẽ đồ thị', 'Giải tích', 'Ma trận', 'Vector', 'Phân phối', 'Thống kê', 'Dãy số', 'Khai triển lượng giác', 'Tập hợp', 'Vòng tròn lượng giác', 'Bàn tính'];
+	let _vi = ['Đổi đơn vị', 'Giải phương trình, bất phương trình', 'Hệ phương trình tuyến tính', 'Đa thức', 'Vẽ đồ thị', 'Giải tích', 'Ma trận', 'Vector', 'Phân phối', 'Thống kê', 'Dãy số', 'Khai triển lượng giác', 'Tập hợp', 'Vòng tròn lượng giác', 'Bàn tính'];
 	for (let i = 0; i < 15; i++) {
 		search.getElementsByTagName('a')[i].childNodes[0].nodeValue = _vi[i];
 	}
@@ -73,10 +73,8 @@ function divisors(num) {
   let divisors = new Vector();
   num = num > 0 ? num : -num
   for (let i = 1; i <= num; i++) {
-    if (i) {
-      if (num % i === 0) {
-        divisors.elements.push(new Symbol(i))
-      }
+    if (num % i === 0) {
+      divisors.elements.push(new Symbol(i))
     }
   }
   return divisors
