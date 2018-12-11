@@ -9,15 +9,10 @@ $.getScript('../js/algebra.js', function() {
       $('#input').textcomplete([{
         match: /(^|\b)(\w{1,}|\W{1,})$/,
         search(term, callback) {
-          let words = ['cos', 'sin', 'tan', 'sqrt', 'asin', 'acos', 'atan', 'ln', '/'];
-          callback($.map(words, word => word.indexOf(term) === 0 ? word : null))
+          callback($.map(['cos', 'sin', 'tan', 'sqrt', 'asin', 'acos', 'atan', 'ln', '/'], word => word.indexOf(term) === 0 ? word : null))
         },
         replace(word) {
-          if (word === '/') {
-            return '()/()'
-          } else {
-            return `${word}()`
-          }
+          return word === '/' ? '()/()' : `${word}()`
         }
       }]);
 

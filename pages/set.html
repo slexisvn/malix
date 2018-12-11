@@ -16,43 +16,38 @@
     <div id="input_set_area" class="content">
       <div class="card">
         <label>Set A</label>
-        <input type="text" data-role="none" class="input-set" id="a0" placeholder="1 3 2 4 5" /><br /><br />
+        <input type="text" data-role="none" class="input-set" id="i0" placeholder="1 3 2 4 5" /><br /><br />
         <label>Set B</label>
-        <input type="text" data-role="none" class="input-set" id="b0" placeholder="0 3 3 2 2" /><br /><br />
+        <input type="text" data-role="none" class="input-set" id="i1" placeholder="0 3 3 2 2" /><br /><br />
         <label>Set C</label>
-        <input type="text" data-role="none" class="input-set" id="c0" placeholder="3 3 2 9 5" /><br /><br />
+        <input type="text" data-role="none" class="input-set" id="i2" placeholder="3 3 2 9 5" /><br /><br />
         <label>Set D</label>
-        <input type="text" data-role="none" class="input-set" id="d0" placeholder="1 3 4 3 0" />
+        <input type="text" data-role="none" class="input-set" id="i3" placeholder="1 3 4 3 0" />
       </div>
     </div>
     <div id="input_interval_area" class="content">
       <div class="card">
         <label>Interval A</label>
-        <input type="text" data-role="none" class="input-bracket" id="i00" placeholder="[" />
-        <input type="text" data-role="none" class="input" id="i01" placeholder="2" />;
-        <input type="text" data-role="none" class="input" id="i02" placeholder="7" />
-        <input type="text" data-role="none" class="input-bracket" id="i03" placeholder=")" /><br /><br />
+        ( <input type="text" data-role="none" class="input" id="i01" placeholder="2" />; 
+        <input type="text" data-role="none" class="input" id="i02" placeholder="7" />)
+        <br /><br />
         <label>Interval B</label>
-        <input type="text" data-role="none" class="input-bracket" id="i10" placeholder="[" />
-        <input type="text" data-role="none" class="input" id="i11" placeholder="-3" />;
-        <input type="text" data-role="none" class="input" id="i12" placeholder="0" />
-        <input type="text" data-role="none" class="input-bracket" id="i13" placeholder="]" /><br /><br />
+        ( <input type="text" data-role="none" class="input" id="i11" placeholder="-3" />; 
+        <input type="text" data-role="none" class="input" id="i12" placeholder="0" />)
+        <br /><br />
         <label>Interval C</label>
-        <input type="text" data-role="none" class="input-bracket" id="i20" placeholder="(" />
-        <input type="text" data-role="none" class="input" id="i21" placeholder="-oo" />;
-        <input type="text" data-role="none" class="input" id="i22" placeholder="-1" />
-        <input type="text" data-role="none" class="input-bracket" id="i23" placeholder=")" /><br /><br />
+        ( <input type="text" data-role="none" class="input" id="i21" placeholder="-oo" />; 
+        <input type="text" data-role="none" class="input" id="i22" placeholder="-1" />)
+        <br /><br />
         <label>Interval D</label>
-        <input type="text" data-role="none" class="input-bracket" id="i30" placeholder="[" />
-        <input type="text" data-role="none" class="input" id="i31" placeholder="2" />;
-        <input type="text" data-role="none" class="input" id="i32" placeholder="+oo" />
-        <input type="text" data-role="none" class="input-bracket" id="i33" placeholder=")" />
+        ( <input type="text" data-role="none" class="input" id="i31" placeholder="2" />; 
+        <input type="text" data-role="none" class="input" id="i32" placeholder="+oo" />)
       </div>
     </div>
     <div id="main_area" class="content">
       <div class="card">
         <label>Expression</label>
-        <input type="text" data-clear-btn="true" placeholder="union(setA, setB), union(itvA, itvB)" id="input" />
+        <input type="text" data-clear-btn="true" placeholder="unionS(setA, setB), unionI(R, itvB)" id="input" />
       </div>
       <button class="katex" id="cal">=</button>
       <div class="card">

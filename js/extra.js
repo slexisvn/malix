@@ -43,10 +43,11 @@ var val = [
 ];
 
 var ctx = plotDistr.getContext('2d');
-var lower_limit = -4;
-var upper_limit = 4;
+ctx.font="14px Arial";
+var lower_limit = -3;
+var upper_limit = 3;
 var step = 0.001;
-var canvas_width = 300;
+var canvas_width = 350;
 var canvas_height = 350;
 var x_plotting_unit = canvas_width / 8;
 var y_plotting_unit = canvas_height * 2;
@@ -283,9 +284,6 @@ function plot_z_score_area(str) {
     area_right_of_z = 1 - area_left_of_z;
     area_between_0_and_z = area_between_0_and_plus_z
   }
-  area_left_of_z = area_left_of_z;
-  area_right_of_z = area_right_of_z;
-  area_between_0_and_z = area_between_0_and_z;
 
   distr_output.innerHTML = katex.renderToString(`\\begin{array}{l}
         \\text{Z-score} & \\approx & ${zscore}\\\\
@@ -300,7 +298,7 @@ function plot_z_score_area(str) {
   X_right = (mean_in_graph + z) * x_plotting_unit;
   ctx.moveTo(X_right, canvas_height - lower_offset_from_canvas);
   ctx.lineTo(X_right, 0);
-  ctx.strokeStyle = '#125645';
+  ctx.strokeStyle = '#fff';
   ctx.stroke();
   ctx.closePath();
   ctx.beginPath();
@@ -325,7 +323,7 @@ function plot_z_score_area(str) {
   ctx.closePath();
   ctx.beginPath();
   grd = ctx.createLinearGradient(0, 0, 350, 0);
-  grd.addColorStop(1, "white");
+  grd.addColorStop(1, "#fff");
   if (z > 0) {
     grd.addColorStop(0, "#647f42");
     ctx.fillStyle = grd;
@@ -348,7 +346,7 @@ function plot_z_score_area(str) {
   ctx.fill();
   ctx.closePath();
   ctx.beginPath();
-  ctx.fillStyle = 'white';
+  ctx.fillStyle = '#fff';
   ctx.fillText('P(z)', 20, 20);
   ctx.fillText('Q(z)', 150, 20);
   ctx.fillText('R(z)', 230, 20);
@@ -364,7 +362,7 @@ function draw_normal_curve() {
   for (xtick = lower_limit; xtick <= upper_limit; xtick++) {
     ctx.moveTo((xtick + upper_limit) * x_plotting_unit, canvas_height - lower_offset_from_canvas);
     ctx.lineTo((xtick + upper_limit) * x_plotting_unit, canvas_height - lower_offset_from_canvas + length_of_xtick);
-    ctx.fillStyle = 'white';
+    ctx.fillStyle = '#fff';
     ctx.fillText(xtick, (xtick + upper_limit) * x_plotting_unit - 2, canvas_height - lower_offset_from_canvas + length_of_xtick + 12)
   }
   for (x = lower_limit; x <= upper_limit; x += step) {
@@ -374,7 +372,7 @@ function draw_normal_curve() {
     Y = canvas_height - (yval * y_plotting_unit) - lower_offset_from_canvas;
     ctx.rect(X, Y, 0.1, 0.1)
   }
-  ctx.strokeStyle = 'white';
+  ctx.strokeStyle = '#fff';
   ctx.fill();
   ctx.stroke();
   ctx.closePath()

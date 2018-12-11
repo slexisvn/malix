@@ -50,8 +50,10 @@ $.getScript('../js/algebra.js', function() {
     });
 
     cal.onclick = function() {
-      let result = input.value;
+      let Input = input.value;
+      let result = '';
       let b = at.value;
+      let v = variable.value;
       if (option === 'l') {
         if (b.includes('oo')) {
           if (b === '+oo') {
@@ -67,7 +69,7 @@ $.getScript('../js/algebra.js', function() {
             b += '+10^(-9)';
           }
         }
-        let num = +nerdamer(result).sub(variable.value, b).evaluate().text();
+        let num = parseFloat(nerdamer(Input).sub(v, b).evaluate().text());
         if (num > 100000000.0) {
           result = '+\\infty';
         } else if (num < -100000000.0) {
@@ -82,11 +84,11 @@ $.getScript('../js/algebra.js', function() {
       }
 
       if (option === 'd') {
-        result = nerdamer(`diff(${result},${variable.value},${select_deg.value})`);
+        result = nerdamer(`diff(${Input},${v},${select_deg.value})`);
         if (b === '') {
           result = result.toTeX();
         } else {
-          result = result.sub(variable.value, b);
+          result = result.sub(v, b);
           let approx = `\\approx ${result.evaluate().text()}`;
           result = result.toTeX();
           if (approx.includes('.')) {
@@ -96,7 +98,7 @@ $.getScript('../js/algebra.js', function() {
       }
 
       if (option === 'i') {
-        result = nerdamer(`integrate(${result},${variable.value})`).toTeX();
+        result = nerdamer(`integrate(${Input},${v})`).toTeX();
         if (!result.includes('int')) {
           result += '+C';
         } else {
@@ -105,14 +107,14 @@ $.getScript('../js/algebra.js', function() {
       }
 
       if (option === 't') {
-        result = nerdamer(`defint(${result},${from.value},${to.value},${variable.value})`);
+        result = nerdamer(`defint(${Input},${from.value},${to.value},${v})`);
         let approx_result = result.evaluate().text();
         result = result.toTeX();
         if (!approx_result.includes('*')) {
           if (+result.substr(7, result.indexOf('}{') - 7) > 1000 || result.includes('int')) {
-            result = `\\approx${approx_result}`;
+            result = `\\approx ${approx_result}`;
           } else {
-            result += `\\approx${approx_result}`;
+            result += `\\approx ${approx_result}`;
           }
         }
       }
@@ -123,14 +125,10 @@ $.getScript('../js/algebra.js', function() {
           b = '0'
         }
         for (let i = 0; i < 10; i++) {
-          if (i) {
-            result += `${nerdamer(`diff(${input.value},${variable.value},${i})/fact(${i})*(b-${b})^${i}`).sub(variable.value, b).evaluate().text()}+`;
-          } else {
-            result += `${nerdamer(input.value).sub(variable.value, b).evaluate().text()}+`;
-          }
+          result += i ? `${nerdamer(`diff(${Input},${v},${i})/fact(${i})*(b-${b})^${i}`).sub(v, b).toString()}+` : `${nerdamer(Input).sub(v, b).toString()}+`;
         }
 
-        result = `...${nerdamer(result.replace(/\+$/g, '').replace(/b/g, 'x')).toTeX()}`;
+        result = `...\\:${nerdamer(result.replace(/\+$/g, '').replace(/b/g, v)).toTeX()}`;
       }
 
       output.innerHTML = katex.renderToString(result.replace(/\\cdot(?= \\| [a-z])/g, '').replace(/log/g, 'ln'), {
