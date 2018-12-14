@@ -3,18 +3,24 @@ if (LN === 'vi') {
   document.getElementsByTagName('label')[1].innerHTML = 'Biểu thức';
 }
 
+other_eq_output.style.display = other_approx_output.style.display = 'none';
+
 $.getScript('../js/algebra.js', function() {
   $.getScript('../js/calculus.js', function() {
     $.getScript('../js/solve.js', function() {
       $('#input').textcomplete([{
         match: /(^|\b)(\w{1,}|\W{1,})$/,
         search(term, callback) {
-          callback($.map(['cos', 'sin', 'tan', 'sqrt', 'asin', 'acos', 'atan', 'ln', '/'], word => word.indexOf(term) === 0 ? word : null))
+          callback($.map(_W_, word => word.indexOf(term) === 0 ? word : null))
         },
         replace(word) {
           return word === '/' ? '()/()' : `${word}()`
         }
       }]);
+
+      function __2_a(str) {
+        return [...new Set(str.replace(/^\[|\]$|\*/g, '').split(','))];
+      }
 
       function findClosingBracket(str) {
         let depth = 1;
@@ -47,27 +53,6 @@ $.getScript('../js/algebra.js', function() {
               pretty[i] = p
             }
           }
-        }
-      }
-
-      function formatEq(decimal, pretty) {
-        let o = '';
-        for (let i = 0; i < pretty.length; i++) {
-          if (checkFrac(pretty[i], 0)) {
-            o += `\\approx ${decimal[i]}`
-          } else {
-            o += `=${pretty[i]}`;
-            if (isNaN(pretty[i]) && decimal[i] !== 'i' && decimal[i] !== '-i' && !decimal[i].includes('(')) {
-              o += `\\approx ${decimal[i]}`
-            }
-          }
-          o += ','
-        }
-        o = o.replace(/,$/g, '');
-        if ((o.match(/=|\\approx/g) || []).length !== 1) {
-          return `$$\\left[\\begin{array}{l}x${o.replace(/,/g, '\\\\x')}\\end{array}\\right.$$`
-        } else {
-          return `$$x${o}$$`
         }
       }
 
@@ -175,142 +160,189 @@ $.getScript('../js/algebra.js', function() {
         }
       }
 
-      $('button').click(function() {
-        $('#other_area').hide();
-        let operator = $(this).attr('id');
-        let Input = input.value;
-        let N;
-        if (Input.includes(')/(')) {
-          N = nerdamer(`solve(${Input.replace(/\(([^\)]*)\)\/\(([^\)]*)\)/g, '$1')},x)`);
+      function checkEmpty(str) {
+        return str === '' ? true : false
+      }
+
+      function __formatEq__p(p) {
+        let l = p.length;
+        let t = p.map(x => x.replace(/\D/g, ''));
+        if (l === 1 && p[0] !== '') {
+          return `$$x=${p[0]}$$`;
         } else {
-          N = nerdamer(`solve(${Input},x)`)
+          if (t.filter(checkEmpty).length === l) {
+            return '';
+          } else {
+            let o = '';
+            for (let i = 0; i < l; i++) {
+              if (t[i] !== '') {
+                o += `x_${i + 1}=${p[i]}\\\\`;
+              }
+            }
+            o = o.replace(/\\\\$/, '');
+            return (o.match(/x_/g) || []).length === 1 ? `$$${o}$$` : `$$\\left[\\begin{array}{l}${o}\\end{array}\\right.$$`;
+          }
         }
-        let arr_decimal_n = N.evaluate().text().replace(/\[|\]|\*/g, '').split(',');
-        let arr_pretty_n = N.toTeX().replace(/\[|\]/g, '').split(',');
-        let result = '';
-        let deg = parseInt(nerdamer(`deg(${Input},x)`).toString());
+      }
+
+      function __formatEq__d(d) {
+        let l = d.length;
+        let t = d.map(x => x.includes('sqrt') && x.length ? '' : x);
+        if (l === 1 && d[0].includes('.')) {
+          return `$$x\\approx ${d[0]}$$`;
+        } else {
+          if (t.filter(checkEmpty).length === l) {
+            return '';
+          } else {
+            let o = '';
+            for (let i = 0; i < l; i++) {
+              if (t[i] !== '' && parseFloat(d[i]) % 1) {
+                o += `x_${i + 1}\\approx ${__exp_(d[i])}\\\\`;
+              }
+            }
+            o = o.replace(/\\\\$/, '');
+            return (o.match(/x_/g) || []).length === 1 ? `$$${o}$$` : `$$\\left[\\begin{array}{l}${o}\\end{array}\\right.$$`;
+          }
+        }
+      }
+
+      function _s_L(num) {
+        return LN === 'vi' ? `\\text{C${num > 0 ? 'T' : 'D'}}` : `\\text{Local ${num > 0 ? 'Max' : 'Min'}}`
+      }
+
+      $('button').click(function() {
+        let operator = $(this).attr('id');
+        let IV = input.value;
+        let deg = parseInt(nerdamer(`deg(${IV},x)`).toString());
+        let eq;
+        let approx;
+        let N;
+        let __ap;
+        if (deg > 2 && !/[^x\d\W]/g.test(IV)) {
+          N = nerdamer(`roots(${IV},x)`).latex();
+        } else {
+          if (IV.includes(')/(')) {
+            N = nerdamer(`solve(${IV.replace(/\(([^\)]*)\)\/\(([^\)]*)\)/g, '$1')},x)`).latex();
+          } else {
+            N = nerdamer(`solve(${IV},x)`).latex();
+          }
+        }
+        let _d__n = __2_a(N[0]);
+        let _p__n = __2_a(N[1]);
 
         if (operator === 'eq') {
-          if (N.toString() === '[]') {
-            result = `<p align="center">${LN === 'vi' ? 'Không giải được' : 'Can\'t solve'}</p>`
+          if (N[1] === '[]' && N[0] === '[]') {
+            eq = `<p align="center">${LN === 'vi' ? 'Không giải được' : 'Can\'t solve'}</p>`
           } else {
-            result = formatEq(arr_decimal_n, arr_pretty_n);
+            eq = __formatEq__p(_p__n);
+            approx = __formatEq__d(_d__n);
+          }
+          if (IV.includes(')/(')) {
+            __ap = 'none';
+          } else {
+            let _L = LN === 'vi' ? 'tại' : 'at';
+            // MAX - MIN
+            if (deg === 2) {
+              let coeff = __2_a(nerdamer(`coeffs(${IV},x)`).toString());
+              let delta = nerdamer(`(${coeff[1]})^2-4*(${coeff[2]})*(${coeff[0]})`).toString();
+              let __y_o = nerdamer(`-${delta}/(4*(${coeff[2]}))`).latex();
+              let __x_o = nerdamer(`-${coeff[1]}/(2*(${coeff[2]}))`).latex();
+              let _o__ = coeff[2].charAt(0) === '-' ? '\\max' : '\\min';
+              if (!/[^x\d\W]/g.test(IV) && __y_o[0] !== __y_o[1]) {
+                __ap = 'block';
+                other_approx_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[0]}$ ${_L} $x=${__x_o[0]}$</p>`;
+              } else {
+                __ap = 'none';
+              }
+              other_approx_output.style.display = __ap;
+              other_eq_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[1]}$ ${_L} $x=${__x_o[1]}$</p>`;
+            }
 
-            if (!Input.includes(')/(')) {
-              if (deg > 1 && deg < 5) {
-                $('#other_area').show();
-              }
-              // MAX - MIN
-              if (deg === 2) {
-                let coeffs = nerdamer(`coeffs(${Input},x)`).text().replace(/\[|\]/g, '').split(',');
-                let delta = nerdamer(`(${coeffs[1]})^2-4*(${coeffs[2]})*(${coeffs[0]})`);
-                other_output.innerHTML = `<p align="center">$${coeffs[2].charAt(0) === '-' ? '\\max' : '\\min'} y=${nerdamer(`-${delta}/(4*(${coeffs[2]}))`).toTeX()}$ ${LN === 'vi' ? 'tại' : 'at'} $x=${nerdamer(`-${coeffs[1]}/(2*(${coeffs[2]}))`).toTeX()}$</p>`;
-              }
-              //LOCAL MAX/MIN
-              if (deg === 3 || deg === 4) {
-                let dy1 = nerdamer(`diff(${Input},x)`).toString();
-                let roots_of_dy1 = nerdamer(`solve(${dy1},x)`);
-                let roots_decimal_of_dy1 = roots_of_dy1.text().replace(/\[|\]/g, '').split(',');
-                let roots_pretty_of_dy1 = roots_of_dy1.toTeX().replace(/\[|\]/g, '').split(',');
-                let dy2 = nerdamer(`diff(${dy1},x)`);
-                let value_of_dy2 = [];
-                let other_result = '';
-                for (let i = 0; i < roots_decimal_of_dy1.length; i++) {
-                  if (roots_decimal_of_dy1[i].includes('i')) {
-                    if (deg === 3) {
+            //LOCAL MAX/MIN
+            if (deg > 2) {
+              let dy1 = nerdamer(`diff(${IV},x)`).toString();
+              let dy2 = nerdamer(`diff(${dy1},x)`).toString();
+              let v_dy2 = [];
+              let _o_u = '';
+
+              if (deg === 3) {
+                let r_dy1 = nerdamer(`solve(${dy1},x)`);
+                let r__d_dy1 = __2_a(r_dy1.toString());
+                let r_l = r__d_dy1.length;
+                if (r_l > 1) {
+                  let r__p_dy1 = __2_a(r_dy1.toTeX());
+                  let _1_r_dy1 = !/[^x\d\W]/g.test(IV) ? __2_a(r_dy1.text()) : [];
+                  let _o1 = '';
+                  for (let i = 0; i < r_l; i++) {
+                    if (r__d_dy1[i].includes('i')) {
                       break;
+                    } else {
+                      v_dy2.push(parseFloat(nerdamer(dy2).sub('x', r__d_dy1[i]).text()));
+                      let ___ = nerdamer(IV).sub('x', r__d_dy1[i]).toString();
+                      let tmp = nerdamer(___.replace(/sqrt\(([^])\)\^(\w)/g, 'sqrt($1^$2)')).latex();
+                      _o_u += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${tmp[1]}$ ${_L} $x=${r__p_dy1[i]}$</p>`;
+                      if (!/[^x\d\W]/g.test(IV) && tmp[1] !== tmp[0]) {
+                        _o1 += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${tmp[0]}$ ${_L} $x=${_1_r_dy1[i]}$</p>`
+                      }
                     }
+                  }
+                  if (_o1 !== '' && !/[^x\d\W]/g.test(IV)) {
+                    __ap = 'block';
+                    other_approx_output.innerHTML = _o1;
                   } else {
-                    value_of_dy2[i] = parseFloat(nerdamer(dy2).sub('x', roots_decimal_of_dy1[i]).evaluate().text());
-                    if (value_of_dy2[i] !== 0) {
-                      other_result += `<p align="center">$y_{${LN === 'vi' ? `\\text{C${
-                        char = value_of_dy2[i] > 0 ? 'T' : 'D'
-                      }}` : `\\text{Local ${
-                        char = value_of_dy2[i] > 0 ? 'Max' : 'Min'
-                      }}`}}=${nerdamer(Input).sub('x', roots_decimal_of_dy1[i]).toTeX()}$ ${LN === 'vi' ? 'tại' : 'at'} $x=${roots_pretty_of_dy1[i]}$</p>`
+                    __ap = 'none';
+                  }
+                  other_approx_output.style.display = __ap;
+                }
+              }
+              if (deg > 3) {
+                let r_dy1 = __2_a(nerdamer(`roots(${dy1},x)`).text());
+                for (let i = 0, r_l = r_dy1.length; i < r_l; i++) {
+                  if (!r_dy1[i].includes('i')) {
+                    v_dy2.push(parseFloat(nerdamer(dy2).sub('x', r_dy1[i]).text()));
+                    if (v_dy2[i]) {
+                      _o_u += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${nerdamer(IV).sub('x', r_dy1[i]).text()}$ ${_L} $x=${r_dy1[i]}$</p>`
                     }
                   }
                 }
-                if (other_result === '') {
-                  other_result = `<p align="center">${LN === 'vi' ? 'Không có cực trị' : 'No Local Max/Min'}</p>`
-                } else {
-                  let gx = nerdamer(`divide(${Input},${dy1})`).toTeX();
-                  other_result += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;
-                }
-                other_output.innerHTML = other_result.replace(/\\cdot(?= \\| [a-z])/g, '');
               }
-            }
-          }
-        } else {
-          let temp;
-          let sign_table;
-          let sign_of_A = (Input.match(/\(-|^-/g) || []).length;
-          if (sign_of_A === 1) {
-            sign_table = '-+-+-+-+-'
-          } else {
-            sign_table = '+-+-+-+-+'
-          }
-          deleteImagineRoots(arr_decimal_n, arr_pretty_n);
-          if (Input.includes(')/(')) {
-            let D = nerdamer(`solve(${Input.replace(/\(([^\)]*)\)\/\(([^\)]*)\)/g, '$2')},x)`);
-            let arr_decimal_d = D.evaluate().text().replace(/\[|\]|\*/g, '').split(',');
-            let arr_pretty_d = D.toTeX().replace(/\[|\]/g, '').split(',');
-            deleteImagineRoots(arr_decimal_d, arr_pretty_d);
-            if (arr_decimal_d.length || arr_decimal_n.length) {
-              let arr_decimal = [50, ...arr_decimal_n.map(parseFloat), ...arr_decimal_d.map(parseFloat), -50];
-              let arr_pretty = ['+\\infty', ...arr_pretty_n, ...arr_pretty_d, '-\\infty'];
-              sort(arr_decimal, arr_pretty);
-              switch (operator) {
-                case 'ge':
-                  temp = formatEOfRationalFunc(arr_decimal_d, arr_decimal, arr_pretty, sign_table, '+')
-                  break;
-                case 'le':
-                  temp = formatEOfRationalFunc(arr_decimal_d, arr_decimal, arr_pretty, sign_table, '-')
-                  break;
-                case 'gt':
-                  temp = formatT(arr_decimal, arr_pretty, sign_table, '+')
-                  break;
-                case 'lt':
-                  temp = formatT(arr_decimal, arr_pretty, sign_table, '-')
-                  break;
-              }
-              arr_decimal = temp[0];
-              arr_pretty = temp[1];
-              result = formatIneq(arr_decimal, arr_pretty)
-            } else {
-              result = noSolutionIneq(sign_of_A, operator);
-            }
-          } else {
-            if (deg > 1 && deg < 5) {
-              if (arr_decimal_n.length) {
-                arr_decimal_n = [50, ...arr_decimal_n.map(parseFloat), -50];
-                arr_pretty_n = ['+\\infty', ...arr_pretty_n, '-\\infty'];
-                sort(arr_decimal_n, arr_pretty_n);
-                switch (operator) {
-                  case 'ge':
-                    temp = formatEOfPoly(arr_decimal_n, arr_pretty_n, sign_table, '+')
-                    break;
-                  case 'le':
-                    temp = formatEOfPoly(arr_decimal_n, arr_pretty_n, sign_table, '-')
-                    break;
-                  case 'gt':
-                    temp = formatT(arr_decimal_n, arr_pretty_n, sign_table, '+')
-                    break;
-                  case 'lt':
-                    temp = formatT(arr_decimal_n, arr_pretty_n, sign_table, '-')
-                    break;
-                }
-                arr_decimal_n = temp[0];
-                arr_pretty_n = temp[1];
-                result = formatIneq(arr_decimal_n, arr_pretty_n)
+              if (_o_u === '') {
+                _o_u = `<p align="center">${LN === 'vi' ? 'Không có cực trị' : 'No Local Max/Min'}</p>`;
+
               } else {
-                result = noSolutionIneq(sign_of_A, operator);
+                let gx = nerdamer(`divide(${IV},${dy1})`).toTeX();
+                _o_u += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;
               }
+              other_eq_output.innerHTML = _o_u;
             }
           }
+          other_eq_output.style.display = deg > 1 ? 'block' : 'none';
         }
-        output.innerHTML = result.replace(/,$|\\cdot(?= \\| [a-z])/g, '');
-        renderMathInElement(document.getElementById("math"), { delimiters: [{ left: "$$", right: "$$", display: !0 }, { left: "$", right: "$", display: !1 }] })
+        if (eq !== '') {
+          __ap = 'block';
+          eq_output.innerHTML = eq.replace(/,$/g, '');
+        } else {
+          __ap = 'none';
+        }
+        eq_output.style.display = __ap;
+        if (approx !== '' && N[1].replace(/ /g, '') !== N[0].replace(/\*/g, '') && approx !== undefined) {
+          __ap = 'block';
+          approx_output.innerHTML = approx;
+        } else {
+          __ap = 'none';
+        }
+        approx_output.style.display = __ap;
+        renderMathInElement(document.getElementById("math"), {
+          delimiters: [{
+            left: "$$",
+            right: "$$",
+            display: !0
+          }, {
+            left: "$",
+            right: "$",
+            display: !1
+          }]
+        })
       })
     })
   })

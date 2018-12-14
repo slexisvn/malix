@@ -2,7 +2,9 @@
   <div class="navbar">
     <div class="navbar-inner">
       <div class="left">
-        <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+        <a href="" class="link" data-rel="back">
+          <i class="material-icons">arrow_back</i>
+        </a>
       </div>
       <div class="title">System of equations</div>
     </div>
@@ -15,15 +17,12 @@
       <option value="4">4</option>
       <option value="5">5</option>
     </select>
-    <div class="card overflow-nowrap">
-      <div id="input"></div>
-    </div>
+    <div class="card overflow" id="input"></div>
     <button class="katex" id="cal">=</button>
-    <div class="card overflow-nowrap">
-      <div id="output">
-        <span class="katex-display katex">0</span>
-      </div>
+    <div class="card overflow" id="eq_output">
+      <span class="katex-display katex">0</span>
     </div>
+    <div class="card overflow" id="approx_output"></div>
   </div>
   <script src="../js/system_of_equations.js"></script>
 </div>

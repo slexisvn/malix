@@ -2,7 +2,9 @@
   <div class="navbar">
     <div class="navbar-inner">
       <div class="left">
-        <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+        <a href="" class="link" data-rel="back">
+          <i class="material-icons">arrow_back</i>
+        </a>
       </div>
       <div class="title">Solve</div>
     </div>
@@ -27,12 +29,12 @@
       </div>
     </div>
     <button id="eq" class="katex">=</button>
-    <div class="card overflow">
-      <div id="output"><span class="katex-display katex">0</span></div>
+    <div class="card overflow" id="eq_output">
+      <span class="katex-display katex">0</span>
     </div>
-    <div class="card overflow" id="other_area" style="display:none">
-      <div id="other_output"></div>
-    </div>
+    <div class="card overflow" id="approx_output"></div>
+    <div class="card overflow" id="other_eq_output"></div>
+    <div class="card overflow" id="other_approx_output"></div>
   </div>
   <script src="../js/solve-s.js"></script>
 </div>

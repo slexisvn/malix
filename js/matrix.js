@@ -5,10 +5,9 @@ if (LN === 'vi') {
     lb[i].innerHTML = i % 2 ? 'Số dòng' : 'Số cột';
   }
   lb[9].innerHTML = 'Biểu thức';
-  select.options[0].text = 'Ma trận A';
-  select.options[1].text = 'Ma trận B';
-  select.options[2].text = 'Ma trận C';
-  select.options[3].text = 'Ma trận D';
+  for (let i = 0; i < 4; i++) {
+    select.options[i].text = 'Ma trận ' + ASCII[i];
+  }
   select.options[4].text = 'Tính toán';
 }
 
@@ -43,157 +42,72 @@ nerdamer.register([{
   }
 }]);
 
-$('.hide').hide();
-
-$('#select').on('change', function() {
-  $('.content').hide();
-  $(`#${$(this).val()}`).show();
-});
-
 $('#input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    let words = ['determinant', 'invert', 'imatrix', 'transpose', 'matA', 'matB', 'matC', 'hilbert', 'adjunct'];
-    callback($.map(words, word => word.indexOf(term) === 0 ? word : null));
+    callback($.map(['determinant', 'invert', 'imatrix', 'transpose', 'matA', 'matB', 'matC', 'hilbert', 'adjunct'], word => word.indexOf(term) === 0 ? word : null));
   },
   replace(word) {
-    return word === 'matA' || word === 'matB' || word === 'matC' ? word : `${word}()`;
+    return ASCII.includes(word.replace('mat', '')) ? word : `${word}()`;
   }
 }]);
 
-var matA, matB, matC, matD;
-//init
-matA_input.innerHTML = `<input type="text" data-role="none" class="input" id="a00" />`;
-matB_input.innerHTML = `<input type="text" data-role="none" class="input" id="b00" />`;
-matC_input.innerHTML = `<input type="text" data-role="none" class="input" id="c00" />`;
-matD_input.innerHTML = `<input type="text" data-role="none" class="input" id="d00" />`;
+for (let i = 0; i < 4; i++) {
+  $(`#mat${ASCII[i]}_input`).html(`<input type="text" data-role="none" class="input" id="${ASCII[i]}00" />`);
+}
 
-$('#matA_rows, #matA_cols').on('change', function() {
-  matA = '';
-  let row = $('#matA_rows').val();
-  let col = $('#matA_cols').val();
-  for (let i = 0; i < row; i++) {
-    for (let j = 0; j < col; j++) {
-      matA += `<input type="text" data-role="none" class="input" id="a${i}${j}" /> &nbsp;`;
-    }
-    if (i < row - 1) {
-      matA += '<br />';
-    }
-  }
-  matA_input.innerHTML = matA;
-});
-
-$('#matB_rows, #matB_cols').on('change', function() {
-  matB = '';
-  let row = $('#matB_rows').val();
-  let col = $('#matB_cols').val();
-  for (let i = 0; i < row; i++) {
-    for (let j = 0; j < col; j++) {
-      matB += `<input type="text" data-role="none" class="input" id="b${i}${j}" /> &nbsp;`;
-    }
-    if (i < row - 1) {
-      matB += '<br />';
-    }
-  }
-  matB_input.innerHTML = matB;
-});
-
-$('#matC_rows, #matC_cols').on('change', function() {
-  matC = '';
-  let row = $('#matC_rows').val();
-  let col = $('#matC_cols').val();
-  for (let i = 0; i < row; i++) {
-    for (let j = 0; j < col; j++) {
-      matC += `<input type="text" data-role="none" class="input" id="c${i}${j}" /> &nbsp;`;
-    }
-    if (i < row - 1) {
-      matC += '<br />';
-    }
-  }
-  matC_input.innerHTML = matC;
-});
-
-$('#matD_rows, #matD_cols').on('change', function() {
-  matD = '';
-  let row = $('#matD_rows').val();
-  let col = $('#matD_cols').val();
-  for (let i = 0; i < row; i++) {
-    for (let j = 0; j < col; j++) {
-      matD += `<input type="text" data-role="none" class="input" id="d${i}${j}" /> &nbsp;`;
-    }
-    if (i < row - 1) {
-      matD += '<br />';
-    }
-  }
-  matD_input.innerHTML = matD;
-});
-
-cal.onclick = function() {
-  matA = matB = matC = matD = 'matrix(';
-  for (let i = 0; i < matA_rows.value; i++) {
-    matA += '[';
-    for (let j = 0; j < matA_cols.value; j++) {
-      matA += document.getElementById(`a${i}${j}`).value;
-      if (j < matA_cols.value - 1) {
-        matA += ',';
+$('select').on('change', function() {
+  let _ID = $(this).attr('id');
+  if (_ID !== 'select') {
+    let __ii = _ID.replace(/mat|_|cols|rows/g, '');
+    let row = parseInt($(`#mat${__ii}_rows`).val());
+    let col = parseInt($(`#mat${__ii}_cols`).val());
+    let _o__ = '';
+    for (let i = 0; i < row; i++) {
+      for (let j = 0; j < col; j++) {
+        _o__ += `<input type="text" data-role="none" class="input" id="${__ii}${i}${j}" /> &nbsp;`;
+      }
+      if (i < row - 1) {
+        _o__ += '<br />';
       }
     }
-    matA += ']';
-    if (i < matA_rows.value - 1) {
-      matA += ',';
-    }
+    $(`#mat${__ii}_input`).html(_o__);
+  } else {
+    $('.content').addClass('hide');
+    $(`#${$(this).val()}`).removeClass('hide');
   }
-  matA += ')';
+});
 
-  for (let i = 0; i < matB_rows.value; i++) {
-    matB += '[';
-    for (let j = 0; j < matB_cols.value; j++) {
-      matB += document.getElementById(`b${i}${j}`).value;
-      if (j < matB_cols.value - 1) {
-        matB += ',';
-      }
-    }
-    matB += ']';
-    if (i < matB_rows.value - 1)
-      matB += ',';
-  }
-  matB += ')';
-
-  for (let i = 0; i < matC_rows.value; i++) {
-    matC += '[';
-    for (let j = 0; j < matC_cols.value; j++) {
-      matC += document.getElementById(`c${i}${j}`).value;
-      if (j < matC_cols.value - 1) {
-        matC += ',';
-      }
-    }
-    matC += ']';
-    if (i < matC_rows.value - 1)
-      matC += ',';
-  }
-  matC += ')';
-
-  for (let i = 0; i < matD_rows.value; i++) {
-    matD += '[';
-    for (let j = 0; j < matD_cols.value; j++) {
-      matD += document.getElementById(`d${i}${j}`).value;
-      if (j < matD_cols.value - 1) {
-        matD += ',';
-      }
-    }
-    matD += ']';
-    if (i < matD_rows.value - 1)
-      matD += ',';
-  }
-  matD += ')';
-
+$('#cal').click(function() {
   nerdamer.clearVars();
-  nerdamer.setVar('matA', matA);
-  nerdamer.setVar('matB', matB);
-  nerdamer.setVar('matC', matC);
-  nerdamer.setVar('matD', matD);
-
-  output.innerHTML = katex.renderToString(nerdamer(input.value).toTeX().replace(/,$|\\cdot(?= \\| [a-z])/g, ''), {
+  let mat = {
+    A: 'matrix(',
+    B: 'matrix(',
+    C: 'matrix(',
+    D: 'matrix('
+  };
+  let IV = input.value;
+  for (let c = 0; c < 4; c++) {
+    if (IV.includes(ASCII[c])) {
+      let col = $(`#mat${ASCII[c]}_cols`).val();
+      let row = $(`#mat${ASCII[c]}_rows`).val();
+      for (let i = 0; i < row; i++) {
+        mat[ASCII[c]] += '[';
+        for (let j = 0; j < col; j++) {
+          mat[ASCII[c]] += $(`#${ASCII[c]}${i}${j}`).val();
+          if (j < col - 1) {
+            mat[ASCII[c]] += ',';
+          }
+        }
+        mat[ASCII[c]] += ']';
+        if (i < row - 1) {
+          mat[ASCII[c]] += ',';
+        }
+      }
+      nerdamer.setVar(`mat${ASCII[c]}`, mat[ASCII[c]] + ')');
+    }
+  }
+  output.innerHTML = katex.renderToString(nerdamer(IV).toTeX(), {
     displayMode: true
   });
-}
+})

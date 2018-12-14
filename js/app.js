@@ -10,8 +10,6 @@ $(document).on('pageinit', function() {
   });
 });
 
-$('div[id*=area]').hide();
-
 $('.mfb-component__button--child').click(function() {
   $('.mfb-component--br').attr('data-mfb-state', 'close');
 });
@@ -34,10 +32,13 @@ if (LN === 'vi') {
 	document.getElementsByClassName('mfb-component__button--child')[1].href = 'pages/doc-vi.html';
 }
 
+var ASCII = ['A', 'B', 'C', 'D'];
+var _W_ = ['abs', 'sqrt', 'nthroot', 'ln', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth'];
+
 $('#main_input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    callback($.map(['approxratio', 'abs', 'sqrt', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'log', 'log10', 'ln', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'cos', 'sin', 'tan', 'acos', 'asin', 'atan', 'sec', 'csc', 'cot', 'asec', 'acsc', 'acot', 'cosh', 'sinh', 'tanh', 'sech', 'csch', 'coth', 'acosh', 'asinh', 'atanh', 'asech', 'acsch', 'acoth', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN', 'arg', 'imagpart', 'realpart', 'conjugate', 'polarform', 'rectform'], word => word.indexOf(term) === 0 ? word : null));
+    callback($.map([..._W_, ...['approxratio', 'log', 'log10', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN', 'arg', 'imagpart', 'realpart', 'conjugate', 'polarform', 'rectform']], word => word.indexOf(term) === 0 ? word : null));
   },
   replace(word) {
     return `${word}()`;
@@ -52,22 +53,6 @@ var Math2 = core.Math2;
 var Matrix = core.Matrix;
 var MATH = core.Utils.importFunctions();
 
-function checkFrac(str, option) {
-  let check_arr = str.replace(/(-)\\frac{(\d+)}{(\d+)}/g, '\\frac{$2}{$3}').split(/\\frac{(\d+)}{(\d+)}/);
-  for (let i = 0; i < check_arr.length; i++) {
-    if (!isNaN(check_arr[i])) {
-      if (parseFloat(check_arr[i]) > 1000) {
-        return true
-      }
-    } else {
-      if (option) {
-        return true
-      }
-    }
-  }
-  return false
-}
-
 function divisors(num) {
   let divisors = new Vector();
   num = num > 0 ? num : -num
@@ -77,17 +62,6 @@ function divisors(num) {
     }
   }
   return divisors
-}
-
-function primeFactor(num) {
-  let ifactors = Math2.ifactor(num);
-  let array = new Vector();
-  for (let i in ifactors) {
-    for (let j = 1; j <= +ifactors[i]; j++) {
-      array.elements.push(new Symbol(i))
-    }
-  }
-  return array
 }
 
 function approxratio(a, decimal) {
@@ -237,19 +211,38 @@ function eulerN(n) {
   }
 }
 
+function nCr(n, k) {
+  return _.parse(binom(n, k))
+}
+
+function nPr(n, k) {
+  return _.parse(Math2.factorial(n) / Math2.factorial(n - k))
+}
+
+function __exp_(str) {
+  return /e\+|e-/.test(str) ? `${str.replace(/e\+|e-/g, '\\times10^{')}}` : str;
+}
+
 nerdamer.register([{
+  name: 'nCr',
+  numargs: 2,
+  visible: !0,
+  build: function() {
+    return nCr
+  }
+}, {
+  name: 'nPr',
+  numargs: 2,
+  visible: !0,
+  build: function() {
+    return nPr
+  }
+}, {
   name: 'divisors',
   numargs: 1,
   visible: !0,
   build: function() {
     return divisors
-  }
-}, {
-  name: 'primeFactor',
-  numargs: 1,
-  visible: !0,
-  build: function() {
-    return primeFactor
   }
 }, {
   name: 'approxratio',
@@ -323,95 +316,60 @@ nerdamer.register([{
   }
 }]);
 
-function frac2Dec(n, d) {
-  let pFS = nerdamer(`primeFactor(${d})`).toString().replace(/\[|\]/g, '').split(',').map(parseFloat);
-  for (var i = 0; i < pFS.length; i++) {
-    if (pFS[i] !== 2 && pFS[i] !== 5) {
-      let output = [];
-      let ns = [];
-      for (var i = 0; i < 20; i++) {
-        let temp2 = parseInt(n / d);
-        if (ns[n] === undefined) {
-          ns[n] = i
-        } else {
-          return `${output.slice(0, 1).join('')}.${output.slice(1, ns[n]).join('')}(${output.slice(ns[n]).join('')})`
-        }
-        output.push(temp2);
-        var n = n % d;
-        n += '0'
-      }
-      return output
-    }
-  }
-  return '0'
-}
+recurring_output.style.display = mixed_output.style.display = main_approx_output.style.display = 'none';
 
 main_input.oninput = function() {
-  let Input = this.value;
+  let IV = this.value;
   let option = main_select.value;
 
-  Input = option === 'D' ? Input.replace(/([^a])(cos|sin|tan|sec|csc|cot|cosh|sinh|tanh|sech|csch|coth)\(([^\)]*)\)/g, '$1$2((pi/180)*$3)').replace(/(acos|asin|atan|asec|acsc|acot|acosh|asinh|atanh|asech|acsch|acoth)/g, '(180/pi)*$1') : option === 'G' ? Input.replace(/([^a])(cos|sin|tan|sec|csc|cot|cosh|sinh|tanh|sech|csch|coth)\(([^\)]*)\)/g, '$1$2((pi/200)*$3)').replace(/(acos|asin|atan|asec|acsc|acot|acosh|asinh|atanh|asech|acsch|acoth)/g, '(200/pi)*$1') : Input;
+  IV = option === 'D' ? IV.replace(/([^a])(cos|sin|tan|sec|csc|cot|cosh|sinh|tanh|sech|csch|coth)\(([^\)]*)\)/g, '$1$2((pi/180)*$3)').replace(/(acos|asin|atan|asec|acsc|acot|acosh|asinh|atanh|asech|acsch|acoth)/g, '(180/pi)*$1') : option === 'G' ? IV.replace(/([^a])(cos|sin|tan|sec|csc|cot|cosh|sinh|tanh|sech|csch|coth)\(([^\)]*)\)/g, '$1$2((pi/200)*$3)').replace(/(acos|asin|atan|asec|acsc|acot|acosh|asinh|atanh|asech|acsch|acoth)/g, '(200/pi)*$1') : IV;
 
-  let I = nerdamer(Input);
-  let eq = I.toTeX().replace(/\[|\]/g, '');
-  let approx = I.evaluate().text();
-  if (Input.includes('pfactor')) {
-    eq = eq.replace(/\\cdot/g, '\\times').replace(/\\left\(|\\right\)/g, '')
+  let I = nerdamer(IV).latex();
+  let eq = I[1];
+  let approx = I[0];
+  let __ap;
+  if (IV.includes('pfactor')) {
+    eq = eq.replace(/\\right\)\\left\(/g, '\\times').replace(/\\left\(|\\right\)/g, '')
   }
 
   if (!isNaN(eq)) {
     eq = eq.replace(/\d{1,3}(?=(\d{3})+(?!\d))/g, '$&\\:');
   }
-
-  if (approx.includes('.') && !/e\+|e-/.test(approx) && !checkFrac(eq, 0)) {
-
-    approx_area.style.display = '';
-    main_approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
-      displayMode: !0
-    })
-
-    if (!checkFrac(eq, 1)) {
-
-      let frac = eq.replace('}{', '/').replace(/\\frac{|}/g, '').split('/');
-      let tu = +frac[0];
-      let mau = +frac[1];
-      if (Math.abs(tu) > mau) {
-        mix_area.style.display = '';
-        mix_output.innerHTML = katex.renderToString(`${(tu - (tu % mau)) / mau}\\frac{${Math.abs(tu) % mau}}{${mau}}`, {
-          displayMode: !0
-        })
-      } else {
-        mix_area.style.display = 'none'
-      }
-
-      let decimal = frac2Dec(tu, mau);
-      if (decimal !== '0') {
-        if (decimal.includes('-')) {
-          decimal = `-${decimal.replace(/-/g, '')}`
-        }
-        repeat_area.style.display = '';
-        repeat_output.innerHTML = katex.renderToString(decimal, {
-          displayMode: !0
-        })
-      } else {
-        repeat_area.style.display = 'none'
-      }
-    } else {
-      repeat_area.style.display = mix_area.style.display = 'none'
-    }
-  } else {
-    repeat_area.style.display = mix_area.style.display = approx_area.style.display = 'none'
-  }
-
-  if (/floor|ceil|!|fact|dfactorial/.test(Input) && !Input.includes('pfactor') || checkFrac(eq, 0)) {
+  if (/floor|ceil|!|fact|dfactorial/.test(IV) && !IV.includes('pfactor') || eq === '') {
     eq = approx;
   }
-
-  if (/e\+|e-/.test(eq)) {
-    eq = `${eq.replace(/e\+|e/, '\\times10^{')}}`;
+  if (/.|i/g.test(approx) && eq !== approx) {
+    main_approx_output.style.display = 'block';
+    main_approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
+      displayMode: !0
+    });
+    if ((eq.match(/frac/g) || []).length === 1 && !/[a-z]/g.test(IV)) {
+      let mixed = nerdamer(approx).text('mixed');
+      if (mixed !== '') {
+        __ap = 'block';
+        mixed_output.innerHTML = katex.renderToString(mixed, {
+          displayMode: !0
+        })
+      } else {
+        __ap = 'none';
+      }
+      mixed_output.style.display = __ap;
+      let recurring = nerdamer(approx).text('recurring');
+      if (recurring !== '') {
+        __ap = 'block';
+        recurring_output.innerHTML = katex.renderToString(recurring, {
+          displayMode: !0
+        })
+      } else {
+        __ap = 'none'
+      }
+      recurring_output.style.display = __ap;
+    }
+  } else {
+    recurring_output.style.display = mixed_output.style.display = main_approx_output.style.display = 'none';
   }
-
-  main_output.innerHTML = katex.renderToString(eq.replace(/\\cdot/g, ''), {
+  
+  main_eq_output.innerHTML = katex.renderToString(__exp_(eq.replace('Infinity', '\\infty')), {
     displayMode: !0
   });
 }

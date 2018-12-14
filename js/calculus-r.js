@@ -1,7 +1,7 @@
 if (LN === 'vi') {
   document.getElementsByClassName('title')[1].innerHTML = 'Giải tích';
   for (let i = 0; i < 3; i++) {
-    select_deg.options[i].text = `Đạo hàm bậc ${i + 1}`;
+    nth_diff.options[i].text = `Đạo hàm bậc ${i + 1}`;
   }
   let lb = document.getElementsByTagName('label');
   lb[1].innerHTML = 'Biểu thức';
@@ -16,10 +16,7 @@ $.getScript('../js/algebra.js', function() {
     $('#input').textcomplete([{
       match: /(^|\b)(\w{1,})$/,
       search: function(term, callback) {
-        var words = ['cos', 'sin', 'tan', 'cot', 'ln', 'sqrt', 'asin', 'acos', 'atan'];
-        callback($.map(words, function(word) {
-          return word.indexOf(term) === 0 ? word : null;
-        }));
+        callback($.map(_W_, word => word.indexOf(term) === 0 ? word : null));
       },
       replace: function(word) {
         return `${word}()`
@@ -28,113 +25,93 @@ $.getScript('../js/algebra.js', function() {
 
     let option = select.value;
 
-    $('.defint_area, #select_deg-button').hide();
+    $('.defint_area, #nth_diff-button').hide();
 
     $('#select').on('change', function() {
       option = $(this).val();
       if (option === 't') {
-        $('#select_deg-button, .at_area').hide();
+        $('#nth_diff-button, .at_area').hide();
         $('.defint_area').show();
       }
       if (option === 'l' || option === 'e') {
-        $('.defint_area, #select_deg-button').hide();
+        $('.defint_area, #nth_diff-button').hide();
         $('.at_area').show();
       }
       if (option === 'i') {
-        $('.defint_area, #select_deg-button, .at_area').hide();
+        $('.defint_area, #nth_diff-button, .at_area').hide();
       }
       if (option === 'd') {
         $('.defint_area').hide();
-        $('#select_deg-button, .at_area').show();
+        $('#nth_diff-button, .at_area').show();
       }
     });
 
     cal.onclick = function() {
-      let Input = input.value;
-      let result = '';
-      let b = at.value;
-      let v = variable.value;
+      let IV = input.value;
+      let I;
+      let eq;
+      let approx = '';
+      let AV = at.value.replace('oo', 'Infinity');
+      let VV = variable.value;
       if (option === 'l') {
-        if (b.includes('oo')) {
-          if (b === '+oo') {
-            b = '10^9';
-          }
-          if (b === '-oo') {
-            b = '-10^9';
-          }
-        } else {
-          if (b.search(/\+|-/g) > -1) {
-            b += '10^(-9)';
-          } else {
-            b += '+10^(-9)';
-          }
-        }
-        let num = parseFloat(nerdamer(Input).sub(v, b).evaluate().text());
-        if (num > 100000000.0) {
-          result = '+\\infty';
-        } else if (num < -100000000.0) {
-          result = '-\\infty';
-        } else {
-          if (num.toExponential().toString().includes('e-')) {
-            result = '0';
-          } else {
-            result = `\\approx ${num}`;
-          }
-        }
+        I = nerdamer(`limit(${IV},${VV},${AV})`).latex();
+        approx = I[0];
+        eq = I[1];
       }
 
       if (option === 'd') {
-        result = nerdamer(`diff(${Input},${v},${select_deg.value})`);
-        if (b === '') {
-          result = result.toTeX();
+        let diff = nerdamer(`diff(${IV},${VV},${nth_diff.value})`);
+        if (AV === '') {
+          eq = diff.toTeX();
         } else {
-          result = result.sub(v, b);
-          let approx = `\\approx ${result.evaluate().text()}`;
-          result = result.toTeX();
-          if (approx.includes('.')) {
-            result += approx;
-          }
+          I = diff.sub(VV, AV).latex();
+          approx = I[0];
+          eq = I[1];
         }
       }
 
       if (option === 'i') {
-        result = nerdamer(`integrate(${Input},${v})`).toTeX();
-        if (!result.includes('int')) {
-          result += '+C';
-        } else {
-          result = '';
-        }
+        eq = nerdamer(`integrate(${IV},${VV})`).toTeX();
+        eq = !eq.includes('int') ? `${eq}+C` : eq;
       }
 
       if (option === 't') {
-        result = nerdamer(`defint(${Input},${from.value},${to.value},${v})`);
-        let approx_result = result.evaluate().text();
-        result = result.toTeX();
-        if (!approx_result.includes('*')) {
-          if (+result.substr(7, result.indexOf('}{') - 7) > 1000 || result.includes('int')) {
-            result = `\\approx ${approx_result}`;
-          } else {
-            result += `\\approx ${approx_result}`;
-          }
-        }
+        I = nerdamer(`defint(${IV},${from.value},${to.value},${VV})`).latex();
+        if (I[1].includes('int')) {
+          eq = I[0];
+          approx = ''
+        } else {
+          approx = I[0];
+          eq = I[1];
+        } 
       }
 
       if (option === 'e') {
-        result = '';
-        if (b === '') {
-          b = '0'
+        approx = eq = '';
+        if (AV === '') {
+          AV = '0'
         }
         for (let i = 0; i < 10; i++) {
-          result += i ? `${nerdamer(`diff(${Input},${v},${i})/fact(${i})*(b-${b})^${i}`).sub(v, b).toString()}+` : `${nerdamer(Input).sub(v, b).toString()}+`;
+          eq += i ? `${nerdamer(`diff(${IV},${VV},${i})/fact(${i})*(b-${AV})^${i}`).sub(VV, AV).toString()}+` : `${nerdamer(IV).sub(VV, AV).toString()}+`;
         }
 
-        result = `...\\:${nerdamer(result.replace(/\+$/g, '').replace(/b/g, v)).toTeX()}`;
+        eq = `...\\:${nerdamer(eq.replace(/\+$/g, '').replace(/b/g, VV)).toTeX()}`;
       }
 
-      output.innerHTML = katex.renderToString(result.replace(/\\cdot(?= \\| [a-z])/g, '').replace(/log/g, 'ln'), {
-        displayMode: true
-      });
+      if (eq !== '') {
+        eq_output.innerHTML = katex.renderToString(eq, {
+          displayMode: true
+        });
+      }
 
+      if (approx.includes('.')) {
+        approx_output.style.display = 'block';
+        approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
+          displayMode: true
+        })
+      } else {
+        approx_output.style.display = 'none';
+      }
     }
   })
 })

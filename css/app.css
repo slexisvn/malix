@@ -22,7 +22,6 @@ h3 {
 }
 
 .navbar .title,
-.overflow-nowrap,
 label {
   white-space: nowrap
 }
@@ -327,9 +326,9 @@ button.ui-btn {
   border-bottom: none
 }
 
-.overflow,
-.overflow-nowrap {
-  overflow: auto
+.overflow {
+  overflow: auto;
+  white-space: nowrap
 }
 
 button.ui-btn {
@@ -423,4 +422,9 @@ button.ui-btn:active {
 
 .input-bracket {
   width: 20%
+}
+
+#approx_output,
+.hide {
+  display: none;
 }

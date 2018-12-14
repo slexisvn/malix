@@ -2,7 +2,9 @@
   <div class="navbar">
     <div class="navbar-inner">
       <div class="left">
-        <a href="#" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+        <a href="#" class="link" data-rel="back">
+          <i class="material-icons">arrow_back</i>
+        </a>
       </div>
       <div class="title">Vector</div>
       <div class="right">
@@ -15,24 +17,31 @@
   </div>
   <div class="ui-content">
     <select id="select1" data-native-menu="false" data-icon="false">
-      <option value="input_vector_area">Enter vectors</option>
-      <option value="main_area">Calculate</option>
+      <option value="vector_input">Enter vectors</option>
+      <option value="calculate">Calculate</option>
     </select>
-    <div id="input_vector_area" class="content">
-      <div class="card">
-        <div id="input_vector"></div>
-      </div>
+    <div id="vector_input" class="card content">
+      <label>Vector A</label>
+      <input type="text" data-role="none" class="input" id="A0"> &nbsp;
+      <input type="text" data-role="none" class="input" id="A1"> &nbsp;<br /><br />
+      <label>Vector B</label>
+      <input type="text" data-role="none" class="input" id="B0"> &nbsp;
+      <input type="text" data-role="none" class="input" id="B1"> &nbsp;<br /><br />
+      <label>Vector C</label>
+      <input type="text" data-role="none" class="input" id="C0"> &nbsp;
+      <input type="text" data-role="none" class="input" id="C1"> &nbsp;<br /><br />
+      <label>Vector D</label>
+      <input type="text" data-role="none" class="input" id="D0"> &nbsp;
+      <input type="text" data-role="none" class="input" id="D1"> &nbsp;
     </div>
-    <div id="main_area" class="content" style="display:none">
+    <div id="calculate" class="content hide">
       <div class="card">
         <label>Expression</label>
         <input type="text" data-clear-btn="true" placeholder="vecA+vecB" id="input" />
       </div>
       <button class="katex" id="cal">=</button>
-      <div class="card">
-        <div id="output">
-          <span class="katex-display katex">0</span>
-        </div>
+      <div class="card" id="output">
+        <span class="katex-display katex">0</span>
       </div>
     </div>
   </div>

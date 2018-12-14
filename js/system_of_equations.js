@@ -7,12 +7,16 @@ function create() {
   let numOfUnknowns = '';
   let option = select.value;
   for (let i = 0; i < option; i++) {
-    for (let j = 0; j <= option; j++)
+    for (let j = 0; j <= option; j++) {
       numOfUnknowns += `<input type="text" data-role="none" class="input" id="a${i}${j}" /> &nbsp;`;
-    if (i < option - 1)
-      numOfUnknowns += '<br>';
+    }
+    numOfUnknowns += i < option - 1 ? '<br>' : ''
   }
   input.innerHTML = numOfUnknowns;
+}
+
+function checkDecimal(str) {
+  return parseFloat(str) % 1 ? true : false;
 }
 
 create(); //init
@@ -28,31 +32,41 @@ cal.onclick = function() {
   for (let i = 0; i < option; i++) {
     matA += '[';
     for (let j = 0; j < option; j++) {
-      matA += document.getElementById(`a${i}${j}`).value;
-      if (j < option - 1) {
-        matA += ',';
-      }
+      matA += document.getElementById(`a${i}${j}`).value + (j < option - 1 ? ',' : '');
     }
-    matA += ']';
-    if (i < option - 1) {
-      matA += ',';
-    }
+    matA += ']' + (i < option - 1 ? ',' : '');
   }
   matA += ')';
   for (let i = 0; i < option; i++) {
-    matB += `[${document.getElementById(`a${i}${option}`).value}]`;
-    if (i < option - 1)
-      matB += ',';
+    matB += `[${document.getElementById(`a${i}${option}`).value}]${i < option - 1 ? ',' : ''}`;
   }
   matB += ')';
-  let result = nerdamer(`invert(${matA})*${matB}`).toTeX().replace(/bmatrix/g, 'cases').replace('cases}', 'cases} x_1 = ');
-  let arr = result.split('\\cr');
-  result = arr[0];
-
+  let I = nerdamer(`invert(${matA})*${matB}`).latex();
+  let eq = I[1].replace(/bmatrix/g, 'cases').replace('cases}', 'cases} x_1 = ');
+  let arr = eq.split('\\cr');
+  eq = arr[0];
   for (let i = 1; i < option; i++) {
-    result += `\\cr x_${i + 1}=${arr[i]}`;
+    eq += `\\cr x_${i + 1}=${arr[i]}`;
   }
-  output.innerHTML = katex.renderToString(result.replace(/,$|\\cdot(?= \\| [a-z])/g, ''), {
+  eq_output.innerHTML = katex.renderToString(eq.replace(/,$/g, ''), {
     displayMode: true
   });
+
+  arr = I[0].replace(/matrix\(|\[|\]|\)$/g, '').split(',');
+  for (let i = 0; i < option; i++) {
+    arr[i] = nerdamer(arr[i]).toDecimal();
+  }
+  if (!arr.some(isNaN) && arr.some(checkDecimal)) {
+    let approx = `\\begin{cases}x_1=${arr[0]}`;
+    for (let i = 1; i < option; i++) {
+      approx += `\\cr x_${i + 1}=${arr[i]}`;
+    }
+    approx += '\\end{cases}'
+    approx_output.style.display = 'block';
+    approx_output.innerHTML = katex.renderToString(approx, {
+      displayMode: true
+    })
+  } else {
+    approx_output.style.display = 'none';
+  }
 }

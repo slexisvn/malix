@@ -2,7 +2,9 @@
   <div class="navbar">
     <div class="navbar-inner">
       <div class="left">
-        <a href="" class="link" data-rel="back"><i class="material-icons">arrow_back</i></a>
+        <a href="" class="link" data-rel="back">
+          <i class="material-icons">arrow_back</i>
+        </a>
       </div>
       <div class="title">Calculus</div>
       <div class="right">
@@ -17,7 +19,7 @@
     </div>
   </div>
   <div class="ui-content">
-    <select data-native-menu="false" id="select_deg" data-icon="false">
+    <select data-native-menu="false" id="nth_diff" data-icon="false">
       <option value="1">First derivative</option>
       <option value="2">Second derivative</option>
       <option value="3">Third derivative</option>
@@ -45,13 +47,10 @@
       </div>
     </div>
     <button class="katex calculus-btn" id="cal">=</button>
-    <div class="card">
-      <div class="overflow">
-        <div id="output">
-          <span class="katex-display katex">0</span>
-        </div>
-      </div>
+    <div class="card overflow" id="eq_output">
+      <span class="katex-display katex">0</span>
     </div>
+    <div class="card" id="approx_output"></div>
   </div>
   <script src="../js/calculus-r.js"></script>
 </div>

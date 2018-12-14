@@ -1,4 +1,3 @@
-var ASCII = ['A', 'B', 'C', 'D'];
 if (LN === 'vi') {
   document.getElementsByClassName('title')[1].innerHTML = 'Tập hợp';
   select.options[0].text = 'Nhập các tập hợp';
@@ -223,38 +222,38 @@ nerdamer.register([{
 }]);
 
 cal.onclick = function() {
-  let Input = input.value;
+  let IV = input.value;
   nerdamer.clearVars();
-  if (Input.includes('set')) {
+  if (IV.includes('set')) {
     for (let i = 0; i < 4; i++) {
       nerdamer.setVar(`set${ASCII[i]}`, `[${_r__1(`i${i}`)}]`);
     }
   }
 
-  if (Input.includes('itv')) {
+  if (IV.includes('itv')) {
     nerdamer.setVar('R', '[-Infinity, Infinity]');
     for (let i = 0; i < 4; i++) {
-      if (Input.includes(ASCII[i])) {
+      if (IV.includes(ASCII[i])) {
         nerdamer.setVar(`itv${ASCII[i]}`, `[${_r__2(`i${i}1`)}, ${_r__2(`i${i}2`)}]`);
       }
     }
   }
   let result;
-  if (Input.includes('combK')) {
-    let arr = JSON.parse(nerdamer(Input).toString());
+  if (IV.includes('combK')) {
+    let arr = JSON.parse(nerdamer(IV).toString());
     result = '\\begin{array}{l}';
     for (let i = 0, l = arr.length; i < l; i++) {
       result += _r(JSON.stringify(arr[i])) + (i < l - 1 ? '\\\\' : '');
     }
     result += '\\end{array}';
   } else {
-    result = nerdamer(Input).toTeX();
-    if (Input.includes('set')) {
+    result = nerdamer(IV).toTeX();
+    if (IV.includes('set')) {
       result = result === '[]' ? '\\varnothing' : _r(result);
     }
 
-    if (Input.includes('itv')) {
-      result = result === '[-\\infty, \\infty]' ? '\\mathbb R' : result !== '[]' ? _r_(result) : '\\varnothing'
+    if (IV.includes('itv')) {
+      result = result === '[-\\infty, \\infty]' ? '\\mathbb R' : result === '[]' || result.includes('NaN') ? '\\varnothing' : _r_(result)
     }
   }
 

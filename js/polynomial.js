@@ -156,21 +156,21 @@ $.getScript('../js/algebra.js', function() {
   });
 
   cal.onclick = function() {
-    let Input = input.value;
-    let result = '';
+    let IV = input.value;
+    let eq = '';
     if (main_area.style.display === '') {
       switch (option) {
         case 'e':
-          result = nerdamer(`expand(${Input})`).toTeX();
+          eq = nerdamer(`expand(${IV})`).toTeX();
           break;
         case 'f':
-          result = nerdamer(`factor(${Input})`).toTeX().replace(/\\left\((\w)\\right\)/g, '$1');
+          eq = nerdamer(`factor(${IV})`).toTeX().replace(/\\left\((\w)\\right\)/g, '$1');
           break;
         case 'c':
-          result = nerdamer(`vecget(coeffs(${Input}, x),${degree.value} )`).toTeX();
+          eq = nerdamer(`vecget(coeffs(${IV}, x),${degree.value} )`).toTeX();
           break;
         case 'p':
-          result = nerdamer(`partfrac(${Input},x)`).toTeX();
+          eq = nerdamer(`partfrac(${IV},x)`).toTeX();
           break;
       }
     } else {
@@ -178,10 +178,10 @@ $.getScript('../js/algebra.js', function() {
       let d = '';
       let x = xs.value.split(' ');
       let f = fs.value.split(' ');
-      for (let i = 0; i < x.length; i++) {
-        result += `(${f[i]}*`;
+      for (let i = 0, l = x.length; i < l; i++) {
+        eq += `(${f[i]}*`;
         n = d = '';
-        for (let j = 0; j < x.length; j++) {
+        for (let j = 0; j < l; j++) {
           if (i !== j) {
             n += `(x-${x[j]})*`;
             d += `(${x[i]}-${x[j]})*`
@@ -189,11 +189,11 @@ $.getScript('../js/algebra.js', function() {
         }
         n = n.replace(/\*$/g, '');
         d = d.replace(/\*$/g, '');
-        result += `${n})/(${d})+`
+        eq += `${n})/(${d})+`
       }
-      result = nerdamer(`expand(${result.replace(/\+$/g, '')})`).toTeX()
+      eq = nerdamer(`expand(${eq.replace(/\+$/g, '')})`).toTeX()
     }
-    output.innerHTML = katex.renderToString(result.replace(/\\cdot(?= \\| [a-z])/g, ''), {
+    output.innerHTML = katex.renderToString(eq, {
       displayMode: !0
     })
   }
@@ -201,10 +201,7 @@ $.getScript('../js/algebra.js', function() {
   $('#input').textcomplete([{
     match: /(^|\b)(\w{1,})$/,
     search: function(term, callback) {
-      var words = ['hermite', 'hermiteE', 'legendre', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'];
-      callback($.map(words, function(word) {
-        return word.indexOf(term) === 0 ? word : null
-      }))
+      callback($.map(['hermite', 'hermiteE', 'legendre', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'], word => word.indexOf(term) === 0 ? word : null))
     },
     replace: function(word) {
       if (word !== 'lagrange') {
