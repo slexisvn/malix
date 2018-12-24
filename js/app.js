@@ -329,7 +329,7 @@ main_input.oninput = function() {
   if (IV.includes('pfactor')) {
     eq = eq.replace(/\\right\)\\left\(/g, '\\times').replace(/\\left\(|\\right\)/g, '')
   }
-  if (/floor|ceil|!|fact|dfactorial/.test(IV) && !IV.includes('pfactor') || eq === '') {
+  if (/floor|ceil|!|fact|dfactorial/.test(IV) && !IV.includes('pfactor') || eq === 'big') {
     eq = approx;
   }
   if (/.|i/g.test(approx) && eq !== approx) {

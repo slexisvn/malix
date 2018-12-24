@@ -29,6 +29,7 @@ $('#input').textcomplete([{
 }]);
 
 function k_cbnts(set, k) {
+  set = [...new Set(set)];
   let i, j, combs, head, tailcombs;
   if (k > set.length || k <= 0) {
     return [];
