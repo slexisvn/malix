@@ -5,14 +5,10 @@ if (LN === 'vi') {
 $('#inputDiffer').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    const words = ['cos(x)^', 'sin(x)^', 'cos(', 'sin(', 'tan('];
-    callback($.map(words, word => word.indexOf(term) === 0 ? word : null))
+    callback($.map(['cos(x)^', 'sin(x)^', 'cos(', 'sin(', 'tan('], word => word.includes(term) ? word : null))
   },
   replace(word) {
-    if (!word.includes('^')) {
-      return `${word}x)`;
-    }
-    return word
+    return word.includes('^') ? word : `${word}x)`;
   }
 }]);
 
@@ -24,25 +20,25 @@ inputDiffer.onfocus = function() {
 }
 
 cal.onclick = function() {
-  let Input = inputDiffer.value;
+  let IV = inputDiffer.value;
   let n;
   let result = '';
   let result2 = '';
-  if (Input.includes('^')) {
-    if (Input.includes('cos')) {
-      n = +Input.replace('cos(x)^', '');
+  if (IV.includes('^')) {
+    if (IV.includes('cos')) {
+      n = +IV.replace('cos(x)^', '');
     } else {
-      n = +Input.replace('sin(x)^', '');
+      n = +IV.replace('sin(x)^', '');
     }
     if (n % 2) {
-      if (Input.includes('cos')) {
+      if (IV.includes('cos')) {
         result = `1/${2 ** (n - 1)}*(cos(${n}x)`;
         for (let i = 1; i < n / 2; i++) {
           result += `+${binom(n, i)}cos(${n - 2 * i}x)`;
         }
         result += ')';
       }
-      if (Input.includes('sin')) {
+      if (IV.includes('sin')) {
         result = `(${(-1) ** ((n - n % 2) / 2)})/(${2 ** (n - 1)})*(sin(${n}x)`
         for (let i = 1; i < n / 2; i++) {
           result += `+${(-1) ** i * binom(n, i)}sin(${n - 2 * i}x)`;
@@ -50,14 +46,14 @@ cal.onclick = function() {
         result += ')'
       }
     } else {
-      if (Input.includes('cos')) {
+      if (IV.includes('cos')) {
         result = `1/(${2 ** (n - 1)})*(cos(${n}x)`
         for (let i = 1; i < n / 2; i++) {
           result += `+${binom(n, i)}cos(${n - 2 * i}x)`;
         }
         result += `)+${binom(n, n / 2)}/${2 ** n}`
       }
-      if (Input.includes('sin')) {
+      if (IV.includes('sin')) {
         result = `(${(-1) ** (n / 2)})/(${2 ** (n - 1)})*(cos(${n}x)`
         for (let i = 1; i < n / 2; i++) {
           result = `+${(-1) ** i * binom(n, i)}cos(${n - 2 * i}x)`;
@@ -66,15 +62,15 @@ cal.onclick = function() {
       }
     }
   } else {
-    n = +Input.substring(4, Input.indexOf('x'));
+    n = +IV.substring(4, IV.indexOf('x'));
 
-    if (Input.includes('sin')) {
+    if (IV.includes('sin')) {
       for (let k = 0; k <= (n - 1) / 2; k++) {
         result += `${(-1) ** k * binom(n, 2 * k + 1)}cos(x)^${n - 2 * k - 1}sin(x)^${2 * k + 1}+`;
       }
     }
 
-    if (Input.includes('cos')) {
+    if (IV.includes('cos')) {
 
       for (let k = 0; k <= n / 2; k++) {
         result += `${(-1) ** k * binom(n, 2 * k)}cos(x)^${n - 2 * k}sin(x)^${2 * k}+`
@@ -85,7 +81,7 @@ cal.onclick = function() {
       }
       result2 = `\\\\ \\\\ ${nerdamer(result2.replace(/\+$/, '')).toTeX()}`
     }
-    if (Input.includes('tan')) {
+    if (IV.includes('tan')) {
       result = '(';
       for (let k = 0; k <= (n - 1) / 2; k++) {
         result += `${(-1) ** k * binom(n, 2 * k + 1)}tan(x)^${2 * k + 1}+`;
@@ -97,7 +93,7 @@ cal.onclick = function() {
       result = `${result.replace(/\+$/, '')})`
     }
   }
-  output.innerHTML = katex.renderToString(`\\begin{gathered}${nerdamer(result.replace(/\+$/, '')).toTeX() + result2}\\end{gathered}`.replace(/\\cdot(?= \\| [a-z])/g, ''), {
+  output.innerHTML = katex.renderToString(`\\begin{gathered}${nerdamer(result.replace(/\+$/, '')).toTeX() + result2}\\end{gathered}`, {
     displayMode: true
   })
 }

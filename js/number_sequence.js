@@ -28,10 +28,7 @@ $.getScript('../js/algebra.js', function() {
         $('#input').textcomplete([{
           match: /(^|\b)(\w{1,})$/,
           search: function(term, callback) {
-            let words = ['fib', 'farey', 'lucas'];
-            callback($.map(words, function(word) {
-              return word.indexOf(term) === 0 ? word : null
-            }))
+            callback($.map(['fib', 'farey', 'lucas'], (word) => word.includes(term) ? word : null))
           },
           replace: function(word) {
             return `${word}()`
@@ -41,9 +38,9 @@ $.getScript('../js/algebra.js', function() {
     });
 
     cal.onclick = function() {
-      let Input = input.value;
+      let IV = input.value;
       if (option === 'u') {
-        let arr = Input.split(' ');
+        let arr = IV.split(' ');
         let result;
         if (arr.length === 5) {
           result = '(A_1/24)*(x-2)*(x-3)*(x-4)*(x-5)+(A_2/(-6))*(x-1)*(x-3)*(x-4)*(x-5)+(A_3/4)*(x-1)*(x-2)*(x-4)*(x-5)+(A_4/(-6))*(x-1)*(x-2)*(x-3)*(x-5)+(A_5/24)*(x-1)*(x-2)*(x-3)*(x-4)';
@@ -57,36 +54,37 @@ $.getScript('../js/algebra.js', function() {
             result = result.replace(`A_${i + 1}`, arr[i])
           }
         }
-        output.innerHTML = katex.renderToString(`u_n=  ${nerdamer(`expand(${result})`).toTeX().replace(/x/g, 'n').replace(/\\cdot(?= \\| [a-z])/g, '')}`, {
+        output.innerHTML = katex.renderToString(`u_n=  ${nerdamer(`expand(${result})`).toTeX().replace(/x/g, 'n')}`, {
           displayMode: !0
         })
       }
       if (option === 'o') {
-        let number = parseInt(Input.replace(/(\w*)\(([^\)]*)\)/g, '$2'));
-        if (Input.includes('farey')) {
+        let number = parseInt(IV.replace(/(\w*)\(([^\)]*)\)/g, '$2'));
+        if (IV.includes('farey')) {
           output.innerHTML = katex.renderToString(farey(number).toString(), {
             displayMode: !0
           })
         }
-        if (Input.includes('fib')) {
+        if (IV.includes('fib')) {
           output.innerHTML = katex.renderToString(fib(number).toString(), {
             displayMode: !0
           })
         }
-        if (Input.includes('lucas')) {
+        if (IV.includes('lucas')) {
           output.innerHTML = katex.renderToString(lucas(number).toString(), {
             displayMode: !0
           })
         }
       }
       if (option === 's') {
-        let lcm = uoc_chung(Input);
-        let sum = parseInt(tong(Input, lcm));
+        /* https://drive.google.com/file/d/1Qft7UpyxRs632HR9D2-VkPW2tAohVHvx/view */
+        let lcm = uoc_chung(IV);
+        let sum = parseInt(nerdamer(`${lcm}*sum(${IV},n,1,100)`).toString());
         if (check_num(sum)) {
           sum *= 2;
           lcm += '*2'
         }
-        output.innerHTML = katex.renderToString(`S_n=${nerdamer(`(${phan_tich_100(sum)})/(${lcm})`).toTeX().replace(/x/g, 'n').replace(/\\cdot(?= \\| [a-z])/g, '')}`, {
+        output.innerHTML = katex.renderToString(`S_n=${nerdamer(`expand((${phan_tich_100(sum)})/(${lcm}))`).toTeX().replace(/x/g, 'n')}`, {
           displayMode: !0
         })
       }
@@ -101,76 +99,44 @@ $.getScript('../js/algebra.js', function() {
     }
 
     function farey(n) {
-      let i, q, v, x, y, l, m, k, a = [],
-        b = [],
-        c = [],
-        d = [],
-        out = '';
-      q = v = 2;
-      a[0] = 0;
-      a[1] = b[0] = b[1] = 1;
-      for (k = 2; k <= n; k++) {
-        i = 0;
-        while (a[i] != 1 || b[i] != 1) {
-          if (b[i] + b[i + 1] == v) {
-            x = a[i] + a[i + 1];
-            y = b[i] + b[i + 1];
-            m = i + 1;
-            for (l = 0; l <= m - 1; l++) {
-              c[l] = a[l];
-              d[l] = b[l]
-            }
-            c[l] = x;
-            d[l] = y;
-            for (l = m; l <= q; l++) {
-              c[l + 1] = a[l];
-              d[l + 1] = b[l]
-            }
-            for (l = 0; l <= q + 1; l++) {
-              a[l] = c[l];
-              b[l] = d[l]
-            }
-            q++
-          }
-          i++
-        }
-        v++
+      let a = 0;
+      let b = 1;
+      let c = 1;
+      let d = n;
+      let descending = false;
+      let result = '';
+      let k = 0;
+      let tmp_a = 0;
+      let tmp_b = 0;
+      if (descending) {
+        a = 1;
+        c = n - 1;
       }
-      for (k = 0; k < q - 1; k++) {
-        out += `\\dfrac{${a[k]}}{${b[k]}},`;
+      result = `\\frac{${a}}{${b}},\\:`;
+      while ((c <= n && !descending) || (a > 0 && descending)) {
+        k = parseInt((n + b) / d);
+        tmp_a = a;
+        tmp_b = b;
+        a = c;
+        b = d;
+        c = k * c - tmp_a;
+        d = k * d - tmp_b;
+        result += `\\frac{${a}}{${b}},\\:`;
       }
-      out += `\\dfrac{${a[q - 1]}}{${b[q - 1]}}`;
-      return out
-    }
-
-    function nguyen_ham(str) {
-      return nerdamer(`integrate(${str},n)`).text('fractions')
+      return result.replace(/,\\:$/g, '');
     }
 
     function uoc_chung(str) {
-      str = nguyen_ham(str);
-      let a = '';
-      for (let i = 0; i < str.length; i++) {
-        if (str.charAt(i) === '/') {
-          a += str.charAt(i + 1);
-          a += (i < str.length - 10) ? ',' : ''
-        }
-      }
-      if (a === '') {
-        return '1'
-      }
-      return nerdamer(`lcm(1,${a.replace(/,$/, '')})`).text('fractions')
-    }
-
-    function tong(str, lcm) {
-      return nerdamer(`${lcm}*sum(${str},n,1,100)`).text('fractions')
+      let arr = nerdamer(`integrate(${str},n)`).text('fractions').match(/\d(?=\))/g);
+      return arr ? nerdamer(`lcm(1,${arr.join(',')})`).text('fractions') : '1';
     }
 
     function check_num(num) {
       let str = num.toString();
       if (parseInt(str.substr(str.length - 2, 2)) >= 50) {
-        return !0
+        return true
       }
+      return false
     }
 
     function phan_tich_100(num) {
@@ -206,7 +172,7 @@ $.getScript('../js/algebra.js', function() {
       for (let i = n; i >= 0; i--) {
         str += `${digits[i]}x^${i}+`
       }
-      return str.replace(/\+-/g, '-').replace(/\+$/g, '')
+      return str.replace(/\+$/g, '')
     }
   })
 })

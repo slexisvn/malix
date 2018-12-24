@@ -8,15 +8,11 @@ function create() {
   let option = select.value;
   for (let i = 0; i < option; i++) {
     for (let j = 0; j <= option; j++) {
-      numOfUnknowns += `<input type="text" data-role="none" class="input" id="a${i}${j}" /> &nbsp;`;
+      numOfUnknowns += `<input type="text" data-role="none" class="input" id="${i}${j}" /> &nbsp;`;
     }
     numOfUnknowns += i < option - 1 ? '<br>' : ''
   }
   input.innerHTML = numOfUnknowns;
-}
-
-function checkDecimal(str) {
-  return parseFloat(str) % 1 ? true : false;
 }
 
 create(); //init
@@ -32,13 +28,13 @@ cal.onclick = function() {
   for (let i = 0; i < option; i++) {
     matA += '[';
     for (let j = 0; j < option; j++) {
-      matA += document.getElementById(`a${i}${j}`).value + (j < option - 1 ? ',' : '');
+      matA += document.getElementById(`${i}${j}`).value + (j < option - 1 ? ',' : '');
     }
     matA += ']' + (i < option - 1 ? ',' : '');
   }
   matA += ')';
   for (let i = 0; i < option; i++) {
-    matB += `[${document.getElementById(`a${i}${option}`).value}]${i < option - 1 ? ',' : ''}`;
+    matB += `[${document.getElementById(`${i}${option}`).value}]${i < option - 1 ? ',' : ''}`;
   }
   matB += ')';
   let I = nerdamer(`invert(${matA})*${matB}`).latex();
@@ -56,7 +52,7 @@ cal.onclick = function() {
   for (let i = 0; i < option; i++) {
     arr[i] = nerdamer(arr[i]).toDecimal();
   }
-  if (!arr.some(isNaN) && arr.some(checkDecimal)) {
+  if (!arr.some(isNaN) && arr.some(x => parseFloat(x) % 1)) {
     let approx = `\\begin{cases}x_1=${arr[0]}`;
     for (let i = 1; i < option; i++) {
       approx += `\\cr x_${i + 1}=${arr[i]}`;

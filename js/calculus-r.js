@@ -16,7 +16,7 @@ $.getScript('../js/algebra.js', function() {
     $('#input').textcomplete([{
       match: /(^|\b)(\w{1,})$/,
       search: function(term, callback) {
-        callback($.map(_W_, word => word.indexOf(term) === 0 ? word : null));
+        callback($.map(_W_, word => word.includes(term) ? word : null));
       },
       replace: function(word) {
         return `${word}()`
@@ -98,10 +98,13 @@ $.getScript('../js/algebra.js', function() {
         eq = `...\\:${nerdamer(eq.replace(/\+$/g, '').replace(/b/g, VV)).toTeX()}`;
       }
 
-      if (eq !== '') {
+      if (eq !== 'big') {
+        eq_output.style.display = 'block';
         eq_output.innerHTML = katex.renderToString(eq, {
           displayMode: true
         });
+      } else {
+        eq_output.style.display = 'none';
       }
 
       if (approx.includes('.')) {

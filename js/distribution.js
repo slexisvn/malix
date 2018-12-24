@@ -53,49 +53,37 @@ let option = 'normal_pd';
 let bool = !0;
 let p, s = '';
 let arr = [];
-normal_cd.style.display = 'none';
-inv_normal.style.display = 'none';
-binomial.style.display = 'none';
-poisson.style.display = 'none';
-btn_list_var.style.display = 'none';
+
 btn_list_var.onclick = function() {
   if (bool) {
     lb[1].innerHTML = LN === 'vi' ? 'Danh sách dữ liệu' : 'List';
-    text_.innerHTML = 'List';
+    this.innerHTML = 'List';
     xs.placeholder = '1 2 3 4 5';
     bool = !1
   } else {
     lb[1].innerHTML = 'x';
-    text_.innerHTML = 'Var';
+    this.innerHTML = 'Var';
     xs.placeholder = '2';
     bool = !0
   }
-  xs.value = ''
 }
-select.onchange = function() {
-  option = this.value;
-  xs.value = '';
-  lb[1].innerHTML = 'X';
-  text_.innerHTML = 'Var';
-  let class_name = document.getElementsByClassName('hidden');
-  for (let i = 0; i < class_name.length; i++) {
-    class_name[i].style.display = 'none';
-  }
+
+$('#select').on('change', function() {
+  option = $(this).val();
+  lb[1].innerHTML = 'x';
+  $('#btn_list_var').html('Var');
+  $('.area').addClass('hide');
   if (option === 'normal_pd' || option === 'normal_cd' || option === 'inv_normal') {
-    normal.style.display = '';
-    document.getElementById(option).style.display = ''
+    $(`#${option}, #normal`).removeClass('hide');
   }
   if (option === 'binomial_pd' || option === 'binomial_cd') {
-    normal_pd.style.display = '';
-    binomial.style.display = '';
-    btn_list_var.style.display = '';
+    $('#normal_pd, #binomial, #btn_list_var').removeClass('hide');
   }
   if (option === 'poisson_cd' || option === 'poisson_pd') {
-    normal_pd.style.display = '';
-    poisson.style.display = '';
-    btn_list_var.style.display = '';
+    $('#normal_pd, #poisson, #btn_list_var').removeClass('hide');
   }
-}
+});
+
 cal.onclick = function() {
   let result = '';
   let SI = sigma.value;
@@ -104,10 +92,10 @@ cal.onclick = function() {
   let XS = xs.value;
   let N = n.value;
   if (option === 'normal_pd') {
-    result = `p &approx; ${nerdamer(`1/${SI}*(1/sqrt(2*pi)*e^(-x^2/2))`).sub('x', `(${XS}-${MU})/${SI}`).evaluate().text()}`
+    result = `p &approx; ${nerdamer(`1/${SI}*(1/sqrt(2*pi)*e^(-x^2/2))`).sub('x', `(${XS}-${MU})/${SI}`).text()}`
   }
   if (option === 'normal_cd') {
-    result = `p &approx; ${nerdamer('erf(a/sqrt(2))/2-erf(b/sqrt(2))/2').sub('a', `(${upper.value}-${MU})/${SI}`).sub('b', `(${lower.value}-${MU})/${SI}`).evaluate().text()}`
+    result = `p &approx; ${nerdamer('erf(a/sqrt(2))/2-erf(b/sqrt(2))/2').sub('a', `(${upper.value}-${MU})/${SI}`).sub('b', `(${lower.value}-${MU})/${SI}`).text()}`
   }
   if (option === 'inv_normal') {
     p = parseFloat(area.value);
@@ -117,13 +105,14 @@ cal.onclick = function() {
   if (option === 'binomial_pd') {
     p = parseFloat(p_binomial.value);
     if (p >= 0 && p <= 1) {
-      if (xs.placeholder === '2')
-        result = `p = ${nerdamer(`nCr(${N},${XS})*${p}^${XS}*(1-${p})^(${N}-${XS})`).evaluate().text()}`;
-      else {
+      if (xs.placeholder === '2') {
+        result = `p &approx; ${nerdamer(`nCr(${N},${XS})*${p}^${XS}*(1-${p})^(${N}-${XS})`).text()}`;
+      } else {
         s = '';
         arr = XS.split(' ');
-        for (let i = 0; i < arr.length; i++)
-          s += `Pr(X = ${arr[i]}) = ${nerdamer(`nCr(${N},${arr[i]})*${p}^${arr[i]}*(1-${p})^(${N}-${arr[i]})`).evaluate().text()}<br/>`;
+        for (let i = 0, l = arr.length; i < l; i++) {
+          s += `Pr(X = ${arr[i]}) &approx; ${nerdamer(`nCr(${N},${arr[i]})*${p}^${arr[i]}*(1-${p})^(${N}-${arr[i]})`).text()}<br/>`;
+        }
         result = s
       }
     }
@@ -131,45 +120,39 @@ cal.onclick = function() {
   if (option === 'binomial_cd') {
     p = parseFloat(p_binomial.value);
     if (p >= 0 && p <= 1) {
-      let sum = 0;
       if (xs.placeholder === '2') {
-        for (let i = 0; i <= Math.abs(XS); i++) {
-          sum += parseFloat(nerdamer(`nCr(${N},${i})*${p}^${i}*(1-${p})^(${N}-${i})`).text())
-        }
-        result = `p = ${sum}`
+        result = `p &approx; ${nerdamer(`sum(nCr(${N},x)*${p}^x*(1-${p})^(${N}-x),x,0,abs(${XS})`).text()}`
       } else {
         s = '';
         arr = XS.split(' ');
-        for (let i = 0; i < arr.length; i++) {
-          sum = 0;
-          for (let j = 0; j <= Math.abs(arr[i]); j++) {
-            sum += parseFloat(nerdamer(`nCr(${N},${j})*${p}^${j}*(1-${p})^(${N}-${j})`).text())
-          }
-          s += `Pr(X = ${arr[i]}) = ${sum}<br/>`
+        for (let i = 0, l = arr.length; i < l; i++) {
+          s += `Pr(X = ${arr[i]}) &approx; ${nerdamer(`sum(nCr(${N},x)*${p}^x*(1-${p})^(${N}-x),x,0,abs(${arr[i]})`).text()}<br/>`
         }
         result = s
       }
     }
   }
   if (option === 'poisson_pd') {
-    if (xs.placeholder === '2')
-      result = `p &approx; ${nerdamer(`(${LA}^(${XS}))/(${XS}!)*e^(-${LA})`).evaluate().text()}`;
-    else {
+    if (xs.placeholder === '2') {
+      result = `p &approx; ${nerdamer(`(${LA}^(${XS}))/(${XS}!)*e^(-${LA})`).text()}`;
+    } else {
       s = '';
       arr = XS.split(' ');
-      for (let i = 0; i < arr.length; i++)
-        s += `Pr(X = ${arr[i]}) = ${nerdamer(`(${LA}^(${arr[i]}))/(${arr[i]}!)*e^(-${LA})`).evaluate().text()}<br/>`;
+      for (let i = 0, l = arr.length; i < l; i++) {
+        s += `Pr(X = ${arr[i]}) = ${nerdamer(`(${LA}^(${arr[i]}))/(${arr[i]}!)*e^(-${LA})`).text()}<br/>`;
+      }
       result = s
     }
   }
   if (option === 'poisson_cd') {
-    if (xs.placeholder === '2')
-      result = `p &approx; ${nerdamer(`sum((${LA}^x)/(x!)*e^(-${LA}),x,0,abs(${XS}))`).evaluate().text()}`;
-    else {
+    if (xs.placeholder === '2') {
+      result = `p &approx; ${nerdamer(`sum((${LA}^x)/(x!)*e^(-${LA}),x,0,abs(${XS}))`).text()}`;
+    } else {
       s = '';
       arr = XS.split(' ');
-      for (let i = 0; i < arr.length; i++)
-        s += `Pr(X = ${arr[i]}) = ${nerdamer(`sum((${LA}^x)/(x!)*e^(-${LA}),x,0,abs(${arr[i]}))`).evaluate().text()}<br/>`;
+      for (let i = 0, l = arr.length; i < l; i++) {
+        s += `Pr(X = ${arr[i]}) &approx; ${nerdamer(`sum((${LA}^x)/(x!)*e^(-${LA}),x,0,abs(${arr[i]}))`).text()}<br/>`;
+      }
       result = s
     }
   }

@@ -85,7 +85,7 @@ function checkMode(str) {
 }
 
 function basicFunction(str) {
-  return checkMode(nerdamer(`vector(mean(${str}), variance(${str}), stdev(${str}), max(${str}), min(${str}), mode(${str}), median(${str}), smpvar(${str}), sqrt(smpvar(${str})))`).evaluate().text())
+  return checkMode(nerdamer(`vector(mean(${str}), variance(${str}), stdev(${str}), max(${str}), min(${str}), mode(${str}), median(${str}), smpvar(${str}), sqrt(smpvar(${str})))`).text())
 }
 
 cal.onclick = function() {
@@ -97,8 +97,8 @@ cal.onclick = function() {
   let N = fList !== '' ? nerdamer(fList.replace(/ /, '+')).toString() : xArray.length;
 
   if (fList !== '') {
-    for (let i = 0; i < xArray.length; i++) {
-      for (let j = 1; j < parseInt(fArray[i]); j++) {
+    for (let i = 0, x_l = xArray.length; i < x_l; i++) {
+      for (let j = 1, f_p = parseInt(fArray[i]); j < f_p; j++) {
         xArray.push(xArray[i]);
         if (yList !== '') {
           yArray.push(yArray[i]);
@@ -128,7 +128,7 @@ cal.onclick = function() {
 
     yResult = `\\\\ \\\\ \\max(y) & = & ${YresultList[3]} \\\\
           \\min(y) & = & ${YresultList[4]} \\\\
-          \\bar x & \\approx & ${xMean} \\\\
+          \\bar y & \\approx & ${xMean} \\\\
           \\text{mode}(y) & = & ${YresultList[5]} \\\\
           \\text{median}(y) & = & ${YresultList[6]} \\\\
           s^2y & \\approx & ${YresultList[7]} \\\\
@@ -137,8 +137,8 @@ cal.onclick = function() {
           \\sigma y & \\approx & ${yStdev}`;
 
     let Sxy, A, B, R;
-    let ln_x = `log(${xList.replace(/,/g, '), log(')})`;
-    let ln_y = `log(${yList.replace(/,/g, '), log(')})`;
+    let ln_x = `ln(${xList.replace(/,/g, '), ln(')})`;
+    let ln_y = `ln(${yList.replace(/,/g, '), ln(')})`;
     let mean_ln_x = nerdamer(`mean(${ln_x})`);
     let mean_ln_y = nerdamer(`mean(${ln_y})`);
     let Sxx_ln = `(${nerdamer(`variance(${ln_x})`)})`;
@@ -149,12 +149,12 @@ cal.onclick = function() {
     }
 
     if (option === '2') {
-      B = nerdamer(`${Sxy}/(${xVariance})`).evaluate().text();
+      B = nerdamer(`${Sxy}/(${xVariance})`).text();
       reg_output.innerHTML = `$$y=A+Bx$$ 
             $$\\begin{array}{l}
-              A & = & ${nerdamer(`${yMean}-${B}*${xMean}`).evaluate().text()} \\\\ 
+              A & = & ${nerdamer(`${yMean}-${B}*${xMean}`).text()} \\\\ 
               B & = & ${B} \\\\
-              r & = & ${nerdamer(`${Sxy}/((${xStdev})*(${yStdev}))`).evaluate().text()}
+              r & = & ${nerdamer(`${Sxy}/((${xStdev})*(${yStdev}))`).text()}
             \\end{array}$$`
     }
 
@@ -165,9 +165,9 @@ cal.onclick = function() {
       let Sx_quad_x_quad = `(${nerdamer(`dot([${quad_x}], [${quad_x}])/${N}-${mean_quad_x}*${mean_quad_x}`)})`;
       let Sx_quad_y = `(${nerdamer(`dot([${quad_x}], [${yList}])/${N}-${mean_quad_x}*${yMean}`)})`;
 
-      B = nerdamer(`(${Sxy}*${Sx_quad_x_quad}-${Sx_quad_y}*${Sxx_quad})/(${xVariance}*${Sx_quad_x_quad}-(${Sxx_quad})^2)`).evaluate().text();
-      let C = nerdamer(`(${Sx_quad_y}*${xVariance}-${Sxy}*${Sxx_quad})/(${xVariance}*${Sx_quad_x_quad}-(${Sxx_quad})^2)`).evaluate().text();
-      A = nerdamer(`${yMean}-(${B})*(${xMean})-(${C})*(${mean_quad_x})`).evaluate().text();
+      B = nerdamer(`(${Sxy}*${Sx_quad_x_quad}-${Sx_quad_y}*${Sxx_quad})/(${xVariance}*${Sx_quad_x_quad}-(${Sxx_quad})^2)`).text();
+      let C = nerdamer(`(${Sx_quad_y}*${xVariance}-${Sxy}*${Sxx_quad})/(${xVariance}*${Sx_quad_x_quad}-(${Sxx_quad})^2)`).text();
+      A = nerdamer(`${yMean}-(${B})*(${xMean})-(${C})*(${mean_quad_x})`).text();
 
       let quad = quad_x.split(',');
       let n = [];
@@ -182,48 +182,48 @@ cal.onclick = function() {
       reg_output.innerHTML = `$$y=A+Bx+Cx^2$$
             $$\\begin{array}{l}
               A & = & ${A} \\\\ B & = & ${B} \\\\ C & = & ${C} \\\\
-              r & = & ${nerdamer(`sqrt(1-mean(${xList})/mean(${yList}))`).evaluate().text()}
+              r & = & ${nerdamer(`sqrt(1-mean(${xList})/mean(${yList}))`).text()}
             \\end{array}$$`
     }
 
     if (option === '4') {
       Sxy = `(${nerdamer(`dot([${ln_x}], [${yList}])/${N}-${mean_ln_x}*${yMean}`)})`;
-      B = nerdamer(`${Sxy}/${Sxx_ln}`).evaluate().text();
+      B = nerdamer(`${Sxy}/${Sxx_ln}`).text();
       reg_output.innerHTML = `$$y=A+B\\ln(x)$$
             $$\\begin{array}{l}
-              A & = & ${nerdamer(`${yMean}-(${B})*(${mean_ln_x})`).evaluate().text()} \\\\ B & = & ${B} \\\\
-              r & = & ${nerdamer(`${Sxy}/(sqrt(${Sxx_ln})*(${yStdev}))`).evaluate().text()}
+              A & = & ${nerdamer(`${yMean}-(${B})*(${mean_ln_x})`).text()} \\\\ B & = & ${B} \\\\
+              r & = & ${nerdamer(`${Sxy}/(sqrt(${Sxx_ln})*(${yStdev}))`).text()}
             \\end{array}$$`
     }
 
     if (option === '5' || option === '6') {
       Sxy = `(${nerdamer(`dot([${xList}], [${ln_y}])/${N}-${xMean}*${mean_ln_y}`)})`;
-      R = nerdamer(`${Sxy}/((${xStdev})*sqrt(${Syy_ln}))`).evaluate().text()
+      R = nerdamer(`${Sxy}/((${xStdev})*sqrt(${Syy_ln}))`).text()
     }
 
     if (option === '5') {
-      B = nerdamer(`${Sxy}/${xVariance}`).evaluate().text();
+      B = nerdamer(`${Sxy}/${xVariance}`).text();
       reg_output.innerHTML = `$$y=Ae^{Bx}$$ 
             $$\\begin{array}{l}
-              A & = & ${nerdamer(`e^(${mean_ln_y}-(${B})*(${xMean}))`).evaluate().text()} \\\\ B & = & ${B} \\\\ r & = & ${R}
+              A & = & ${nerdamer(`e^(${mean_ln_y}-(${B})*(${xMean}))`).text()} \\\\ B & = & ${B} \\\\ r & = & ${R}
             \\end{array}$$`
     }
 
     if (option === '6') {
-      B = nerdamer(`e^(${Sxy}/${xVariance})`).evaluate().text();
+      B = nerdamer(`e^(${Sxy}/${xVariance})`).text();
       reg_output.innerHTML = `$$y=AB^x$$ 
             $$\\begin{array}{l}
-              A & = & ${nerdamer(`e^(${mean_ln_y}-log(${B})*(${xMean}))`).evaluate().text()} \\\\ B & = & ${B} \\\\ r & = & ${R}
+              A & = & ${nerdamer(`e^(${mean_ln_y}-ln(${B})*(${xMean}))`).text()} \\\\ B & = & ${B} \\\\ r & = & ${R}
             \\end{array}$$`
     }
 
     if (option === '7') {
       Sxy = `(${nerdamer(`dot([${ln_x}], [${ln_y}])/${N}-${mean_ln_x}*${mean_ln_y}`)})`;
-      B = nerdamer(`${Sxy}/${Sxx_ln}`).evaluate().text();
+      B = nerdamer(`${Sxy}/${Sxx_ln}`).text();
       reg_output.innerHTML = `$$y=Ax^B$$ 
             $$\\begin{array}{l}
-              A & = & ${nerdamer(`e^(${mean_ln_y}-(${B})*(${mean_ln_x}))`).evaluate().text()} \\\\ B & = & ${B} \\\\ 
-              r & = & ${nerdamer(`${Sxy}/(sqrt(${Sxx_ln})*sqrt(${Syy_ln}))`).evaluate().text()}
+              A & = & ${nerdamer(`e^(${mean_ln_y}-(${B})*(${mean_ln_x}))`).text()} \\\\ B & = & ${B} \\\\ 
+              r & = & ${nerdamer(`${Sxy}/(sqrt(${Sxx_ln})*sqrt(${Syy_ln}))`).text()}
             \\end{array}$$`
     }
 
@@ -232,11 +232,11 @@ cal.onclick = function() {
       let mean_inv_x = nerdamer(`mean(${inv_x})`);
       let Sxx_inv = `(${nerdamer(`variance(${inv_x})`)})`;
       Sxy = `(${nerdamer(`dot([${inv_x}], [${yList}])/${N}-${mean_inv_x}*${yMean}`)})`;
-      B = nerdamer(`${Sxy}/${Sxx_inv}`).evaluate().text();
+      B = nerdamer(`${Sxy}/${Sxx_inv}`).text();
       reg_output.innerHTML = `$$y=A+\\frac{B}x$$ 
             $$\\begin{array}{l}
-              A & = & ${nerdamer(`${yMean}-(${B})*(${mean_inv_x})`).evaluate().text()} \\\\ B & = & ${B} \\\\ 
-              r & = & ${nerdamer(`${Sxy}/(sqrt(${Sxx_inv})*(${yStdev}))`).evaluate().text()}
+              A & = & ${nerdamer(`${yMean}-(${B})*(${mean_inv_x})`).text()} \\\\ B & = & ${B} \\\\ 
+              r & = & ${nerdamer(`${Sxy}/(sqrt(${Sxx_inv})*(${yStdev}))`).text()}
             \\end{array}$$`
     }
   }
@@ -267,7 +267,7 @@ xx.oninput = function() {
 }
 
 function plot_z_score_area(str) {
-  zscore = nerdamer(`zscore(${xx.value}, mean(${str}), stdev(${str}))`).evaluate().text();
+  zscore = nerdamer(`zscore(${xx.value}, mean(${str}), stdev(${str}))`).text();
   z = parseFloat(zscore);
   abs_z = Math.abs(z)
   ufd = Number(abs_z - (abs_z * 100 % 10) / 100).toFixed(1);

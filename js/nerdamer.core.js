@@ -4470,6 +4470,8 @@ var nerdamer = (function(imports) {
       'sqrt': [sqrt, 1],
       'nthroot': [nthroot, 2],
       'log': [log, [2]],
+      'sum': [sum, [4]],
+      'product': [product, [4]],
       'expand': [expand, 1],
       'abs': [abs, 1],
       'invert': [invert, 1],
@@ -5445,24 +5447,34 @@ var nerdamer = (function(imports) {
     }
 
     function abs(symbol) {
-      if (symbol.multiplier.lessThan(0)) symbol.multiplier.negate();
-      if (symbol.isImaginary()) {
-        var re = symbol.realpart();
-        var im = symbol.imagpart();
-        if (re.isConstant() && im.isConstant())
-          return sqrt(_.add(_.pow(re, new Symbol(2)), _.pow(im, new Symbol(2))));
-      } else if (isNumericSymbol(symbol) || even(symbol.power)) {
-        return symbol;
-      }
-      if (symbol.isComposite()) {
-        var ms = [];
-        symbol.each(function(x) {
-          ms.push(x.multiplier);
-        });
-        var gcd = Math2.QGCD.apply(null, ms);
-        if (gcd.lessThan(0)) {
-          symbol.multiplier = symbol.multiplier.multiply(new Frac(-1));
-          symbol.distributeMultiplier();
+      if (isVector(symbol)) {
+        let V = symbol.elements;
+        if (V.length === 2) {
+          return _.parse(`sqrt((${V[0]})^2+(${V[1]})^2)`);
+        }
+        if (V.length === 3) {
+          return _.parse(`sqrt((${V[0]})^2+(${V[1]})^2+(${V[2]})^2)`);
+        }
+      } else {
+        if (symbol.multiplier.lessThan(0)) symbol.multiplier.negate();
+        if (symbol.isImaginary()) {
+          var re = symbol.realpart();
+          var im = symbol.imagpart();
+          if (re.isConstant() && im.isConstant())
+            return sqrt(_.add(_.pow(re, new Symbol(2)), _.pow(im, new Symbol(2))));
+        } else if (isNumericSymbol(symbol) || even(symbol.power)) {
+          return symbol;
+        }
+        if (symbol.isComposite()) {
+          var ms = [];
+          symbol.each(function(x) {
+            ms.push(x.multiplier);
+          });
+          var gcd = Math2.QGCD.apply(null, ms);
+          if (gcd.lessThan(0)) {
+            symbol.multiplier = symbol.multiplier.multiply(new Frac(-1));
+            symbol.distributeMultiplier();
+          }
         }
       }
       return _.symfunction(ABS, [symbol]);
@@ -5976,6 +5988,62 @@ var nerdamer = (function(imports) {
 
         if (s) retval = _.multiply(s, retval);
       }
+      return retval;
+    }
+
+
+    function sum(fn, index, start, end) {
+      if (!(index.group === core.groups.S)) throw new core.exceptions.NerdamerTypeError('Index must be symbol. ' + text(index) + ' provided');
+      index = index.value;
+      var retval;
+      if (core.Utils.isNumericSymbol(start) && core.Utils.isNumericSymbol(end)) {
+        var modifier = end - start < 200 ? '' : 'PARSE2NUMBER';
+        start = Number(start);
+        end = Number(end);
+        retval = core.Utils.block(modifier, function() {
+          var f = fn.text(),
+            subs = {
+              '~': true
+            }, //lock subs. Is this even being used?
+            retval = new core.Symbol(0);
+
+          for (var i = start; i <= end; i++) {
+            subs[index] = new Symbol(i);
+            var ans = _.parse(f, subs);
+            retval = _.add(retval, ans);
+          }
+          return retval;
+        });
+      } else {
+        retval = _.symfunction('sum', arguments);
+      }
+
+      return retval;
+    }
+    function product(fn, index, start, end) {
+      if (!(index.group === core.groups.S)) throw new core.exceptions.NerdamerTypeError('Index must be symbol. ' + text(index) + ' provided');
+      index = index.value;
+      var retval;
+      if (core.Utils.isNumericSymbol(start) && core.Utils.isNumericSymbol(end)) {
+        var modifier = end - start < 200 ? '' : 'PARSE2NUMBER';
+        retval = core.Utils.block(modifier, function() {
+          start = Number(start);
+          end = Number(end.multiplier);
+
+          var f = fn.text(),
+            subs = {},
+            retval = new core.Symbol(1);
+
+          for (var i = start; i <= end; i++) {
+            subs[index] = new Symbol(i);
+            retval = _.multiply(retval, _.parse(f, subs));
+          }
+          return retval;
+        });
+      } else {
+        retval = _.symfunction('product', arguments);
+      }
+
       return retval;
     }
 
@@ -7628,7 +7696,7 @@ var nerdamer = (function(imports) {
 
     latex: function(symbol, option) {
       var GAROTY = symbol.clone();
-      if (GAROTY.multiplier.abs().num < 1000000) {
+      
         //it might be an array
         if (symbol.clone) {
           symbol = symbol.clone(); //leave original as-is
@@ -7668,14 +7736,14 @@ var nerdamer = (function(imports) {
         }
 
         if (isVector(symbol)) {
-          var TeX = '\\left[';
+          var TeX = '\\left(';
           for (var i = 0; i < symbol.elements.length; i++) {
             TeX += this.latex(symbol.elements[i]) + ' ' + (i !== symbol.elements.length - 1 ? ',\\,' : '');
           }
-          TeX += '\\right]';
+          TeX += '\\right)';
           return TeX;
         }
-
+if (GAROTY.multiplier.abs().num < 1000000) {
         var decimal = option === 'decimal',
           power = symbol.power,
           invert = isNegative(power),
@@ -7722,7 +7790,7 @@ var nerdamer = (function(imports) {
           return retval.replace(/\+\-/gi, '-');
         }
       }
-      return '';
+      return 'big';
     },
     //greek mapping
     greek: {

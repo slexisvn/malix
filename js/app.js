@@ -1,9 +1,5 @@
-!function(a,b){"use strict";function c(a,b){for(var c=0,d=a.length;d>c;c++)i=a[c].querySelector("."+r),i.addEventListener(b,f,!1)}function d(a){for(var b=0,c=a.length;c>b;b++)a[b].setAttribute(n,l),a[b].setAttribute(o,q)}function e(a){return b.querySelectorAll("["+n+'="'+a+'"]')}function f(a){for(j=a.target;j&&!j.getAttribute(n);)if(j=j.parentNode,!j)return;k=j.getAttribute(o)===p?q:p,j.setAttribute(o,k)}var g,h,i,j,k,l="click",m="hover",n="data-mfb-toggle",o="data-mfb-state",p="open",q="closed",r="mfb-component__button--main";a.Modernizr&&Modernizr.touch&&(h=e(m),d(h)),g=e(l),c(g,"click")}(window,document)
-
-jQuery.fn.extend({setCursorPosition:function(e){return 0==this.length?this:$(this).setSelection(e,e)},setSelection:function(e,t){if(0==this.length)return this;if(input=this[0],input.createTextRange){var n=input.createTextRange();n.collapse(!0),n.moveEnd("character",t),n.moveStart("character",e),n.select()}else input.setSelectionRange&&(input.focus(),input.setSelectionRange(e,t));return this}});
-
 $(document).on('pageinit', function() {
-  $('#main_input, #input').on('focus', function() {
+ $('#main_input, #input').on('focus', function() {
     if ($(this).val().includes('()')) {
       $(this).setCursorPosition($(this).val().indexOf('()') + 1)
     }
@@ -16,8 +12,10 @@ $('.mfb-component__button--child').click(function() {
 
 $('#search').css({
   'overflow': 'auto',
-  'height': `${window.innerHeight - 80}px`
+  'height': `${$(window).innerHeight() - 80}px`
 });
+
+$('#recurring_output, #mixed_output, #main_approx_output').hide();
 
 var LN = navigator.language.substr(0, 2);
 
@@ -38,7 +36,7 @@ var _W_ = ['abs', 'sqrt', 'nthroot', 'ln', 'cos', 'sin', 'tan', 'acos', 'asin', 
 $('#main_input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    callback($.map([..._W_, ...['approxratio', 'log', 'log10', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN', 'arg', 'imagpart', 'realpart', 'conjugate', 'polarform', 'rectform']], word => word.indexOf(term) === 0 ? word : null));
+    callback($.map([..._W_, ...['approxratio', 'log', 'log10', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN', 'arg', 'imagpart', 'realpart', 'conjugate', 'polarform', 'rectform']], word => word.includes(term) ? word : null));
   },
   replace(word) {
     return `${word}()`;
@@ -316,7 +314,7 @@ nerdamer.register([{
   }
 }]);
 
-recurring_output.style.display = mixed_output.style.display = main_approx_output.style.display = 'none';
+
 
 main_input.oninput = function() {
   let IV = this.value;
@@ -330,10 +328,6 @@ main_input.oninput = function() {
   let __ap;
   if (IV.includes('pfactor')) {
     eq = eq.replace(/\\right\)\\left\(/g, '\\times').replace(/\\left\(|\\right\)/g, '')
-  }
-
-  if (!isNaN(eq)) {
-    eq = eq.replace(/\d{1,3}(?=(\d{3})+(?!\d))/g, '$&\\:');
   }
   if (/floor|ceil|!|fact|dfactorial/.test(IV) && !IV.includes('pfactor') || eq === '') {
     eq = approx;
@@ -368,7 +362,9 @@ main_input.oninput = function() {
   } else {
     recurring_output.style.display = mixed_output.style.display = main_approx_output.style.display = 'none';
   }
-  
+  if (!isNaN(eq)) {
+    eq = eq.replace(/\d{1,3}(?=(\d{3})+(?!\d))/g, '$&\\:');
+  }
   main_eq_output.innerHTML = katex.renderToString(__exp_(eq.replace('Infinity', '\\infty')), {
     displayMode: !0
   });

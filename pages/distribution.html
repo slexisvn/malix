@@ -6,7 +6,7 @@
       </div>
       <div class="title">Distribution</div>
       <div class="right">
-        <button id="btn_list_var" class="hidden button"><span id="text_">Var</span></button>
+        <button id="btn_list_var" class="area button hide">Var</button>
       </div>
     </div>
   </div>
@@ -20,67 +20,63 @@
       <option value="poisson_pd">Poisson PD</option>
       <option value="poisson_cd">Poisson CD</option>
     </select>
-    <div id="normal_pd" class="hidden card">
+    <div id="normal_pd" class="area card">
       <label>x</label>
-      <input type="text" id="xs" placeholder="2" />
+      <input type="text" id="xs" placeholder="2" data-clear-btn="true" />
     </div>
-    <div class="row hidden" id="normal_cd">
+    <div class="row area hide" id="normal_cd">
       <div class="col-50">
         <div class="card">
           <label>Lower</label>
-          <input id="lower" type="text" placeholder="2" />
+          <input id="lower" type="text" placeholder="2" data-clear-btn="true" />
         </div>
       </div>
       <div class="col-50">
         <div class="card">
           <label>Upper</label>
-          <input id="upper" type="text" placeholder="4" />
+          <input id="upper" type="text" placeholder="4" data-clear-btn="true" />
         </div>
       </div>
     </div>
-    <div id="inv_normal" class="hidden card">
+    <div id="inv_normal" class="area card hide">
       <label>Area</label>
-      <input type="text" id="area" placeholder="0.67" />
+      <input type="text" id="area" placeholder="0.67" data-clear-btn="true" />
     </div>
-    <div class="row hidden" id="normal">
+    <div class="row area" id="normal">
       <div class="col-50">
         <div class="card">
           <label>σ</label>
-          <input id="sigma" type="text" placeholder="3" />
+          <input id="sigma" type="text" placeholder="3" data-clear-btn="true" />
         </div>
       </div>
       <div class="col-50">
         <div class="card">
           <label>μ</label>
-          <input id="mu" type="text" placeholder="1" />
+          <input id="mu" type="text" placeholder="1" data-clear-btn="true" />
         </div>
       </div>
     </div>
-    <div class="row hidden margin-top-minus-8" id="binomial">
+    <div class="row area margin-top-minus-8 hide" id="binomial">
       <div class="col-50">
         <div class="card">
           <label>N</label>
-          <input id="n" type="text" placeholder="3" />
+          <input id="n" type="text" placeholder="3" data-clear-btn="true" />
         </div>
       </div>
       <div class="col-50">
         <div class="card">
           <label>p</label>
-          <input id="p_binomial" type="text" placeholder="0.2" />
+          <input id="p_binomial" type="text" placeholder="0.2" data-clear-btn="true" />
         </div>
       </div>
     </div>
-    <div id="poisson" class="card hidden">
+    <div id="poisson" class="card area hide">
       <label>λ</label>
-      <input type="text" id="lambda" placeholder="3" />
+      <input type="text" id="lambda" placeholder="3" data-clear-btn="true" />
     </div>
     <button id="cal" class="katex">=</button>
-    <div class="card">
-      <div class="overflow">
-        <div id="output">
-          <span class="katex-display katex">0</span>
-        </div>
-      </div>
+    <div class="card overflow" id="output">
+      <span class="katex-display katex">0</span>
     </div>
   </div>
   <script src="../js/distribution.js"></script>

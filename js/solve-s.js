@@ -8,23 +8,24 @@ other_eq_output.style.display = other_approx_output.style.display = 'none';
 $.getScript('../js/algebra.js', function() {
   $.getScript('../js/calculus.js', function() {
     $.getScript('../js/solve.js', function() {
+      _W_.push('/');
       $('#input').textcomplete([{
         match: /(^|\b)(\w{1,}|\W{1,})$/,
         search(term, callback) {
-          callback($.map(_W_, word => word.indexOf(term) === 0 ? word : null))
+          callback($.map(_W_, word => word.includes(term) ? word : null))
         },
         replace(word) {
           return word === '/' ? '()/()' : `${word}()`
         }
       }]);
 
-      function __2_a(str) {
-        return [...new Set(str.replace(/^\[|\]$|\*/g, '').split(','))];
+      function toArray(str) {
+        return str.replace(/^\[|\]$|\*| /g, '').split(',');
       }
 
       function findClosingBracket(str) {
         let depth = 1;
-        for (let i = str.indexOf('{') + 1; i < str.length; i++) {
+        for (let i = str.indexOf('{') + 1, l = str.length; i < l; i++) {
           switch (str[i]) {
             case '{':
               depth++;
@@ -39,310 +40,331 @@ $.getScript('../js/algebra.js', function() {
         return -1
       }
 
-      function sort(decimal, pretty) {
-        let d;
-        let p;
-        for (let k = 0; k < decimal.length - 1; k++) {
-          for (let i = k + 1; i < decimal.length; i++) {
-            if (decimal[k] < decimal[i]) {
-              d = decimal[k];
-              decimal[k] = decimal[i];
-              decimal[i] = d;
-              p = pretty[k];
-              pretty[k] = pretty[i];
-              pretty[i] = p
-            }
-          }
-        }
-      }
-
-      function deleteImagineRoots(decimal, pretty) {
-        for (let i = decimal.length - 1; i >= 0; i--) {
-          if (decimal[i].includes('i')) {
-            decimal.splice(i, 1);
-            pretty.splice(i, 1);
-          }
-        }
-      }
-
-      function formatEOfRationalFunc(original_decimal, decimal, pretty, sign_table, sign) {
-        let d = '';
-        let p = '';
-        let o_decimal = [];
-        let o_pretty = [];
-        for (let i = 0; i < pretty.length - 1; i++) {
-          if (sign_table.charAt(i) === sign) {
-            if (original_decimal.includes(decimal[i + 1].toString()) || decimal[i + 1] === -50) {
-              d = p = '\\left('
-            } else {
-              d = p = '\\left['
-            }
-            d += `${decimal[i + 1]};${decimal[i]}`;
-            p += `${pretty[i + 1]};${pretty[i]}`;
-            if (original_decimal.includes(decimal[i].toString()) || decimal[i] === 50) {
-              d += '\\right)';
-              p += '\\right)'
-            } else {
-              d += '\\right]';
-              p += '\\right]'
-            }
-            o_decimal.push(d)
-            o_pretty.push(p);
-            d = p = ''
-          }
-        }
-        return [o_decimal, o_pretty]
-      }
-
-      function formatEOfPoly(decimal, pretty, sign_table, sign) {
-        let d = '';
-        let p = '';
-        let o_decimal = [];
-        let o_pretty = [];
-        for (let i = 0; i < pretty.length - 1; i++) {
-          if (sign_table.charAt(i) === sign) {
-            d = p = decimal[i + 1] === -50 ? '\\left(' : '\\left[';
-            d += `${decimal[i + 1]};${decimal[i]}`;
-            p += `${pretty[i + 1]};${pretty[i]}`;
-            o_decimal.push(d + (decimal[i] === 50 ? '\\right)' : '\\right]'));
-            o_pretty.push(p + (decimal[i] === 50 ? '\\right)' : '\\right]'));
-            d = p = ''
-          }
-        }
-        return [o_decimal, o_pretty]
-      }
-
-      function formatT(decimal, pretty, sign_table, sign) {
-        let o_decimal = [];
-        let o_pretty = [];
-        for (let i = 0; i < pretty.length - 1; i++) {
-          if (sign_table.charAt(i) === sign) {
-            o_decimal.push(`\\left(${decimal[i + 1]};${decimal[i]}\\right)`)
-            o_pretty.push(`\\left(${pretty[i + 1]};${pretty[i]}\\right)`);
-          }
-        }
-        return [o_decimal, o_pretty]
-      }
-
-      function checkDot(arr) {
-        for (let i = 0; i < arr.length; i++) {
-          if (arr[i].includes('.')) {
-            return true
-          }
-        }
-        return false
-      }
-
-      function formatIneq(decimal, pretty) {
-        let o = '$$x\\in';
-        for (let i = pretty.length - 1; i >= 0; i--) {
-          o += `${pretty[i]}\\cup`
-        }
-        if (checkDot(decimal)) {
-          o += '$$\\approx';
-          for (let i = decimal.length - 1; i >= 0; i--) {
-            o += `${decimal[i].replace('-50;', '-\\infty;').replace(';50', ';+\\infty')}\\cup`;
-          }
-        }
-        return `${o.replace(/\\cup(?=\$\$\\approx)|\\cup$/g, '$$$$')}`
-      }
-
-      function noSolutionIneq(sign_of_A, operator) {
-        switch (operator) {
-          case 'ge':
-          case 'gt':
-            return sign_of_A === 1 ? '<p align="center">Bất phương trình vô nghiệm</p>' : '<p align="center">Bất phương trình nghiệm đúng với mọi $x\\in\\mathbb R$</p>'
-            break;
-          case 'le':
-          case 'lt':
-            return sign_of_A === 1 ? '<p align="center">Bất phương trình nghiệm đúng với mọi $x\\in\\mathbb R$</p>' : '<p align="center">Bất phương trình vô nghiệm</p>'
-            break;
-        }
-      }
-
-      function checkEmpty(str) {
-        return str === '' ? true : false
-      }
-
-      function __formatEq__p(p) {
-        let l = p.length;
-        let t = p.map(x => x.replace(/\D/g, ''));
-        if (l === 1 && p[0] !== '') {
-          return `$$x=${p[0]}$$`;
+      function formatRangeEq(r) {
+        let l = r.length;
+        let o = {
+          d: '',
+          p: ''
+        };
+        if (l === 1) {
+          o.d = r[0].d.includes('.') ? `$$x\\approx ${r[0].d}$$` : '';
+          o.p = r[0].p !== '' ? `$$x=${r[0].p}$$` : '';
         } else {
-          if (t.filter(checkEmpty).length === l) {
-            return '';
-          } else {
-            let o = '';
-            for (let i = 0; i < l; i++) {
-              if (t[i] !== '') {
-                o += `x_${i + 1}=${p[i]}\\\\`;
-              }
+          for (let i = 0; i < l; i++) {
+            if (r[i].p !== '') {
+              o.p += `x_${i + 1}=${r[i].p}\\\\`;
             }
-            o = o.replace(/\\\\$/, '');
-            return (o.match(/x_/g) || []).length === 1 ? `$$${o}$$` : `$$\\left[\\begin{array}{l}${o}\\end{array}\\right.$$`;
+            if (r[i].d !== '') {
+              o.d += `x_${i + 1}\\approx ${r[i].d}\\\\`;
+            }
+          }
+          for (x in o) {
+            if (o[x] !== '') {
+              o[x] = o[x].replace(/\\\\$/, '');
+              o[x] = (o[x].match(/x_/g) || []).length === 1 ? `$$${o[x]}$$` : `$$\\left[\\begin{array}{l}${o[x]}\\end{array}\\right.$$`;
+            }
           }
         }
-      }
-
-      function __formatEq__d(d) {
-        let l = d.length;
-        let t = d.map(x => x.includes('sqrt') && x.length ? '' : x);
-        if (l === 1 && d[0].includes('.')) {
-          return `$$x\\approx ${d[0]}$$`;
-        } else {
-          if (t.filter(checkEmpty).length === l) {
-            return '';
-          } else {
-            let o = '';
-            for (let i = 0; i < l; i++) {
-              if (t[i] !== '' && parseFloat(d[i]) % 1) {
-                o += `x_${i + 1}\\approx ${__exp_(d[i])}\\\\`;
-              }
-            }
-            o = o.replace(/\\\\$/, '');
-            return (o.match(/x_/g) || []).length === 1 ? `$$${o}$$` : `$$\\left[\\begin{array}{l}${o}\\end{array}\\right.$$`;
-          }
-        }
+        return o;
       }
 
       function _s_L(num) {
         return LN === 'vi' ? `\\text{C${num > 0 ? 'T' : 'D'}}` : `\\text{Local ${num > 0 ? 'Max' : 'Min'}}`
       }
 
+      function formatRangeE(r, s) {
+        if (r.every(x => x.pl === s ? 1 : 0)) {
+          return '$$\\mathbb R$$';
+        } else {
+          if (r.every(x => x.pl !== s ? 1 : 0)) {
+            return '$$\\varnothing$$';
+          } else {
+            let o = [];
+            for (let i = 0, l = r.length - 1; i < l; i++) {
+              if (r[i].pl === s) {
+                o.push({
+                  d: `${r[i + 1].isD ? '\\left(' : '\\left['}${r[i + 1].d};${r[i].d}${r[i].isD ? '\\right)' : '\\right]'}`,
+                  p: `${r[i + 1].isD ? '\\left(' : '\\left['}${r[i + 1].p};${r[i].p}${r[i].isD ? '\\right)' : '\\right]'}`
+                })
+              }
+            }
+            return o
+          }
+        }
+      }
+
+      function formatRangeT(r, s, dbr) {
+        if (r.every(x => x.pl !== s ? 1 : 0)) {
+          return '$$\\varnothing$$';
+        } else {
+          let o = [];
+          if (r.every(x => x.pl === s ? 1 : 0)) {
+            o.push({
+              d: '\\mathbb R',
+              p: '\\mathbb R'
+            });
+          } else {
+            for (let i = 0, l = r.length - 1; i < l; i++) {
+              if (r[i].pl === s) {
+                o.push({
+                  d: `\\left(${r[i + 1].d};${r[i].d}\\right)`,
+                  p: `\\left(${r[i + 1].p};${r[i].p}\\right)`
+                });
+              }
+            }
+          }
+          let l = dbr.length;
+          if (l > 1 || (l === 1 && dbr[0].pl === s)) {
+            o[0].d += '\\backslash\\left\\{';
+            o[0].p += '\\backslash\\left\\{';
+            for (let i = 0; i < l; i++) {
+              if (dbr[i].pl === s) {
+                o[0].d += dbr[i].d + ',\\:';
+                o[0].p += dbr[i].p + ',\\:';
+              }
+            }
+            o[0].d = o[0].d.replace(/,\\:$/, '\\right\\}');
+            o[0].p = o[0].p.replace(/,\\:$/, '\\right\\}');
+          }
+          return o
+        }
+      }
+
+      function formatIneq(range) {
+        if (!/mathbb|varnothing/.test(range[0].d)) {
+          let o = {
+            d: '$$',
+            p: '$$'
+          };
+          for (let i = range.length - 1; i >= 0; i--) {
+            for (x in o) {
+              o[x] += `${range[i][x]}\\cup`
+            }
+          }
+          for (x in o) {
+            o[x] = o[x].replace(/\\cup$/g, '$$$$')
+          }
+          return o
+        }
+        if (range[0].d.includes('mathbb')) {
+          return {
+            d: `$$${range[0].d}$$`,
+            p: `$$${range[0].p}$$`,
+          };
+        }
+        return '';
+      }
+
       $('button').click(function() {
         let operator = $(this).attr('id');
         let IV = input.value;
-        let deg = parseInt(nerdamer(`deg(${IV},x)`).toString());
-        let eq;
-        let approx;
-        let N;
-        let __ap;
-        if (deg > 2 && !/[^x\d\W]/g.test(IV)) {
-          N = nerdamer(`roots(${IV},x)`).latex();
-        } else {
-          if (IV.includes(')/(')) {
-            N = nerdamer(`solve(${IV.replace(/\(([^\)]*)\)\/\(([^\)]*)\)/g, '$1')},x)`).latex();
-          } else {
-            N = nerdamer(`solve(${IV},x)`).latex();
-          }
-        }
-        let _d__n = __2_a(N[0]);
-        let _p__n = __2_a(N[1]);
-
-        if (operator === 'eq') {
-          if (N[1] === '[]' && N[0] === '[]') {
-            eq = `<p align="center">${LN === 'vi' ? 'Không giải được' : 'Can\'t solve'}</p>`
-          } else {
-            eq = __formatEq__p(_p__n);
-            approx = __formatEq__d(_d__n);
-          }
-          if (IV.includes(')/(')) {
-            __ap = 'none';
-          } else {
-            let _L = LN === 'vi' ? 'tại' : 'at';
-            // MAX - MIN
-            if (deg === 2) {
-              let coeff = __2_a(nerdamer(`coeffs(${IV},x)`).toString());
-              let delta = nerdamer(`(${coeff[1]})^2-4*(${coeff[2]})*(${coeff[0]})`).toString();
-              let __y_o = nerdamer(`-${delta}/(4*(${coeff[2]}))`).latex();
-              let __x_o = nerdamer(`-${coeff[1]}/(2*(${coeff[2]}))`).latex();
-              let _o__ = coeff[2].charAt(0) === '-' ? '\\max' : '\\min';
-              if (!/[^x\d\W]/g.test(IV) && __y_o[0] !== __y_o[1]) {
-                __ap = 'block';
-                other_approx_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[0]}$ ${_L} $x=${__x_o[0]}$</p>`;
-              } else {
-                __ap = 'none';
+        if ((operator !== 'eq' && !/[^x\d\W]/g.test(IV)) || operator === 'eq') {
+          let __ap;
+          let deg = parseInt(nerdamer(`deg(${IV},x)`).toString());
+          let eq;
+          let approx;
+          let ROOT = nerdamer(`solve(${IV},x)`).latex().map(x => toArray(x).filter((v, i, self) => self.indexOf(v) === i || v === '' || v.includes('big')));
+          if (operator === 'eq') {
+            ROOT = ROOT[0].map((x, i) => {
+              return {
+                d: !/[^i\d\W]+/.test(x) && x.includes('.') && x.length < 40 ? x : '',
+                p: ROOT[1][i].includes('big') ? '' : ROOT[1][i]
               }
-              other_approx_output.style.display = __ap;
-              other_eq_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[1]}$ ${_L} $x=${__x_o[1]}$</p>`;
+            });
+            if (ROOT.length) {
+              let tmp = formatRangeEq(ROOT);
+              eq = tmp.p;
+              approx = tmp.d;
+            } else {
+              eq = `<p align="center">${LN === 'vi' ? 'Không giải được' : 'Can\'t solve'}</p>`
             }
+            if (!IV.includes(')/(')) {
+              let _L = LN === 'vi' ? 'tại' : 'at';
+              // MAX - MIN
+              if (deg === 2) {
+                let coeff = toArray(nerdamer(`coeffs(${IV},x)`).toString());
+                let delta = nerdamer(`(${coeff[1]})^2-4*(${coeff[2]})*(${coeff[0]})`).toString();
+                let __y_o = nerdamer(`-${delta}/(4*(${coeff[2]}))`).latex();
+                let __x_o = nerdamer(`-${coeff[1]}/(2*(${coeff[2]}))`).latex();
+                let _o__ = coeff[2].charAt(0) === '-' ? '\\max' : '\\min';
+                if (!/[^x\d\W]/g.test(IV) && __y_o[0] !== __y_o[1]) {
+                  __ap = 'block';
+                  other_approx_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[0]}$ ${_L} $x=${__x_o[0]}$</p>`;
+                } else {
+                  __ap = 'none';
+                }
+                other_approx_output.style.display = __ap;
+                other_eq_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[1]}$ ${_L} $x=${__x_o[1]}$</p>`;
+              }
 
-            //LOCAL MAX/MIN
-            if (deg > 2) {
-              let dy1 = nerdamer(`diff(${IV},x)`).toString();
-              let dy2 = nerdamer(`diff(${dy1},x)`).toString();
-              let v_dy2 = [];
-              let _o_u = '';
+              //LOCAL MAX/MIN
+              if (deg > 2 && !/[^x\d\W]/g.test(IV)) {
+                let dy1 = nerdamer(`diff(${IV},x)`).toString();
+                let dy2 = nerdamer(`diff(${dy1},x)`).toString();
+                let v_dy2 = [];
+                let _o_u = '';
 
-              if (deg === 3) {
-                let r_dy1 = nerdamer(`solve(${dy1},x)`);
-                let r__d_dy1 = __2_a(r_dy1.toString());
-                let r_l = r__d_dy1.length;
-                if (r_l > 1) {
-                  let r__p_dy1 = __2_a(r_dy1.toTeX());
-                  let _1_r_dy1 = !/[^x\d\W]/g.test(IV) ? __2_a(r_dy1.text()) : [];
-                  let _o1 = '';
-                  for (let i = 0; i < r_l; i++) {
-                    if (r__d_dy1[i].includes('i')) {
-                      break;
+                if (deg === 3) {
+                  let r_dy1 = nerdamer(`solve(${dy1},x)`);
+                  let r__d_dy1 = toArray(r_dy1.toString());
+                  let r_l = r__d_dy1.length;
+                  if (r_l > 1) {
+                    let r__p_dy1 = toArray(r_dy1.toTeX());
+                    let _1_r_dy1 = toArray(r_dy1.text());
+                    let _o1 = '';
+                    for (let i = 0; i < r_l; i++) {
+                      if (r__d_dy1[i].includes('i')) {
+                        break;
+                      } else {
+                        v_dy2.push(parseFloat(nerdamer(dy2).sub('x', r__d_dy1[i]).text()));
+                        let ___ = nerdamer(IV).sub('x', r__d_dy1[i]).toString();
+                        let tmp = nerdamer(___.replace(/sqrt\(([^])\)\^(\w)/g, 'sqrt($1^$2)')).latex();
+                        _o_u += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${tmp[1]}$ ${_L} $x=${r__p_dy1[i]}$</p>`;
+                        if (tmp[1] !== tmp[0]) {
+                          _o1 += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${tmp[0]}$ ${_L} $x=${_1_r_dy1[i]}$</p>`
+                        }
+                      }
+                    }
+                    if (_o1 !== '') {
+                      __ap = 'block';
+                      other_approx_output.innerHTML = _o1;
                     } else {
-                      v_dy2.push(parseFloat(nerdamer(dy2).sub('x', r__d_dy1[i]).text()));
-                      let ___ = nerdamer(IV).sub('x', r__d_dy1[i]).toString();
-                      let tmp = nerdamer(___.replace(/sqrt\(([^])\)\^(\w)/g, 'sqrt($1^$2)')).latex();
-                      _o_u += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${tmp[1]}$ ${_L} $x=${r__p_dy1[i]}$</p>`;
-                      if (!/[^x\d\W]/g.test(IV) && tmp[1] !== tmp[0]) {
-                        _o1 += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${tmp[0]}$ ${_L} $x=${_1_r_dy1[i]}$</p>`
+                      __ap = 'none';
+                    }
+                    other_approx_output.style.display = __ap;
+                  }
+                }
+                if (deg > 3) {
+                  let r_dy1 = toArray(nerdamer(`roots(${dy1},x)`).text());
+                  for (let i = 0, r_l = r_dy1.length; i < r_l; i++) {
+                    if (!r_dy1[i].includes('i')) {
+                      v_dy2.push(parseFloat(nerdamer(dy2).sub('x', r_dy1[i]).text()));
+                      if (v_dy2[i]) {
+                        _o_u += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${nerdamer(IV).sub('x', r_dy1[i]).text()}$ ${_L} $x=${r_dy1[i]}$</p>`
                       }
                     }
                   }
-                  if (_o1 !== '' && !/[^x\d\W]/g.test(IV)) {
-                    __ap = 'block';
-                    other_approx_output.innerHTML = _o1;
-                  } else {
-                    __ap = 'none';
-                  }
-                  other_approx_output.style.display = __ap;
+                  other_approx_output.style.display = 'none';
                 }
-              }
-              if (deg > 3) {
-                let r_dy1 = __2_a(nerdamer(`roots(${dy1},x)`).text());
-                for (let i = 0, r_l = r_dy1.length; i < r_l; i++) {
-                  if (!r_dy1[i].includes('i')) {
-                    v_dy2.push(parseFloat(nerdamer(dy2).sub('x', r_dy1[i]).text()));
-                    if (v_dy2[i]) {
-                      _o_u += `<p align="center">$y_{${_s_L(v_dy2[i])}}=${nerdamer(IV).sub('x', r_dy1[i]).text()}$ ${_L} $x=${r_dy1[i]}$</p>`
-                    }
-                  }
-                }
-              }
-              if (_o_u === '') {
-                _o_u = `<p align="center">${LN === 'vi' ? 'Không có cực trị' : 'No Local Max/Min'}</p>`;
+                if (_o_u === '') {
+                  _o_u = `<p align="center">${LN === 'vi' ? 'Không có cực trị' : 'No Local Max/Min'}</p>`;
 
-              } else {
-                let gx = nerdamer(`divide(${IV},${dy1})`).toTeX();
-                _o_u += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;
+                } else {
+                  let gx = nerdamer(`divide(${IV},${dy1})`).toTeX();
+                  _o_u += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;
+                }
+                other_eq_output.innerHTML = _o_u;
               }
-              other_eq_output.innerHTML = _o_u;
+              other_eq_output.style.display = deg === 2 || (deg > 2 && !/[^x\d\W]/g.test(IV)) ? 'block' : 'none';
+            }
+          } else {
+            other_eq_output.style.display = other_approx_output.style.display = 'none';
+            ROOT = ROOT.map(x => x.filter(v => !v.includes('i') && v !== ''));
+            let dbr = [];
+            let result;
+            if (IV.includes(')/(')) {
+              let reg = /\(([^\)]*)\)\/\(([^\)]*)\)/g;
+              let _D = IV.replace(reg, '$2');
+              let dy_n = nerdamer(`diff(${IV.replace(reg, '$1')},x)`).toString();
+              let dy_d = nerdamer(`diff(${_D},x)`).toString();
+              let D =  nerdamer(`solve(${_D},x)`).latex().map(x => toArray(x).filter((v, i, self) => self.indexOf(v) === i && !v.includes('i') && v !== ''));
+              ROOT = [...ROOT[0].map((x, i) => {
+                return {
+                  d: parseFloat(x),
+                  p: ROOT[1][i],
+                  isDBR: nerdamer(dy_n).sub('x', x).text() === '0' ? 1 : 0,
+                  isD: 0
+                }
+              }), ...D[0].map((x, i) => {
+                return {
+                  d: parseFloat(x),
+                  p: D[1][i],
+                  isDBR: nerdamer(dy_d).sub('x', x).text() === '0' ? 1 : 0,
+                  isD: 1
+                }
+              })].sort((a, b) => b.d - a.d);
+            } else {
+              let dy = nerdamer(`diff(${IV},x)`).toString();
+              ROOT = ROOT[0].map((x, i) => {
+                return {
+                  d: parseFloat(x),
+                  p: ROOT[1][i],
+                  isDBR: nerdamer(dy).sub('x', x).text() === '0' ? 1 : 0,
+                  isD: 0
+                }
+              }).sort((a, b) => b.d - a.d);
+            }
+            ROOT.unshift({
+              d: '+\\infty',
+              p: '+\\infty',
+              isDBR: 0,
+              isD: 1,
+              pl: (IV.match(/\(-|^-/g) || []).length !== 1 ? '+' : '-'
+            });
+            ROOT.push({
+              d: '-\\infty',
+              p: '-\\infty',
+              isDBR: 0,
+              isD: 1,
+              pl: ROOT[0].pl
+            });
+            for (let i = 1, l = ROOT.length - 1; i < l; i++) {
+              ROOT[i].pl = ROOT[i].isDBR ? ROOT[i - 1].pl : (ROOT[i - 1].pl === '+' ? '-' : '+')
+            }
+            for (let i = ROOT.length - 1; i >= 0; i--) {
+              if (ROOT[i].isDBR) {
+                dbr.push(ROOT.splice(i, 1)[0]);
+              }
+            }
+            switch (operator) {
+              case 'ge':
+                result = formatRangeE(ROOT, '+');
+                break;
+              case 'le':
+                result = formatRangeE(ROOT, '-');
+                break;
+              case 'gt':
+                result = formatRangeT(ROOT, '+', dbr);
+                break;
+              case 'lt':
+                result = formatRangeT(ROOT, '-', dbr);
+                break;
+            }
+            if (Array.isArray(result)) {
+              let tmp = formatIneq(result);
+              eq = tmp.p;
+              approx = tmp.d;
+            } else {
+              eq = result;
+              approx = '';
             }
           }
-          other_eq_output.style.display = deg > 1 ? 'block' : 'none';
+          if (eq !== '' && !eq.includes('undefined')) {
+            __ap = 'block';
+            eq_output.innerHTML = eq.replace(/,$/g, '');
+          } else {
+            __ap = 'none';
+          }
+          eq_output.style.display = __ap;
+          if (approx !== '' && eq !== approx) {
+            __ap = 'block';
+            approx_output.innerHTML = approx;
+          } else {
+            __ap = 'none';
+          }
+          approx_output.style.display = __ap;
+          renderMathInElement(document.getElementById("math"), {
+            delimiters: [{
+              left: "$$",
+              right: "$$",
+              display: !0
+            }, {
+              left: "$",
+              right: "$",
+              display: !1
+            }]
+          })
         }
-        if (eq !== '') {
-          __ap = 'block';
-          eq_output.innerHTML = eq.replace(/,$/g, '');
-        } else {
-          __ap = 'none';
-        }
-        eq_output.style.display = __ap;
-        if (approx !== '' && N[1].replace(/ /g, '') !== N[0].replace(/\*/g, '') && approx !== undefined) {
-          __ap = 'block';
-          approx_output.innerHTML = approx;
-        } else {
-          __ap = 'none';
-        }
-        approx_output.style.display = __ap;
-        renderMathInElement(document.getElementById("math"), {
-          delimiters: [{
-            left: "$$",
-            right: "$$",
-            display: !0
-          }, {
-            left: "$",
-            right: "$",
-            display: !1
-          }]
-        })
       })
     })
   })

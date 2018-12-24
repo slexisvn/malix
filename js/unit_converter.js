@@ -10,9 +10,7 @@ if (LN === 'vi') {
 }
 
 function check(ele1, ele2, arr) {
-  if (arr.includes(ele1) && arr.includes(ele2))
-    return !0;
-  return !1
+  return arr.includes(ele1) && arr.includes(ele2) ? true : false;
 }
 
 function num_systems_function(f, t, str) {
@@ -104,8 +102,9 @@ function num_systems_function(f, t, str) {
       }
       result = num.toString()
     }
-  } else
+  } else {
     result = str;
+  }
   return result;
 }
 
@@ -119,7 +118,7 @@ function base_function(f, t, str) {
     arr[i] = parseInt(arr[i], f_num).toString();
     str = str.replace(arr_m[i], arr[i])
   }
-  str = parseFloat(nerdamer(str).evaluate().text()).toString(t_num).toUpperCase();
+  str = parseFloat(nerdamer(str).text()).toString(t_num).toUpperCase();
   if (str !== 'NAN') {
     return str;
   }
@@ -179,67 +178,64 @@ quantity_select.onchange = function() {
 
 function main() {
   let result = input.value;
-  let f = from.value;
-  let t = to.value;
-  let option = quantity_select.value;
-  let err = 0;
-  delete unit.temp;
-  delete unit.base;
-  delete unit.num_systems;
+  if (result !== '') {
+    let f = from.value;
+    let t = to.value;
+    let option = quantity_select.value;
+    let err = 0;
+    delete unit.temp;
+    delete unit.base;
+    delete unit.num_systems;
 
-  if (option === 'base') {
-    result = base_function(f, t, result);
-  } else if (option === 'num_systems') {
-    result = num_systems_function(f, t, result);
-  } else {
-    for (let i in unit) {
-      if (check(f, t, unit[i])) {
-        if (f != unit[i][0]) {
-          result /= vch[i][unit[i].indexOf(f)];
+    if (option === 'base') {
+      result = base_function(f, t, result);
+    } else if (option === 'num_systems') {
+      result = num_systems_function(f, t, result);
+    } else {
+      for (let i in unit) {
+        if (check(f, t, unit[i])) {
+          if (f != unit[i][0]) {
+            result /= vch[i][unit[i].indexOf(f)];
+          }
+          if (t != unit[i][0]) {
+            result *= vch[i][unit[i].indexOf(t)];
+          }
+          err++
         }
-        if (t != unit[i][0]) {
-          result *= vch[i][unit[i].indexOf(t)];
+      }
+
+      if (check(f, t, temp)) {
+        if (f != 'C') {
+          if (f == 'F') {
+            result = (5.0 / 9.0) * (result - 32.0);
+          }
+          if (f == 'K') {
+            result -= 273.15
+          }
+        }
+        if (t != 'C') {
+          if (t == 'F') {
+            result = (9.0 / 5.0) * result + 32.0;
+          }
+          if (t == 'K') {
+            result += 273.15
+          }
         }
         err++
       }
-    }
 
-    if (check(f, t, temp)) {
-      if (f != 'C') {
-        if (f == 'F') {
-          result = (5.0 / 9.0) * (result - 32.0);
-        }
-        if (f == 'K') {
-          result -= 273.15
-        }
+      if (err === 0) {
+        result = ''
       }
-      if (t != 'C') {
-        if (t == 'F') {
-          result = (9.0 / 5.0) * result + 32.0;
-        }
-        if (t == 'K') {
-          result += 273.15
-        }
-      }
-      err++
     }
-
-    if (err === 0) {
-      result = ''
-    }
+    output.innerHTML = `<span class="katex-display katex">${result}</span>`
   }
-
-  output.innerHTML = `<span class="katex-display katex">${result}</span>`
 }
 
 input.oninput = function() {
-  if (this.value !== '') {
-    main()
-  }
+  main();
 }
 
 $('#from, #to').on('change', function() {
-  if ($('#input').val() !== '') {
-    main()
-  }
+  main();
 })

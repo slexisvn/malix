@@ -201,7 +201,7 @@ $.getScript('../js/algebra.js', function() {
   $('#input').textcomplete([{
     match: /(^|\b)(\w{1,})$/,
     search: function(term, callback) {
-      callback($.map(['hermite', 'hermiteE', 'legendre', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'], word => word.indexOf(term) === 0 ? word : null))
+      callback($.map(['hermite', 'hermiteE', 'legendre', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'], word => word.includes(term) ? word : null))
     },
     replace: function(word) {
       if (word !== 'lagrange') {

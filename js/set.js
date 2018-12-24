@@ -21,7 +21,7 @@ $('#select').on('change', function() {
 $('#input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    callback($.map(['itvA', 'itvB', 'itvC', 'itvD', 'setA', 'setB', 'setC', 'setD', 'unionS', 'intersecS', 'complS', 'differS', 'unionI', 'intersecI', 'complI', 'differI', 'combK', ], word => word.indexOf(term) === 0 ? word : null))
+    callback($.map(['itvA', 'itvB', 'itvC', 'itvD', 'setA', 'setB', 'setC', 'setD', 'unionS', 'intersecS', 'complS', 'differS', 'unionI', 'intersecI', 'complI', 'differI', 'combK', ], word => word.includes(term) ? word : null))
   },
   replace(word) {
     return word.includes('set') || word.includes('itv') ? word : `${word}()`
@@ -52,7 +52,7 @@ function k_cbnts(set, k) {
     head = set.slice(i, i + 1);
     tailcombs = k_cbnts(set.slice(i + 1), k - 1);
     for (j = 0; j < tailcombs.length; j++) {
-      combs.push(head.concat(tailcombs[j]));
+      combs.push([...head, ...tailcombs[j]]);
     }
   }
   return combs;
@@ -226,7 +226,9 @@ cal.onclick = function() {
   nerdamer.clearVars();
   if (IV.includes('set')) {
     for (let i = 0; i < 4; i++) {
-      nerdamer.setVar(`set${ASCII[i]}`, `[${_r__1(`i${i}`)}]`);
+      if (IV.includes(ASCII[i])) {
+        nerdamer.setVar(`set${ASCII[i]}`, `[${_r__1(`i${i}`)}]`);
+      }
     }
   }
 

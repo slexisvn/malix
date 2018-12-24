@@ -45,7 +45,7 @@ nerdamer.register([{
 $('#input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search(term, callback) {
-    callback($.map(['determinant', 'invert', 'imatrix', 'transpose', 'matA', 'matB', 'matC', 'hilbert', 'adjunct'], word => word.indexOf(term) === 0 ? word : null));
+    callback($.map(['determinant', 'invert', 'imatrix', 'transpose', 'matA', 'matB', 'matC', 'hilbert', 'adjunct'], word => word.includes(term) ? word : null));
   },
   replace(word) {
     return ASCII.includes(word.replace('mat', '')) ? word : `${word}()`;

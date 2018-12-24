@@ -18,10 +18,7 @@ if (LN === 'vi') {
 $('#input').textcomplete([{
   match: /(^|\b)(\w{1,})$/,
   search: function(term, callback) {
-    var words = ['cos', 'sin', 'tan', 'sqrt', 'abs', 'asin', 'acos', 'atan'];
-    callback($.map(words, function(word) {
-      return word.indexOf(term) === 0 ? word : null;
-    }));
+    callback($.map(_W_, word => word.includes(term) ? word : null));
   },
   replace: function(word) {
     return `${word}()`;
@@ -45,7 +42,7 @@ input.oninput = function(e) {
   e.preventDefault();
   let arrInput = this.value.replace(/ln/g, 'log').split(':');
   let arrData = [];
-  for (let i = 0; i < arrInput.length; i++) {
+  for (let i = 0, l = arrInput.length; i < l; i++) {
     arrData.push(JSON.parse(`{"fn":"${arrInput[i]}"}`));
   }
 
