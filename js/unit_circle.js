@@ -21,7 +21,7 @@ function circleunitMain() {
   my.graphX = 380;
   angle = 1.;
   my.quadQ = true;
-  my.degQ = true;
+  my.degQ = false;
   angles = [
     [0, 0, 1, "1,0", 1],
     [30, 1, 6, "+3+1", 1],

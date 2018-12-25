@@ -33,7 +33,7 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
     CB = core.groups.CB,
     EX = core.groups.EX,
     P = core.groups.P,
-    LOG = 'log',
+    LN = 'ln',
     EXP = 'exp',
     ABS = 'abs',
     SQRT = 'sqrt',
@@ -316,7 +316,7 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
         } else if (g === FN && symbol.power.equals(1)) {
           // Table of known derivatives
           switch (symbol.fname) {
-            case LOG:
+            case LN:
               cp = symbol.clone();
               symbol = symbol.args[0].clone(); //get the arguments
               symbol.power = symbol.power.negate();
@@ -462,8 +462,8 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
           } else {
             value = symbol.value + inBrackets(text(symbol.args[0]));
           }
-          a = _.multiply(_.parse(LOG + inBrackets(value)), symbol.power.clone());
-          b = __.diff(_.multiply(_.parse(LOG + inBrackets(value)), symbol.power.clone()), d);
+          a = _.multiply(_.parse(LN + inBrackets(value)), symbol.power.clone());
+          b = __.diff(_.multiply(_.parse(LN + inBrackets(value)), symbol.power.clone()), d);
           symbol = _.multiply(symbol, b);
         } else if (g === FN && !symbol.power.equals(1)) {
           b = symbol.clone();
@@ -606,7 +606,7 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
           m = x.multiplier.toDecimal(),
           s = x.toUnitMultiplier().toLinear();
         if (Number(p) === -1) {
-          return _.multiply(new Symbol(m), _.symfunction(LOG, [s]));
+          return _.multiply(new Symbol(m), _.symfunction(LN, [s]));
         }
         return _.parse(format('({0})*({1})^(({2})+1)/(({2})+1)', m, s, p));
       },
@@ -648,7 +648,7 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
               parts[3].push(x);
             else if (core.Utils.in_inverse_trig(fname))
               parts[1].push(x);
-            else if (fname === LOG)
+            else if (fname === LN)
               parts[0].push(x);
             else {
               __.integration.stop();
@@ -844,7 +844,7 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
               if (symbol.isE()) {
                 retval = symbol;
               } else {
-                var d = _.symfunction(LOG, [_.parse(symbol.value)]);
+                var d = _.symfunction(LN, [_.parse(symbol.value)]);
                 retval = _.divide(symbol, d);
               }
               retval = _.divide(retval, a);
@@ -1011,8 +1011,8 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
             var a = decomp[0],
               x = decomp[1],
               fname = symbol.fname;
-            //log is a special case that can be handled with integration by parts
-            if (fname === LOG || (fname === ASIN || fname === ACOS || fname === ATAN && x.isLinear())) {
+            //ln is a special case that can be handled with integration by parts
+            if (fname === LN || (fname === ASIN || fname === ACOS || fname === ATAN && x.isLinear())) {
               /*integration by parts */
               var p = symbol.power.toString();
               if (isInt(p))
@@ -1206,7 +1206,7 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
                   symbol = _.multiply(sym1.clone(), sym2.clone());
 
                   if (g1 === FN && g2 === FN) {
-                    if (fn1 === LOG || fn2 === LOG) {
+                    if (fn1 === LN || fn2 === LN) {
                       retval = __.integration.by_parts(symbol.clone(), dx, depth, opt);
                     } else {
                       symbols.sort(function(a, b) {
@@ -1362,7 +1362,7 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
                       retval = _.symfunction('Shi', [sym1.args[0]]);
                     else if (sym1.fname === SINH && sym2.power.equals(-1)) {
                       retval = __.integrate(_.multiply(sym1.fnTransform(), sym2.clone()), dx, depth);
-                    } else if (sym1.fname === LOG && sym2.power.equals(-1)) {
+                    } else if (sym1.fname === LN && sym2.power.equals(-1)) {
                       //ln(x)^n/x = ln(x)^(n+1)/(n+1)
                       retval = __.integration.poly_integrate(sym1, dx, depth);
                     } else if (sym1.fname === 'erf') {
@@ -1378,10 +1378,10 @@ if ((typeof module) !== 'undefined' && typeof nerdamer === 'undefined') {
                       retval = __.integration.by_parts(symbol, dx, depth, opt);
                     }
                   } else if (g1 === EX && g2 === S) {
-                    var x = fn1 === LOG ? __.integration.decompose_arg(sym1.args[0], dx)[1] : null;
+                    var x = fn1 === LN ? __.integration.decompose_arg(sym1.args[0], dx)[1] : null;
                     if (sym1.isE() && (sym1.power.group === S || sym1.power.group === CB) && sym2.power.equals(-1)) {
                       retval = _.symfunction('Ei', [sym1.power.clone()]);
-                    } else if (fn1 === LOG && x.value === sym2.value) {
+                    } else if (fn1 === LN && x.value === sym2.value) {
                       retval = __.integration.poly_integrate(sym1, dx, depth);
                     } else
                       retval = __.integration.by_parts(symbol, dx, depth, opt);
