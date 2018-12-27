@@ -160,7 +160,7 @@ $('#input').textcomplete([{
     callback($.map(['line', 'abs', 'dot', 'cross', 'angle', 'vecA', 'vecB', 'vecC', 'vecD', 'pointM', 'pointG', 'pointH', 'pointI', 'pointO', 'plane', 'projP', 'projL'], word => word.includes(term) ? word : null))
   },
   replace(word) {
-    return word.includes('vec') ? word : `${word}()`
+    return word.includes('vec') ? word : [`${word}(`, ')']
   }
 }]);
 

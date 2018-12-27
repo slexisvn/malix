@@ -4,6 +4,10 @@ if (LN === 'vi') {
   lb[1].innerHTML = 'Biểu thức';
   lb[3].innerHTML = 'Các giá trị của x';
   lb[4].innerHTML = 'Các giá trị của f';
+  let _vi = ['Rút gọn đa thức', 'Tìm nhân tử chung', 'Tìm hệ số', 'Tìm phân thức đơn'];
+  for (let i = 0; i < 4; i++) {
+    select.options[i].text = _vi[i];
+  }
 }
 
 $.getScript('../js/algebra.js', function() {
@@ -205,7 +209,7 @@ $.getScript('../js/algebra.js', function() {
     },
     replace: function(word) {
       if (word !== 'lagrange') {
-        return `${word}()`
+        return [`${word}(`, ')']
       } else {
         $('#main_area, #lagrange_area').toggle()
       }

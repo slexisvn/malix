@@ -1,5 +1,9 @@
 if (LN === 'vi') {
   document.getElementsByTagName('label')[1].innerHTML = document.getElementsByClassName('title')[1].innerHTML = 'Dãy số';
+  let _vi = ['Công thức tổng quát', 'Công thức tổng tổng quát', 'Dãy số đặc biệt'];
+  for (let i = 0; i < 3; i++) {
+    select.options[i].text = _vi[i];
+  }
 }
 $.getScript('../js/algebra.js', function() {
   $.getScript('../js/calculus.js', function() {
@@ -31,7 +35,7 @@ $.getScript('../js/algebra.js', function() {
             callback($.map(['fib', 'farey', 'lucas'], (word) => word.includes(term) ? word : null))
           },
           replace: function(word) {
-            return `${word}()`
+            return [`${word}(`, ')']
           }
         }])
       }

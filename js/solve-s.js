@@ -15,7 +15,7 @@ $.getScript('../js/algebra.js', function() {
           callback($.map(_W_, word => word.includes(term) ? word : null))
         },
         replace(word) {
-          return word === '/' ? '()/()' : `${word}()`
+          return word === '/' ? ['(', ')/()'] : [`${word}(`, ')']
         }
       }]);
 

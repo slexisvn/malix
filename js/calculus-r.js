@@ -1,14 +1,14 @@
 if (LN === 'vi') {
   document.getElementsByClassName('title')[1].innerHTML = 'Giải tích';
+  let lb = document.getElementsByTagName('label');
+  let _vi = ['Giới hạn', 'Đạo hàm', 'Nguyên hàm', 'Tích phân', 'Khai triển Taylor', 'Biểu thức', 'Theo', 'Tại', 'Cận dưới', 'Cận trên'];
+  for (let i = 0; i < 5; i++) {
+    select.options[i].text = _vi[i];
+    lb[i + 1].innerHTML = _vi[i + 5];
+  }
   for (let i = 0; i < 3; i++) {
     nth_diff.options[i].text = `Đạo hàm bậc ${i + 1}`;
   }
-  let lb = document.getElementsByTagName('label');
-  lb[1].innerHTML = 'Biểu thức';
-  lb[2].innerHTML = 'Theo';
-  lb[3].innerHTML = 'Tại';
-  lb[4].innerHTML = 'Cận dưới';
-  lb[5].innerHTML = 'Cận trên';
 }
 $.getScript('../js/algebra.js', function() {
   $.getScript('../js/calculus.js', function() {
@@ -19,7 +19,7 @@ $.getScript('../js/algebra.js', function() {
         callback($.map(_W_, word => word.includes(term) ? word : null));
       },
       replace: function(word) {
-        return `${word}()`
+        return [`${word}(`, ')']
       }
     }]);
 

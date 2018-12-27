@@ -1,11 +1,3 @@
-$(document).on('pageinit', function() {
- $('#main_input, #input').on('focus', function() {
-    if ($(this).val().includes('()')) {
-      $(this).setCursorPosition($(this).val().indexOf('()') + 1)
-    }
-  });
-});
-
 $('.mfb-component__button--child').click(function() {
   $('.mfb-component--br').attr('data-mfb-state', 'close');
 });
@@ -20,14 +12,14 @@ $('#recurring_output, #mixed_output, #main_approx_output').hide();
 var LN = navigator.language.substr(0, 2);
 
 if (LN === 'vi') {
-	let _vi = ['Đổi đơn vị', 'Giải phương trình, bất phương trình', 'Hệ phương trình tuyến tính', 'Đa thức', 'Vẽ đồ thị', 'Giải tích', 'Ma trận', 'Vector', 'Phân phối', 'Thống kê', 'Dãy số', 'Khai triển lượng giác', 'Tập hợp', 'Vòng tròn lượng giác', 'Bàn tính'];
-	for (let i = 0; i < 15; i++) {
-		search.getElementsByTagName('a')[i].childNodes[0].nodeValue = _vi[i];
-	}
-	search.dataset.filterPlaceholder = 'Tìm công cụ';
-	document.getElementsByClassName('title')[0].innerHTML = 'Phép tính thường';
-	document.getElementsByTagName('label')[0].innerHTML = 'Biểu thức';
-	document.getElementsByClassName('mfb-component__button--child')[1].href = 'pages/doc-vi.html';
+  let _vi = ['Đổi đơn vị', 'Giải phương trình, bất phương trình', 'Hệ phương trình tuyến tính', 'Đa thức', 'Vẽ đồ thị', 'Giải tích', 'Ma trận', 'Vector', 'Phân phối', 'Thống kê', 'Dãy số', 'Khai triển lượng giác', 'Tập hợp', 'Vòng tròn lượng giác', 'Bàn tính'];
+  for (let i = 0; i < 15; i++) {
+    search.getElementsByTagName('a')[i].childNodes[0].nodeValue = _vi[i];
+  }
+  search.dataset.filterPlaceholder = 'Tìm công cụ';
+  document.getElementsByClassName('title')[0].innerHTML = 'Phép tính thường';
+  document.getElementsByTagName('label')[0].innerHTML = 'Biểu thức';
+  document.getElementsByClassName('mfb-component__button--child')[1].href = 'pages/doc-vi.html';
 }
 
 var ASCII = ['A', 'B', 'C', 'D'];
@@ -39,7 +31,7 @@ $('#main_input').textcomplete([{
     callback($.map([..._W_, ...['approxratio', 'log', 'log10', 'mod', 'pfactor', 'min', 'max', 'floor', 'ceil', 'fact', 'dfactorial', 'nCr', 'nPr', 'round', 'divisors', 'sign', 'Si', 'Ci', 'Ei', 'Shi', 'Chi', 'rect', 'step', 'sinc', 'tri', 'erf', 'gamma', 'beta', 'zeta', 'bernoulliN', 'bell', 'stirling1', 'stirling2', 'catalan', 'eulerN', 'arg', 'imagpart', 'realpart', 'conjugate', 'polarform', 'rectform']], word => word.includes(term) ? word : null));
   },
   replace(word) {
-    return `${word}()`;
+    return [`${word}(`, ')'];
   }
 }]);
 
@@ -313,8 +305,6 @@ nerdamer.register([{
     return catalan
   }
 }]);
-
-
 
 main_input.oninput = function() {
   let IV = this.value;

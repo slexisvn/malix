@@ -24,7 +24,7 @@ $('#input').textcomplete([{
     callback($.map(['itvA', 'itvB', 'itvC', 'itvD', 'setA', 'setB', 'setC', 'setD', 'unionS', 'intersecS', 'complS', 'differS', 'unionI', 'intersecI', 'complI', 'differI', 'combK', ], word => word.includes(term) ? word : null))
   },
   replace(word) {
-    return word.includes('set') || word.includes('itv') ? word : `${word}()`
+    return word.includes('set') || word.includes('itv') ? word : [`${word}(`, ')']
   }
 }]);
 

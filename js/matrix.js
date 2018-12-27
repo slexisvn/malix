@@ -48,7 +48,7 @@ $('#input').textcomplete([{
     callback($.map(['determinant', 'invert', 'imatrix', 'transpose', 'matA', 'matB', 'matC', 'hilbert', 'adjunct'], word => word.includes(term) ? word : null));
   },
   replace(word) {
-    return ASCII.includes(word.replace('mat', '')) ? word : `${word}()`;
+    return ASCII.includes(word.replace('mat', '')) ? word : [`${word}(`, ')'];
   }
 }]);
 
