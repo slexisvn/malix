@@ -151,9 +151,6 @@ $.getScript('../js/algebra.js', function() {
   $('#select').on('change', function() {
     option = $(this).val();
     option === 'c' ? $('#coeff_area').show() : $('#coeff_area').hide();
-    if (option === 'p') {
-      $('#input').val('()/()');
-    }
     if (main_area.style.display === 'none') {
       $('#main_area, #lagrange_area').toggle()
     }
@@ -203,13 +200,13 @@ $.getScript('../js/algebra.js', function() {
   }
 
   $('#input').textcomplete([{
-    match: /(^|\b)(\w{1,})$/,
+    match: /(^|\b)(\w{1,}|\W{1,})$/,
     search: function(term, callback) {
-      callback($.map(['hermite', 'hermiteE', 'legendre', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP'], word => word.includes(term) ? word : null))
+      callback($.map(['hermite', 'hermiteE', 'legendre', 'laguerre', 'lagrange', 'chebyshevT', 'chebyshevU', 'bernoulliP', 'eulerP', '/'], word => word.includes(term) ? word : null))
     },
     replace: function(word) {
       if (word !== 'lagrange') {
-        return [`${word}(`, ')']
+        return word === '/' ? ['(', ')/()'] : [`${word}(`, ')']
       } else {
         $('#main_area, #lagrange_area').toggle()
       }

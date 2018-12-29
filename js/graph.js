@@ -21,7 +21,7 @@ $('#input').textcomplete([{
     callback($.map(_W_, word => word.includes(term) ? word : null));
   },
   replace: function(word) {
-    return `${word}()`;
+    return [`${word}(`, ')'];
   }
 }]);
 
