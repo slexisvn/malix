@@ -1,113 +1,48 @@
-input,
-label {
-  font-family: monospace
-}
-
-.card,
-.textcomplete-dropdown {
-  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24)
-}
-
-.navbar .title,
-label {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap
-}
-
-.navbar .title,
-a,
-h3 {
-  text-shadow: none
-}
-
-.navbar .title,
-label {
-  white-space: nowrap
-}
-
-[class*=input], a {
-  outline: 0
-}
-
 body {
   background-color: #282828;
   color: #fff
 }
 
-td,
-th {
-  line-height: 0
+input {
+  outline: none;
+  font-family: monospace;
+  font-size: 20px;
 }
 
-label,
-li,
-p {
+label {
+  font-family: monospace;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+label, li, p {
   font-size: 18px;
   line-height: 25px;
   word-spacing: 5px
 }
 
-.navbar,
-div[id*=output],
-input {
-  font-size: 20px
+td {
+  line-height: 0
+}
+
+div[id*=output] {
+  font-size: 20px;
+  overflow: auto;
+  white-space: nowrap;
 }
 
 a {
   text-decoration: none;
-  color: #000;
-  font-weight: 400
+  color: #ffffff;
+  font-weight: 400;
+  outline: none;
 }
 
-.textcomplete-dropdown {
-  background-color: #323232;
-  list-style: none;
-  padding: 0;
-  margin: 0;
-  box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24)
-}
-
-.textcomplete-dropdown li {
-  border: none;
-  padding: 4px 10px
-}
-
-.textcomplete-dropdown li a {
-  text-shadow: none;
-  color: #fff
-}
-
-.textcomplete-dropdown li:first-child {
-  border-top: none
-}
-
-.textcomplete-dropdown .active,
-.textcomplete-dropdown li:hover {
-  background-color: #009688
-}
-
-.textcomplete-dropdown a:hover {
-  cursor: pointer
-}
-
-.navbar,
-.navbar-inner {
-  left: 0;
-  top: 0;
-  width: 100%
-}
-
-.link,
-.navbar {
-  -webkit-box-sizing: border-box;
-  -webkit-transform: translate3d(0, 0, 0);
-  position: relative
-}
-
-.link,
-.navbar-inner {
-  box-sizing: border-box
+.center {
+  text-align: center;
+  overflow: auto;
+  white-space: nowrap;
 }
 
 .link {
@@ -131,35 +66,35 @@ a {
   padding: 0 16px;
   min-width: 48px;
   height: 56px;
-  line-height: 56px
-}
-
-.navbar .left,
-.navbar .right,
-.navbar .title {
+  line-height: 56px;
+  box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  -webkit-transform: translate3d(0, 0, 0);
   position: relative;
-  z-index: 1
+}
+
+.link i {
+  color: #ffffff
 }
 
 .navbar .title {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 1;
   position: relative;
   -webkit-flex-shrink: 10;
   -ms-flex-negative: 10;
   flex-shrink: 10;
   display: inline-block;
   font-weight: 500;
+  font-size: 20px;
   margin: 0 16px;
   line-height: 1.2;
-  text-align: left
+  text-align: left;
 }
 
-.center,
-button.ui-btn {
-  text-align: center
-}
-
-.navbar .left,
-.navbar .right {
+.navbar .left, .navbar .right {
   -webkit-flex-shrink: 0;
   -ms-flex-negative: 0;
   flex-shrink: 0;
@@ -173,7 +108,9 @@ button.ui-btn {
   -ms-flex-align: center;
   align-items: center;
   -webkit-transform: translate3d(0, 0, 0);
-  transform: translate3d(0, 0, 0)
+  transform: translate3d(0, 0, 0);
+  position: relative;
+  z-index: 1;
 }
 
 .navbar .right {
@@ -202,7 +139,11 @@ button.ui-btn {
   -ms-flex-pack: start;
   justify-content: flex-start;
   overflow: visible;
-  -webkit-box-sizing: border-box
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  left: 0;
+  top: 0;
+  width: 100%
 }
 
 .navbar {
@@ -214,7 +155,12 @@ button.ui-btn {
   margin: 0;
   transform: translate3d(0, 0, 0);
   position: fixed;
-  background: #282828
+  background: #282828;
+  -webkit-box-sizing: border-box;
+  -webkit-transform: translate3d(0, 0, 0);
+  left: 0;
+  top: 0;
+  width: 100%
 }
 
 .navbar:after {
@@ -228,16 +174,6 @@ button.ui-btn {
   background: -webkit-gradient(linear, left top, left bottom, from(rgba(0, 0, 0, .3)), color-stop(40%, rgba(0, 0, 0, .1)), color-stop(50%, rgba(0, 0, 0, .05)), color-stop(80%, rgba(0, 0, 0, 0)), to(rgba(0, 0, 0, 0)));
   background: -webkit-linear-gradient(top, rgba(0, 0, 0, .3) 0, rgba(0, 0, 0, .1) 40%, rgba(0, 0, 0, .05) 50%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0) 100%);
   background: linear-gradient(to bottom, rgba(0, 0, 0, .3) 0, rgba(0, 0, 0, .1) 40%, rgba(0, 0, 0, .05) 50%, rgba(0, 0, 0, 0) 80%, rgba(0, 0, 0, 0) 100%)
-}
-
-.card,
-button.ui-btn {
-  background-color: #303030;
-  color: #fff
-}
-
-.link i {
-  color: #fff
 }
 
 .row {
@@ -258,7 +194,31 @@ button.ui-btn {
   align-items: flex-start
 }
 
-.row>[class*=col-] {
+.main-row {
+  margin: 4px -4px
+}
+
+.col {
+  width: 50%
+}
+
+@media screen and (min-width:500px) and (max-width:800px) {
+  .col {
+    width: 33.333333333333336%
+  }
+}
+
+@media screen and (min-width:801px) {
+  .col {
+    width: 25%
+  }
+}
+
+.col > .card {
+  margin: 4px
+}
+
+.col, [class*=col-] {
   -webkit-box-sizing: border-box;
   box-sizing: border-box
 }
@@ -296,11 +256,14 @@ button.ui-btn {
   position: relative;
   border-radius: 2px;
   box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
   padding: 16px;
-  margin: 8px 0
+  margin: 8px 0;
+  background-color: #303030;
+  color: #ffffff;
 }
 
-.card>p:first-child {
+.card > p:first-child {
   margin: 0
 }
 
@@ -314,21 +277,30 @@ button.ui-btn {
   margin-top: -10px
 }
 
-.card label+.ui-input-text {
+.card label + .ui-input-text {
   margin-top: 0
 }
 
-.card>.ui-listview>li.ui-first-child>a.ui-btn {
+.card > a > img {
+  width: 40px
+}
+
+.card > a > span {
+  display: block;
+  overflow: hidden;
+  width: 100%;
+  font-weight: 400;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: #ffffff
+}
+
+.card > .ui-listview > li.ui-first-child > a.ui-btn {
   border-top: none
 }
 
-.card>.ui-listview>li.ui-last-child>a.ui-btn {
+.card > .ui-listview > li.ui-last-child > a.ui-btn {
   border-bottom: none
-}
-
-.overflow {
-  overflow: auto;
-  white-space: nowrap
 }
 
 button.ui-btn {
@@ -343,6 +315,8 @@ button.ui-btn {
   -webkit-transform: translate3d(0, 0, 0);
   transform: translate3d(0, 0, 0);
   text-shadow:none;
+  background-color: #303030;
+  color: #fff;
   outline: 0;
   text-transform: uppercase;
   font-weight: 400;
@@ -364,7 +338,7 @@ button.ui-btn:active {
   margin-right: 10px;
   color: #000;
   background-color: #fff;
-  font-size: 15px
+  font-size: 15px;
 }
 
 .navbar-inner .right .ui-select {
@@ -374,7 +348,40 @@ button.ui-btn:active {
 .navbar-inner .right .ui-select .ui-btn {
   background: #fff;
   color: #000;
-  padding: 0 30px
+  padding: 0 30px;
+  font-size: 20px;
+}
+
+.textcomplete-dropdown {
+  background-color: #323232;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+  -webkit-box-shadow: 0 1px 3px rgba(0, 0, 0, .12), 0 1px 2px rgba(0, 0, 0, .24);
+}
+
+.textcomplete-dropdown li {
+  border: none;
+  padding: 4px 10px
+}
+
+.textcomplete-dropdown li a {
+  text-shadow: none;
+  color: #fff
+}
+
+.textcomplete-dropdown li:first-child {
+  border-top: none
+}
+
+.textcomplete-dropdown .active,
+.textcomplete-dropdown li:hover {
+  background-color: #009688
+}
+
+.textcomplete-dropdown a:hover {
+  cursor: pointer
 }
 
 .margin-top-minus-8 {
@@ -383,18 +390,6 @@ button.ui-btn:active {
 
 .margin-top {
   margin-top: 0
-}
-
-.mfb-component__button--main {
-  background-color: #3f3f3f
-}
-
-.mfb-component__button--child {
-  background-color: #424242
-}
-
-#seach a {
-  color: #fff
 }
 
 .ui-selectmenu .ui-selectmenu-list li .ui-btn.ui-btn-active {
@@ -424,7 +419,6 @@ button.ui-btn:active {
   width: 20%
 }
 
-#approx_output,
-.hide {
+div[id^=h], .hide {
   display: none;
 }

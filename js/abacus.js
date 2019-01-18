@@ -118,7 +118,7 @@ function v046(v022) {
   let v036 = this.v017;
   let v021 = this.v018;
   let a = `<div class=card><input id=number type=text oninput="${this.abacusname}.assignstring(number.value);" style="border:none;width:100%;outline:none;background:none;color:#fff"/></div> <button class="button ui-btn deep-purple" onclick="${this.abacusname}.reset();number.value=${this.abacusname}.currentvaluestring;return false" style="font-size:16px">Reset</button>`;
-  a += "<div class=card style='background:url(../img/wooden_table.jpg) no-repeat;background-size:100% 100%'><div class=overflow><table cellpadding=0 cellspacing=0 align=center>";
+  a += "<div class=card style='background:url(../img/wooden_table.jpg) no-repeat;background-size:100% 100%'><div class=center><table cellpadding=0 cellspacing=0 align=center>";
   for (v015 = 0; v015 < v036 + 2; v015++) {
     a += "<tr>";
     for (v016 = v021 - 1; v016 >= 0; --v016) {
@@ -160,7 +160,7 @@ function v046(v022) {
     a += "</tr>"
   }
   a += "</table></div></div>";
-  output.innerHTML = a;
+  disp.innerHTML = a;
   number.value = this.currentvaluestring;
   this.v029 = 1;
   return

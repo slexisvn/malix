@@ -84,7 +84,7 @@ $('#select').on('change', function() {
   }
 });
 
-cal.onclick = function() {
+calc.onclick = function() {
   let result = '';
   let SI = sigma.value;
   let MU = mu.value;

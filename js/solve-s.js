@@ -3,8 +3,6 @@ if (LN === 'vi') {
   document.getElementsByTagName('label')[1].innerHTML = 'Biểu thức';
 }
 
-other_eq_output.style.display = other_approx_output.style.display = 'none';
-
 $.getScript('../js/algebra.js', function() {
   $.getScript('../js/calculus.js', function() {
     $.getScript('../js/solve.js', function() {
@@ -159,7 +157,6 @@ $.getScript('../js/algebra.js', function() {
         let operator = $(this).attr('id');
         let IV = input.value;
         if ((operator !== 'eq' && !/[^x\d\W]/g.test(IV)) || operator === 'eq') {
-          let __ap;
           let deg = parseInt(nerdamer(`deg(${IV},x)`).toString());
           let eq;
           let approx;
@@ -188,13 +185,11 @@ $.getScript('../js/algebra.js', function() {
                 let __x_o = nerdamer(`-${coeff[1]}/(2*(${coeff[2]}))`).latex();
                 let _o__ = coeff[2].charAt(0) === '-' ? '\\max' : '\\min';
                 if (!/[^x\d\W]/g.test(IV) && __y_o[0] !== __y_o[1]) {
-                  __ap = 'block';
-                  other_approx_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[0]}$ ${_L} $x=${__x_o[0]}$</p>`;
+                  $('#hother_approx_output').show().html(`<p align="center">$${_o__} y=${__y_o[0]}$ ${_L} $x=${__x_o[0]}$</p>`)
                 } else {
-                  __ap = 'none';
+                  $('#hother_approx_output').hide();
                 }
-                other_approx_output.style.display = __ap;
-                other_eq_output.innerHTML = `<p align="center">$${_o__} y=${__y_o[1]}$ ${_L} $x=${__x_o[1]}$</p>`;
+                $('#hother_eq_output').html(`<p align="center">$${_o__} y=${__y_o[1]}$ ${_L} $x=${__x_o[1]}$</p>`)
               }
 
               //LOCAL MAX/MIN
@@ -226,12 +221,10 @@ $.getScript('../js/algebra.js', function() {
                       }
                     }
                     if (_o1 !== '') {
-                      __ap = 'block';
-                      other_approx_output.innerHTML = _o1;
+                      $('#happrox_output').show().html(_o1);
                     } else {
-                      __ap = 'none';
+                      $('#happrox_output').hide();
                     }
-                    other_approx_output.style.display = __ap;
                   }
                 }
                 if (deg > 3) {
@@ -244,7 +237,7 @@ $.getScript('../js/algebra.js', function() {
                       }
                     }
                   }
-                  other_approx_output.style.display = 'none';
+                  hother_approx_output.style.display = 'none';
                 }
                 if (_o_u === '') {
                   _o_u = `<p align="center">${LN === 'vi' ? 'Không có cực trị' : 'No Local Max/Min'}</p>`;
@@ -253,12 +246,12 @@ $.getScript('../js/algebra.js', function() {
                   let gx = nerdamer(`divide(${IV},${dy1})`).toTeX();
                   _o_u += `$$g(x)=${gx.substring(gx.indexOf('{') + 1, findClosingBracket(gx))}$$`;
                 }
-                other_eq_output.innerHTML = _o_u;
+                hother_eq_output.innerHTML = _o_u;
               }
-              other_eq_output.style.display = deg === 2 || (deg > 2 && !/[^x\d\W]/g.test(IV)) ? 'block' : 'none';
+              hother_eq_output.style.display = deg === 2 || (deg > 2 && !/[^x\d\W]/g.test(IV)) ? 'block' : 'none';
             }
           } else {
-            other_eq_output.style.display = other_approx_output.style.display = 'none';
+            $('div[id^=h]').hide();
             ROOT = ROOT.map(x => x.filter(v => !v.includes('i') && v !== ''));
             let dbr = [];
             let result;
@@ -340,20 +333,17 @@ $.getScript('../js/algebra.js', function() {
             }
           }
           if (eq !== '' && !eq.includes('undefined')) {
-            __ap = 'block';
-            eq_output.innerHTML = eq.replace(/,$/g, '');
+            $('#eq_output').show().html(eq.replace(/,$/g, ''))
           } else {
-            __ap = 'none';
+            $('#eq_output').hide();
           }
-          eq_output.style.display = __ap;
+          
           if (approx !== '' && eq !== approx) {
-            __ap = 'block';
-            approx_output.innerHTML = approx;
+            $('#happrox_output').show().html(approx)
           } else {
-            __ap = 'none';
+             $('#happrox_output').hide();
           }
-          approx_output.style.display = __ap;
-          renderMathInElement(document.getElementById("math"), {
+          renderMathInElement(math, {
             delimiters: [{
               left: "$$",
               right: "$$",

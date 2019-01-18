@@ -21,7 +21,7 @@ select.onchange = function() {
   create();
 }
 
-cal.onclick = function() {
+calc.onclick = function() {
   option = select.value;
   let matA = 'matrix(';
   let matB = 'matrix(';
@@ -58,11 +58,11 @@ cal.onclick = function() {
       approx += `\\cr x_${i + 1}=${arr[i]}`;
     }
     approx += '\\end{cases}'
-    approx_output.style.display = 'block';
-    approx_output.innerHTML = katex.renderToString(approx, {
+    happrox_output.style.display = 'block';
+    happrox_output.innerHTML = katex.renderToString(approx, {
       displayMode: true
     })
   } else {
-    approx_output.style.display = 'none';
+    happrox_output.style.display = 'none';
   }
 }

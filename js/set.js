@@ -222,7 +222,7 @@ nerdamer.register([{
   }
 }]);
 
-cal.onclick = function() {
+calc.onclick = function() {
   let IV = input.value;
   nerdamer.clearVars();
   if (IV.includes('set')) {

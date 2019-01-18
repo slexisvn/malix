@@ -46,7 +46,7 @@ $.getScript('../js/algebra.js', function() {
       }
     });
 
-    cal.onclick = function() {
+    calc.onclick = function() {
       let IV = input.value;
       let I;
       let eq;
@@ -108,12 +108,12 @@ $.getScript('../js/algebra.js', function() {
       }
 
       if (approx.includes('.')) {
-        approx_output.style.display = 'block';
-        approx_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
+        happrox_output.style.display = 'block';
+        happrox_output.innerHTML = katex.renderToString(approx.replace(/\*/g, ''), {
           displayMode: true
         })
       } else {
-        approx_output.style.display = 'none';
+        happrox_output.style.display = 'none';
       }
     }
   })

@@ -78,7 +78,7 @@ $('select').on('change', function() {
   }
 });
 
-$('#cal').click(function() {
+$('#calc').click(function() {
   nerdamer.clearVars();
   let mat = {
     A: 'matrix(',
@@ -86,7 +86,7 @@ $('#cal').click(function() {
     C: 'matrix(',
     D: 'matrix('
   };
-  let IV = input.value;
+  let IV = i$('#input').val();
   for (let c = 0; c < 4; c++) {
     if (IV.includes(ASCII[c])) {
       let col = $(`#mat${ASCII[c]}_cols`).val();
@@ -107,7 +107,7 @@ $('#cal').click(function() {
       nerdamer.setVar(`mat${ASCII[c]}`, mat[ASCII[c]] + ')');
     }
   }
-  output.innerHTML = katex.renderToString(nerdamer(IV).toTeX(), {
+  $('#output').html(katex.renderToString(nerdamer(IV).toTeX(), {
     displayMode: true
-  });
+  }));
 })
